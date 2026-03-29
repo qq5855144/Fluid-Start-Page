@@ -387,12 +387,7 @@
       background: var(--btn-hover-bg);
       transform: scale(1.05);
     }
-    .engine-item.active {
-      background: rgba(91, 140, 255, 0.2);
-    }
-    .engine-item.add-btn {
-      border: 2px dashed rgba(255,255,255,0.3);
-    }
+    
     .engine-item.add-btn:hover {
       border-color: rgba(255,255,255,0.6);
       background: rgba(255,255,255,0.1);
@@ -1527,11 +1522,11 @@
   
   // 预设搜索引擎
   const PRESET_ENGINES = [
-    { id: 'preset-0', name: 'Google', icon: 'devicon:google', url: 'https://www.google.com/search?q=%s' },
-    { id: 'preset-1', name: 'Bing', icon: 'logos:bing', url: 'https://www.bing.com/search?q=%s' },
+    { id: 'preset-0', name: 'Google', icon: 'streamline-logos:google-logo-solid', url: 'https://www.google.com/search?q=%s' },
+    { id: 'preset-1', name: 'Bing', icon: 'fontisto:bing', url: 'https://www.bing.com/search?q=%s' },
     { id: 'preset-2', name: '百度', icon: 'simple-icons:baidu', url: 'https://www.baidu.com/s?wd=%s' },
-    { id: 'preset-3', name: 'DuckDuckGo', icon: 'logos:duckduckgo', url: 'https://duckduckgo.com/?q=%s' },
-    { id: 'preset-4', name: 'Yandex', icon: 'vscode-icons:file-type-yandex', url: 'https://yandex.com/search/?text=%s' }
+    { id: 'preset-3', name: 'DuckDuckGo', icon: 'cib:duckduckgo', url: 'https://duckduckgo.com/?q=%s' },
+    { id: 'preset-4', name: 'Yandex', icon: 'brandico:yandex', url: 'https://yandex.com/search/?text=%s' }
   ];
   
   const STORAGE_KEY = 'xs_desktop_final_v1';
@@ -1540,7 +1535,7 @@
   const GITHUB_CONFIG_KEY = 'xs_github_config';
   const LAST_SYNC_KEY = 'xs_last_sync';
   const SEARCH_HISTORY_KEY = 'xs_search_history';
-  const DEFAULT_WALLPAPER_URL = 'https://gips3.baidu.com/it/u=1821127123,1149655687&fm=3028&app=3028&f=JPEG&fmt=auto?w=720&h=1280';
+  const DEFAULT_WALLPAPER_URL = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80';
   
   // 搜索引擎数组（包含自定义）
   let SEARCH_ENGINES = [...PRESET_ENGINES];
