@@ -146,6 +146,614 @@
         "url": "https://weread.qq.com",
         "icon": "mdi:book-open-page-variant-outline",
         "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+      },
+      {
+        "id": "app_tools",
+        "type": "app",
+        "title": "在线工具集",
+        "url": "https://www.tooltt.com",
+        "icon": "mdi:wrench-outline",
+        "bgStyle": "background:linear-gradient(135deg,#00d2ff,#3a7bd5);"
+      },
+      {
+        "id": "app_convert",
+        "type": "app",
+        "title": "格式转换",
+        "url": "https://www.zamzar.com",
+        "icon": "mdi:file-convert-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a9e,#fad0c4);"
+      },
+      {
+        "id": "app_ocean",
+        "type": "app",
+        "title": "草料二维码",
+        "url": "https://cli.im",
+        "icon": "mdi:qrcode-outline",
+        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+      },
+      {
+        "id": "app_ai_write",
+        "type": "app",
+        "title": "AI写作助手",
+        "url": "https://www.writesonic.com",
+        "icon": "mdi:pen-nib-outline",
+        "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+      },
+      {
+        "id": "app_ai_design",
+        "type": "app",
+        "title": "AI图像生成",
+        "url": "https://www.midjourney.com",
+        "icon": "mdi:image-plus-outline",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+      },
+      {
+        "id": "app_ai_translate",
+        "type": "app",
+        "title": "AI翻译",
+        "url": "https://www.deepl.com",
+        "icon": "mdi:translate",
+        "bgStyle": "background:linear-gradient(135deg,#30cfd0,#330867);"
+      },
+      {
+        "id": "app_coupon",
+        "type": "app",
+        "title": "优惠券查询",
+        "url": "https://www.manmanbuy.com",
+        "icon": "mdi:tag-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffb347,#ff7e5f);"
+      },
+      {
+        "id": "app_pdd",
+        "type": "app",
+        "title": "拼多多",
+        "url": "https://www.pinduoduo.com",
+        "icon": "mdi:shopping-cart-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffd1ff,#fa709a);"
+      },
+      {
+        "id": "app_weibo",
+        "type": "app",
+        "title": "微博",
+        "url": "https://weibo.com",
+        "icon": "mdi:weibo",
+        "bgStyle": "background:linear-gradient(135deg,#ff8008,#ffc837);"
+      },
+      {
+        "id": "app_douban",
+        "type": "app",
+        "title": "豆瓣",
+        "url": "https://www.douban.com",
+        "icon": "mdi:comment-outline",
+        "bgStyle": "background:linear-gradient(135deg,#00c9ff,#92fe9d);"
+      },
+      {
+        "id": "app_acfun",
+        "type": "app",
+        "title": "AcFun",
+        "url": "https://www.acfun.cn",
+        "icon": "mdi:film-outline",
+        "bgStyle": "background:linear-gradient(135deg,#0088fe,#00c4ff);"
+      },
+      {
+        "id": "app_bangumi",
+        "type": "app",
+        "title": "番剧之家",
+        "url": "https://www.bangumi.tv",
+        "icon": "mdi:television-outline",
+        "bgStyle": "background:linear-gradient(135deg,#833ab4,#fd1d1d);"
+      },
+      {
+        "id": "app_qidian",
+        "type": "app",
+        "title": "起点中文网",
+        "url": "https://www.qidian.com",
+        "icon": "mdi:book-outline",
+        "bgStyle": "background:linear-gradient(135deg,#fc5c7d,#6a82fb);"
+      },
+      {
+        "id": "app_booker",
+        "type": "app",
+        "title": "微信读书",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:tablet-android-outline",
+        "bgStyle": "background:linear-gradient(135deg,#4158d0,#c850c0);"
+      },
+      {
+        "id": "app_game",
+        "type": "app",
+        "title": "4399游戏",
+        "url": "https://www.4399.com",
+        "icon": "mdi:gamepad-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff7e5f,#feb47b);"
+      },
+      {
+        "id": "app_minigame",
+        "type": "app",
+        "title": "在线小游戏",
+        "url": "https://www.7k7k.com",
+        "icon": "mdi:puzzle-outline",
+        "bgStyle": "background:linear-gradient(135deg,#12c2e9,#c471ed);"
+      },
+      {
+        "id": "app_apkpure",
+        "type": "app",
+        "title": "APKPure",
+        "url": "https://apkpure.com",
+        "icon": "mdi:android-outline",
+        "bgStyle": "background:linear-gradient(135deg,#84fab0,#8fd3f4);"
+      },
+      {
+        "id": "app_macapp",
+        "type": "app",
+        "title": "Mac应用商店",
+        "url": "https://apps.apple.com/cn",
+        "icon": "mdi:apple-outline",
+        "bgStyle": "background:linear-gradient(135deg,#a1c4fd,#c2e9fb);"
+      },
+      {
+        "id": "app_pdf24",
+        "type": "app",
+        "title": "PDF24工具",
+        "url": "https://tools.pdf24.org/zh/",
+        "icon": "mdi:file-pdf-box-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff6b6b,#ee5a6f);"
+      },
+      {
+        "id": "app_tinypng",
+        "type": "app",
+        "title": "TinyPNG压缩",
+        "url": "https://tinypng.com/",
+        "icon": "mdi:image-compress-outline",
+        "bgStyle": "background:linear-gradient(135deg,#43e97b,#38f9d7);"
+      },
+      {
+        "id": "app_ilovepdf",
+        "type": "app",
+        "title": "iLovePDF",
+        "url": "https://www.ilovepdf.com/zh_cn",
+        "icon": "mdi:file-document-edit-outline",
+        "bgStyle": "background:linear-gradient(135deg,#fa709a,#fee140);"
+      },
+      {
+        "id": "app_photopea",
+        "type": "app",
+        "title": "在线PS",
+        "url": "https://www.photopea.com/",
+        "icon": "mdi:brush-outline",
+        "bgStyle": "background:linear-gradient(135deg,#30cfd0,#330867);"
+      },
+      {
+        "id": "app_ocrspace",
+        "type": "app",
+        "title": "在线OCR",
+        "url": "https://ocr.space/zh",
+        "icon": "mdi:text-recognition-outline",
+        "bgStyle": "background:linear-gradient(135deg,#a8edea,#fed6e3);"
+      },
+      {
+        "id": "app_jsoncn",
+        "type": "app",
+        "title": "JSON格式化",
+        "url": "https://www.json.cn/",
+        "icon": "mdi:code-braces",
+        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+      },
+      {
+        "id": "app_chinaz",
+        "type": "app",
+        "title": "站长工具",
+        "url": "https://tool.chinaz.com/",
+        "icon": "mdi:web-check",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_processon",
+        "type": "app",
+        "title": "思维导图",
+        "url": "https://www.processon.com/",
+        "icon": "mdi:mind-map-outline",
+        "bgStyle": "background:linear-gradient(135deg,#f093fb,#f5576c);"
+      },
+      {
+        "id": "app_doubao",
+        "type": "app",
+        "title": "豆包AI",
+        "url": "https://www.doubao.com/",
+        "icon": "mdi:robot-outline",
+        "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+      },
+      {
+        "id": "app_tongyi",
+        "type": "app",
+        "title": "通义千问",
+        "url": "https://tongyi.aliyun.com/",
+        "icon": "mdi:chat-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a56,#ff6a88);"
+      },
+      {
+        "id": "app_yiyan",
+        "type": "app",
+        "title": "文心一言",
+        "url": "https://yiyan.baidu.com/",
+        "icon": "mdi:lightbulb-outline",
+        "bgStyle": "background:linear-gradient(135deg,#30cfd0,#330867);"
+      },
+      {
+        "id": "app_xinghuo",
+        "type": "app",
+        "title": "讯飞星火",
+        "url": "https://xinghuo.xfyun.cn/",
+        "icon": "mdi:microphone-outline",
+        "bgStyle": "background:linear-gradient(135deg,#a1c4fd,#c2e9fb);"
+      },
+      {
+        "id": "app_removebg",
+        "type": "app",
+        "title": "AI抠图",
+        "url": "https://www.remove.bg/zh",
+        "icon": "mdi:image-edit-outline",
+        "bgStyle": "background:linear-gradient(135deg,#84fab0,#8fd3f4);"
+      },
+      {
+        "id": "app_jianwai",
+        "type": "app",
+        "title": "网易见外",
+        "url": "https://jianwai.youdao.com/",
+        "icon": "mdi:subtitles-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffecd2,#fcb69f);"
+      },
+      {
+        "id": "app_xiezuocat",
+        "type": "app",
+        "title": "写作猫",
+        "url": "https://xiezuocat.com/",
+        "icon": "mdi:typewriter",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a9e,#fecfef);"
+      },
+      {
+        "id": "app_vip",
+        "type": "app",
+        "title": "唯品会",
+        "url": "https://www.vip.com/",
+        "icon": "mdi:tshirt-crew-outline",
+        "bgStyle": "background:linear-gradient(135deg,#f093fb,#f5576c);"
+      },
+      {
+        "id": "app_suning",
+        "type": "app",
+        "title": "苏宁易购",
+        "url": "https://www.suning.com/",
+        "icon": "mdi:television-box",
+        "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+      },
+      {
+        "id": "app_smzdm",
+        "type": "app",
+        "title": "什么值得买",
+        "url": "https://www.smzdm.com/",
+        "icon": "mdi:tag-multiple-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff7e5f,#feb47b);"
+      },
+      {
+        "id": "app_1688",
+        "type": "app",
+        "title": "1688批发",
+        "url": "https://www.1688.com/",
+        "icon": "mdi:warehouse-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffd89b,#19547b);"
+      },
+      {
+        "id": "app_xianyu",
+        "type": "app",
+        "title": "闲鱼",
+        "url": "https://2.taobao.com/",
+        "icon": "mdi:fish-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffb347,#ffd700);"
+      },
+      {
+        "id": "app_xiaohongshu",
+        "type": "app",
+        "title": "小红书",
+        "url": "https://www.xiaohongshu.com/",
+        "icon": "mdi:bookmark-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff0844,#ffb199);"
+      },
+      {
+        "id": "app_hupu",
+        "type": "app",
+        "title": "虎扑",
+        "url": "https://www.hupu.com/",
+        "icon": "mdi:basketball-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2c3e50,#4ca1af);"
+      },
+      {
+        "id": "app_tieba",
+        "type": "app",
+        "title": "百度贴吧",
+        "url": "https://tieba.baidu.com/",
+        "icon": "mdi:forum-outline",
+        "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
+      },
+      {
+        "id": "app_nga",
+        "type": "app",
+        "title": "NGA社区",
+        "url": "https://bbs.nga.cn/",
+        "icon": "mdi:controller-outline",
+        "bgStyle": "background:linear-gradient(135deg,#434343,#000000);"
+      },
+      {
+        "id": "app_autohome",
+        "type": "app",
+        "title": "汽车之家",
+        "url": "https://www.autohome.com.cn/",
+        "icon": "mdi:car-outline",
+        "bgStyle": "background:linear-gradient(135deg,#1488cc,#2b32b2);"
+      },
+      {
+        "id": "app_qqac",
+        "type": "app",
+        "title": "腾讯动漫",
+        "url": "https://ac.qq.com/",
+        "icon": "mdi:animation-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff6a88,#ff9a56);"
+      },
+      {
+        "id": "app_kuaikan",
+        "type": "app",
+        "title": "快看漫画",
+        "url": "https://www.kuaikanman.com/",
+        "icon": "mdi:palette-outline",
+        "bgStyle": "background:linear-gradient(135deg,#f77062,#fe5196);"
+      },
+      {
+        "id": "app_dmzj",
+        "type": "app",
+        "title": "动漫之家",
+        "url": "https://www.dmzj.com/",
+        "icon": "mdi:home-group-outline",
+        "bgStyle": "background:linear-gradient(135deg,#a8edea,#fed6e3);"
+      },
+      {
+        "id": "app_bilimanga",
+        "type": "app",
+        "title": "B站漫画",
+        "url": "https://manga.bilibili.com/",
+        "icon": "ri:bilibili-fill",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a9e,#fad0c4);"
+      },
+      {
+        "id": "app_u17",
+        "type": "app",
+        "title": "有妖气漫画",
+        "url": "https://www.u17.com/",
+        "icon": "mdi:ghost-outline",
+        "bgStyle": "background:linear-gradient(135deg,#30cfd0,#330867);"
+      },
+      {
+        "id": "app_fanqie",
+        "type": "app",
+        "title": "番茄免费小说",
+        "url": "https://fanqienovel.com/",
+        "icon": "mdi:tomato",
+        "bgStyle": "background:linear-gradient(135deg,#ff758c,#ff7eb3);"
+      },
+      {
+        "id": "app_qimao",
+        "type": "app",
+        "title": "七猫免费小说",
+        "url": "https://www.qimao.com/",
+        "icon": "mdi:cat-outline",
+        "bgStyle": "background:linear-gradient(135deg,#fbc2eb,#a6c1ee);"
+      },
+      {
+        "id": "app_jjwxc",
+        "type": "app",
+        "title": "晋江文学城",
+        "url": "https://www.jjwxc.net/",
+        "icon": "mdi:book-heart-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a9e,#fecfef);"
+      },
+      {
+        "id": "app_zongheng",
+        "type": "app",
+        "title": "纵横中文网",
+        "url": "https://www.zongheng.com/",
+        "icon": "mdi:book-open-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_migu_read",
+        "type": "app",
+        "title": "咪咕阅读",
+        "url": "https://www.cmread.com/",
+        "icon": "mdi:cellphone-text",
+        "bgStyle": "background:linear-gradient(135deg,#a1c4fd,#c2e9fb);"
+      },
+      {
+        "id": "app_taptap",
+        "type": "app",
+        "title": "TapTap",
+        "url": "https://www.taptap.cn/",
+        "icon": "mdi:gamepad-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2c3e50,#4ca1af);"
+      },
+      {
+        "id": "app_gamersky",
+        "type": "app",
+        "title": "游民星空",
+        "url": "https://www.gamersky.com/",
+        "icon": "mdi:rocket-launch-outline",
+        "bgStyle": "background:linear-gradient(135deg,#141e30,#243b55);"
+      },
+      {
+        "id": "app_3dmgame",
+        "type": "app",
+        "title": "3DM游戏网",
+        "url": "https://www.3dmgame.com/",
+        "icon": "mdi:joystick-outline",
+        "bgStyle": "background:linear-gradient(135deg,#000000,#434343);"
+      },
+      {
+        "id": "app_ali213",
+        "type": "app",
+        "title": "游侠网",
+        "url": "https://www.ali213.net/",
+        "icon": "mdi:sword-cross",
+        "bgStyle": "background:linear-gradient(135deg,#ff7e5f,#feb47b);"
+      },
+      {
+        "id": "app_roco",
+        "type": "app",
+        "title": "洛克王国",
+        "url": "https://17roco.qq.com/",
+        "icon": "mdi:dragon-outline",
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
+      },
+      {
+        "id": "app_seer",
+        "type": "app",
+        "title": "赛尔号",
+        "url": "https://seer.61.com/",
+        "icon": "mdi:rocket-outline",
+        "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
+      },
+      {
+        "id": "app_yingyongbao",
+        "type": "app",
+        "title": "应用宝",
+        "url": "https://sj.qq.com/",
+        "icon": "mdi:google-play-outline",
+        "bgStyle": "background:linear-gradient(135deg,#30cfd0,#330867);"
+      },
+      {
+        "id": "app_wandoujia",
+        "type": "app",
+        "title": "豌豆荚",
+        "url": "https://www.wandoujia.com/",
+        "icon": "mdi:sprout-outline",
+        "bgStyle": "background:linear-gradient(135deg,#43e97b,#38f9d7);"
+      },
+      {
+        "id": "app_coolapk",
+        "type": "app",
+        "title": "酷安",
+        "url": "https://www.coolapk.com/",
+        "icon": "mdi:android-debug-bridge",
+        "bgStyle": "background:linear-gradient(135deg,#2c3e50,#4ca1af);"
+      },
+      {
+        "id": "app_apkmirror",
+        "type": "app",
+        "title": "APKMirror",
+        "url": "https://www.apkmirror.com/",
+        "icon": "mdi:android-head",
+        "bgStyle": "background:linear-gradient(135deg,#a8edea,#fed6e3);"
+      },
+      {
+        "id": "app_huawei_app",
+        "type": "app",
+        "title": "华为应用市场",
+        "url": "https://appgallery.huawei.com/",
+        "icon": "mdi:huawei",
+        "bgStyle": "background:linear-gradient(135deg,#ff7e5f,#feb47b);"
+      },
+      {
+        "id": "app_mi_app",
+        "type": "app",
+        "title": "小米应用商店",
+        "url": "https://app.mi.com/",
+        "icon": "mdi:xiaomi",
+        "bgStyle": "background:linear-gradient(135deg,#ff6a88,#ff9a56);"
+      },
+      {
+        "id": "app_qq_video",
+        "type": "app",
+        "title": "腾讯视频",
+        "url": "https://v.qq.com/",
+        "icon": "mdi:television-play-outline",
+        "bgStyle": "background:linear-gradient(135deg,#1488cc,#2b32b2);"
+      },
+      {
+        "id": "app_iqiyi",
+        "type": "app",
+        "title": "爱奇艺",
+        "url": "https://www.iqiyi.com/",
+        "icon": "mdi:play-box-outline",
+        "bgStyle": "background:linear-gradient(135deg,#00dbde,#fc00ff);"
+      },
+      {
+        "id": "app_youku",
+        "type": "app",
+        "title": "优酷视频",
+        "url": "https://youku.com/",
+        "icon": "mdi:video-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff9a56,#ff6a88);"
+      },
+      {
+        "id": "app_mgtv",
+        "type": "app",
+        "title": "芒果TV",
+        "url": "https://www.mgtv.com/",
+        "icon": "mdi:mango",
+        "bgStyle": "background:linear-gradient(135deg,#f093fb,#f5576c);"
+      },
+      {
+        "id": "app_ixigua",
+        "type": "app",
+        "title": "西瓜视频",
+        "url": "https://www.ixigua.com/",
+        "icon": "mdi:watermelon",
+        "bgStyle": "background:linear-gradient(135deg,#ff758c,#ff7eb3);"
+      },
+      {
+        "id": "app_cctv",
+        "type": "app",
+        "title": "CCTV节目官网",
+        "url": "https://tv.cctv.com/",
+        "icon": "mdi:television-box",
+        "bgStyle": "background:linear-gradient(135deg,#d4145a,#fbb03b);"
+      },
+      {
+        "id": "app_icourse163",
+        "type": "app",
+        "title": "中国大学MOOC",
+        "url": "https://www.icourse163.org/",
+        "icon": "mdi:school-outline",
+        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+      },
+      {
+        "id": "app_imooc",
+        "type": "app",
+        "title": "慕课网",
+        "url": "https://www.imooc.com/",
+        "icon": "mdi:code-tags",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_163_open",
+        "type": "app",
+        "title": "网易公开课",
+        "url": "https://open.163.com/",
+        "icon": "mdi:projector-screen-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ffecd2,#fcb69f);"
+      },
+      {
+        "id": "app_51zxw",
+        "type": "app",
+        "title": "我要自学网",
+        "url": "https://www.51zxw.net/",
+        "icon": "mdi:book-education-outline",
+        "bgStyle": "background:linear-gradient(135deg,#43e97b,#38f9d7);"
+      },
+      {
+        "id": "app_smartedu",
+        "type": "app",
+        "title": "中小学智慧教育",
+        "url": "https://basic.smartedu.cn/",
+        "icon": "mdi:blackboard-outline",
+        "bgStyle": "background:linear-gradient(135deg,#a1c4fd,#c2e9fb);"
       }
     ]
   },
