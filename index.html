@@ -514,24 +514,35 @@
       color: #fff;
     }
     .icon-bg img.custom-icon {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  display: block;
-}
-
-    .icon-label {
-      margin-top: 7px;
       width: 100%;
-      text-align: center;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+      display: block;
+    }
+    /* 新增：标签外层居中容器 - 核心修复 */
+    .icon-label-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 7px;
+    }
+    /* 重构：标签样式 - 左右溢出+精准居中 */
+    .icon-label {
       color: #fff;
       font-size: var(--label-font-size);
       line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       text-shadow: 0 1px 4px rgba(0,0,0,.2);
+      white-space: nowrap;
+      overflow: visible;
+      max-width: none;
+      width: auto;
+      text-align: center;
+      position: static;
+      left: auto;
+      transform: none;
+      margin: 0;
+      padding: 0 2px;
     }
     .folder-preview {
       position: absolute;
@@ -553,12 +564,11 @@
       font-size: calc(var(--icon-size) * .22);
     }
     .folder-preview-cell img.custom-icon {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+    }
     .page-indicators {
       position: absolute;
       left: 50%;
@@ -908,12 +918,11 @@
       color: #fff;
     }
     .form-preview-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+    }
     .form-preview-name {
       font-size: 14px;
       font-weight: 500;
@@ -1014,7 +1023,6 @@
       overflow-y: auto;
       position: relative;
     }
-    /* 搜索建议列表样式 - 直接显示在body中 */
     .suggest-list-container {
       width: 100%;
       max-width: 600px;
@@ -1063,17 +1071,16 @@
       text-overflow: ellipsis;
     }
     .suggest-arrow {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
       align-items: center;
       justify-content: center;
-  transition: all .2s ease;  
-  color: rgba(255,255,255,0.8);
-  cursor: pointer;
-}
-
+      transition: all .2s ease;  
+      color: rgba(255,255,255,0.8);
+      cursor: pointer;
+    }
     .suggest-arrow .iconify {
       font-size: 16px;
     }
@@ -1121,7 +1128,6 @@
       border: 1px solid var(--panel-border);
       box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
-    /* 同步设置特有样式 */
     .sync-status {
       display: flex;
       align-items: center;
@@ -1186,7 +1192,7 @@
       font-size: 14px;
       padding: 0 10px;
       cursor: pointer;
-      outline：none；
+      outline: none;
     }
     .sync-interval-select option {
       background: var(--panel-bg);
@@ -1205,20 +1211,19 @@
       margin-top: 4px;
     }
     
-.app-icon img,
-.folder-preview-cell img,
-.form-preview-icon img {
-  -webkit-user-drag: none;
-  user-drag: none;
-  -webkit-touch-callout: none;
-  pointer-events: none;
-}
-
-.app-icon .icon-bg,
-.folder-preview-cell,
-.form-preview-icon {
-  pointer-events: auto; 
-}
+    .app-icon img,
+    .folder-preview-cell img,
+    .form-preview-icon img {
+      -webkit-user-drag: none;
+      user-drag: none;
+      -webkit-touch-callout: none;
+      pointer-events: none;
+    }
+    .app-icon .icon-bg,
+    .folder-preview-cell,
+    .form-preview-icon {
+      pointer-events: auto; 
+    }
     @media (min-width: 768px) {
       :root {
         --dock-max-width: 620px;
@@ -1304,7 +1309,6 @@
       </div>
     </div>
     <div class="search-screen-body" id="searchScreenBody">
-      <!-- 搜索建议将直接显示在这里 -->
     </div>
   </div>
   <div class="folder-modal" id="folderModal" onclick="closeFolder()">
@@ -1386,7 +1390,6 @@
       </div>
     </div>
   </div>
-  <!-- 自定义搜索引擎表单 -->
   <div class="engine-form-modal" id="engineFormModal" onclick="closeEngineFormModal()">
     <div class="engine-form-content" onclick="event.stopPropagation()">
       <div class="engine-form-header">
@@ -1418,7 +1421,6 @@
       </div>
     </div>
   </div>
-  <!-- 云同步设置模态框 -->
   <div class="sync-modal" id="syncModal" onclick="closeSyncModal()">
     <div class="sync-content" onclick="event.stopPropagation()">
       <div class="sync-header">
@@ -1440,23 +1442,18 @@
             <div class="sync-status-desc" id="syncStatusDesc">设置GitHub令牌以启用云同步</div>
           </div>
         </div>
-        
         <div class="form-row">
           <label class="form-label">GitHub 个人访问令牌 (Token)</label>
           <input type="password" id="githubToken" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
         </div>
-        
         <div class="form-row">
           <label class="form-label">仓库名称 (例如: my-desktop-data)</label>
           <input type="text" id="githubRepo" class="form-input" placeholder="输入仓库名" />
         </div>
-        
         <div class="form-row">
           <label class="form-label">数据文件名</label>
           <input type="text" id="githubFileName" class="form-input" value="desktop_backup.json" readonly style="opacity: 0.7;" />
         </div>
-        
-        <!-- 同步间隔选择 -->
         <div class="sync-interval-row">
           <span class="sync-interval-label">自动同步间隔</span>
           <select id="syncIntervalSelect" class="sync-interval-select">
@@ -1470,7 +1467,6 @@
             <option value="7">每7天</option>
           </select>
         </div>
-        
         <div class="form-row" style="display: flex; gap: 10px;">
           <button class="form-btn success" style="flex: 1;" onclick="manualPushToGithub()">
             <span class="iconify" data-icon="mdi:cloud-upload" style="margin-right: 4px;"></span>
@@ -1481,14 +1477,12 @@
             从云端恢复
           </button>
         </div>
-        
         <div style="margin-top: 15px; text-align: center;">
           <button class="form-btn" style="width: 100%;" onclick="testGithubConnection()">
             <span class="iconify" data-icon="mdi:connection" style="margin-right: 4px;"></span>
             测试连接
           </button>
         </div>
-        
         <div class="last-sync-info" id="lastSyncInfo"></div>
         <div class="next-sync-info" id="nextSyncInfo"></div>
       </div>
@@ -1520,7 +1514,6 @@
   (function() {
   'use strict';
   
-  // 预设搜索引擎
   const PRESET_ENGINES = [
     { id: 'preset-0', name: 'Google', icon: 'streamline-logos:google-logo-solid', url: 'https://www.google.com/search?q=%s' },
     { id: 'preset-1', name: 'Bing', icon: 'fontisto:bing', url: 'https://www.bing.com/search?q=%s' },
@@ -1537,7 +1530,6 @@
   const SEARCH_HISTORY_KEY = 'xs_search_history';
   const DEFAULT_WALLPAPER_URL = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80';
   
-  // 搜索引擎数组（包含自定义）
   let SEARCH_ENGINES = [...PRESET_ENGINES];
   
   const state = {
@@ -1557,7 +1549,7 @@
       token: '',
       owner: '',
       repo: '',
-      syncInterval: 0, // 0表示关闭，1-7表示天数
+      syncInterval: 0,
       lastSyncTime: null
     }
   };
@@ -1679,12 +1671,30 @@
   }
   
   function renderIconContent(item) {
-  const icon = item.icon || '';
-  if (isImageIcon(icon)) {
-    return `<img class="custom-icon" src="${escapeHtml(icon)}" alt="" draggable="false">`; // 添加 draggable="false"
+    const icon = item.icon || '';
+    if (isImageIcon(icon)) {
+      return `<img class="custom-icon" src="${escapeHtml(icon)}" alt="" draggable="false">`;
+    }
+    return `<span class="iconify" data-icon="${escapeHtml(icon || 'mdi:apps')}"></span>`;
   }
-  return `<span class="iconify" data-icon="${escapeHtml(icon || 'mdi:apps')}"></span>`;
-}
+  
+  // 修复：中文6字符/英文10字符，超出完整保留
+  function truncateLabelByBytes(str) {
+    if (!str) return '';
+    let result = '';
+    let cnNum = 0;
+    let enNum = 0;
+    for (const char of str) {
+      if (/[\u4e00-\u9fa5]/.test(char)) {
+        cnNum++;
+        result += char;
+      } else {
+        enNum++;
+        result += char;
+      }
+    }
+    return result;
+  }
   
   function createApp(id, title, url, icon, bg) {
     return {
@@ -1706,7 +1716,6 @@
     };
   }
   
-  // 加载自定义搜索引擎
   function loadCustomEngines() {
     try {
       const saved = localStorage.getItem(CUSTOM_ENGINES_KEY);
@@ -1721,13 +1730,11 @@
     }
   }
   
-  // 保存自定义搜索引擎
   function saveCustomEngines() {
     const customEngines = SEARCH_ENGINES.filter(e => !e.id.startsWith('preset-'));
     localStorage.setItem(CUSTOM_ENGINES_KEY, JSON.stringify(customEngines));
   }
   
-  // 添加自定义搜索引擎
   function addCustomEngine(name, icon, url) {
     const newEngine = {
       id: generateId('engine'),
@@ -1740,13 +1747,11 @@
     return newEngine;
   }
   
-  // 删除自定义搜索引擎
   function deleteCustomEngine(engineId) {
     const index = SEARCH_ENGINES.findIndex(e => e.id === engineId);
     if (index > -1 && !engineId.startsWith('preset-')) {
       SEARCH_ENGINES.splice(index, 1);
       saveCustomEngines();
-      // 如果当前使用的是被删除的引擎，切换到百度
       if (state.currentEngine.id === engineId) {
         state.currentEngine = SEARCH_ENGINES[2];
         const iconEl = document.getElementById('engineIcon');
@@ -1765,7 +1770,6 @@
     return false;
   }
   
-  // 加载GitHub配置
   function loadGithubConfig() {
     try {
       const saved = localStorage.getItem(GITHUB_CONFIG_KEY);
@@ -1778,12 +1782,10 @@
     }
   }
   
-  // 保存GitHub配置
   function saveGithubConfig() {
     localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(state.githubConfig));
   }
   
-  // 验证GitHub Token并获取所有者
   async function validateGithubToken(token) {
     if (!token) return null;
     try {
@@ -1805,7 +1807,6 @@
     }
   }
   
-  // 更新同步状态UI
   function updateSyncStatus(connected, message) {
     const icon = document.getElementById('syncStatusIcon');
     const title = document.getElementById('syncStatusTitle');
@@ -1828,7 +1829,6 @@
     }
   }
   
-  // 更新同步时间信息
   function updateSyncTimeInfo() {
     const lastSync = state.githubConfig.lastSyncTime;
     const lastInfoEl = document.getElementById('lastSyncInfo');
@@ -1841,9 +1841,8 @@
       lastInfoEl.textContent = '尚未进行同步';
     }
     
-    // 计算下次同步时间
+    const interval = parseInt(state.githubConfig.syncInterval) || 0;
     if (nextInfoEl) {
-      const interval = parseInt(state.githubConfig.syncInterval) || 0;
       if (interval > 0 && lastSync) {
         const nextSync = new Date(lastSync);
         nextSync.setDate(nextSync.getDate() + interval);
@@ -1864,14 +1863,13 @@
     }
   }
   
-  // 检查是否需要自动同步
   function checkAutoSyncNeeded() {
     const interval = parseInt(state.githubConfig.syncInterval) || 0;
-    if (interval === 0) return false; // 关闭状态
+    if (interval === 0) return false;
     if (!state.githubConfig.token || !state.githubConfig.owner) return false;
     
     const lastSync = state.githubConfig.lastSyncTime;
-    if (!lastSync) return true; // 从未同步过
+    if (!lastSync) return true;
     
     const lastDate = new Date(lastSync);
     const now = new Date();
@@ -1880,7 +1878,6 @@
     return diffDays >= interval;
   }
   
-  // 触发自动同步
   async function triggerAutoSync() {
     if (checkAutoSyncNeeded()) {
       showToast('正在自动同步到云端...');
@@ -1888,7 +1885,6 @@
     }
   }
   
-  // 测试GitHub连接
   async function testGithubConnection() {
     const token = document.getElementById('githubToken').value.trim();
     const repo = document.getElementById('githubRepo').value.trim();
@@ -1905,7 +1901,6 @@
     showToast('测试中...');
     const owner = await validateGithubToken(token);
     if (owner) {
-      // 测试仓库访问
       try {
         const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
           headers: { 'Authorization': `token ${token}` }
@@ -1927,7 +1922,6 @@
     }
   }
   
-  // 上传到GitHub
   async function pushToGithub(manual = false) {
     if (!state.githubConfig.token || !state.githubConfig.owner) {
       if (manual) showToast('请先完成配置并测试连接');
@@ -1943,7 +1937,6 @@
     const fileName = document.getElementById('githubFileName').value || 'desktop_backup.json';
     const url = `https://api.github.com/repos/${state.githubConfig.owner}/${repo}/contents/${fileName}`;
     
-    // 准备数据
     const dataToUpload = {
       version: '1.0',
       timestamp: new Date().toISOString(),
@@ -1959,7 +1952,6 @@
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToUpload, null, 2))));
     
     try {
-      // 先尝试获取现有文件以获取sha
       let sha = null;
       try {
         const getRes = await fetch(url, {
@@ -1988,7 +1980,6 @@
       
       if (!putRes.ok) throw new Error(`上传失败 (${putRes.status})`);
       
-      // 更新同步时间
       state.githubConfig.lastSyncTime = new Date().toISOString();
       state.githubConfig.repo = repo;
       saveGithubConfig();
@@ -2002,7 +1993,6 @@
     }
   }
   
-  // 从GitHub下载
   async function pullFromGithub() {
     if (!state.githubConfig.token || !state.githubConfig.owner) {
       showToast('请先完成配置');
@@ -2036,19 +2026,16 @@
       
       if (!confirm('从云端同步将覆盖本地所有数据，确定继续？')) return;
       
-      // 恢复数据
       state.desktop = remoteData.desktop;
       state.dock = remoteData.dock;
       state.currentPage = remoteData.currentPage || 0;
       state.currentQuote = remoteData.currentQuote || state.currentQuote;
       
-      // 恢复自定义搜索引擎
       if (remoteData.customEngines && Array.isArray(remoteData.customEngines)) {
         SEARCH_ENGINES = [...PRESET_ENGINES, ...remoteData.customEngines];
         saveCustomEngines();
       }
       
-      // 恢复当前搜索引擎
       if (remoteData.currentEngineId) {
         const savedEngine = SEARCH_ENGINES.find(e => e.id === remoteData.currentEngineId);
         if (savedEngine) {
@@ -2060,7 +2047,6 @@
         }
       }
       
-      // 恢复壁纸
       if (remoteData.wallpaper && remoteData.wallpaper !== 'default') {
         localStorage.setItem(WALLPAPER_KEY, remoteData.wallpaper);
         const wallpaperEl = document.getElementById('wallpaperRoot');
@@ -2068,7 +2054,6 @@
         wallpaperEl.style.backgroundSize = 'cover';
       }
       
-      // 更新同步时间
       state.githubConfig.lastSyncTime = new Date().toISOString();
       state.githubConfig.repo = repo;
       saveGithubConfig();
@@ -2083,7 +2068,6 @@
     }
   }
   
-  // 搜索历史管理
   function getSearchHistory() {
     try {
       const saved = localStorage.getItem(SEARCH_HISTORY_KEY);
@@ -2097,21 +2081,18 @@
     if (!keyword || keyword.trim().length === 0) return;
     const history = getSearchHistory();
     const trimmed = keyword.trim();
-    // 去重并移到顶部
     const filtered = history.filter(h => h !== trimmed);
     filtered.unshift(trimmed);
-    // 只保留最近20条
     const limited = filtered.slice(0, 20);
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(limited));
   }
   
   function clearSearchHistory() {
-  localStorage.removeItem(SEARCH_HISTORY_KEY);  
-  state.suggestions = [];
-  renderSuggestionsToBody([]);
-}
-window.clearSearchHistory = clearSearchHistory;
-
+    localStorage.removeItem(SEARCH_HISTORY_KEY);  
+    state.suggestions = [];
+    renderSuggestionsToBody([]);
+  }
+  window.clearSearchHistory = clearSearchHistory;
   
   function deleteSearchHistoryItem(keyword) {
     const history = getSearchHistory();
@@ -2177,7 +2158,6 @@ window.clearSearchHistory = clearSearchHistory;
       currentEngineId: state.currentEngine.id
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    // 触发自动同步检查
     triggerAutoSync();
   }
   
@@ -2346,13 +2326,16 @@ window.clearSearchHistory = clearSearchHistory;
   }
   
   function renderDesktopItem(item, pageIndex, localIndex) {
+    const displayTitle = truncateLabelByBytes(item.title || '');
     if (item.type === 'folder') {
       return `
         <div class="app-icon" data-id="${item.id}" data-scope="desktop" data-item-type="folder" data-page-index="${pageIndex}" data-local-index="${localIndex}">
           <div class="icon-bg" style="background:rgba(255,255,255,.18);">
             ${renderFolderPreview(item)}
           </div>
-          <div class="icon-label">${escapeHtml(item.title || '文件夹')}</div>
+          <div class="icon-label-wrap">
+            <div class="icon-label">${escapeHtml(displayTitle)}</div>
+          </div>
         </div>
       `;
     }
@@ -2361,30 +2344,38 @@ window.clearSearchHistory = clearSearchHistory;
         <div class="icon-bg" style="${item.bgStyle || ''}">
           ${renderIconContent(item)}
         </div>
-        <div class="icon-label">${escapeHtml(item.title || '')}</div>
+        <div class="icon-label-wrap">
+          <div class="icon-label">${escapeHtml(displayTitle)}</div>
+        </div>
       </div>
     `;
   }
   
   function renderDockItem(item, index) {
     if (item.type === 'folder') return '';
+    const displayTitle = truncateLabelByBytes(item.title || '');
     return `
       <div class="app-icon" data-id="${item.id}" data-scope="dock" data-item-type="app" data-local-index="${index}">
         <div class="icon-bg" style="${item.bgStyle || ''}">
           ${renderIconContent(item)}
         </div>
-        <div class="icon-label">${escapeHtml(item.title || '')}</div>
+        <div class="icon-label-wrap">
+          <div class="icon-label">${escapeHtml(displayTitle)}</div>
+        </div>
       </div>
     `;
   }
   
   function renderFolderChild(item, index, folderId) {
+    const displayTitle = truncateLabelByBytes(item.title || '');
     return `
       <div class="app-icon" data-id="${item.id}" data-scope="folder" data-folder-id="${folderId}" data-child-index="${index}">
         <div class="icon-bg" style="${item.bgStyle || ''}">
           ${renderIconContent(item)}
         </div>
-        <div class="icon-label">${escapeHtml(item.title || '')}</div>
+        <div class="icon-label-wrap">
+          <div class="icon-label">${escapeHtml(displayTitle)}</div>
+        </div>
       </div>
     `;
   }
@@ -3180,7 +3171,6 @@ window.clearSearchHistory = clearSearchHistory;
       openFolder(item.id);
       return;
     }
-    // 检查是否是云同步应用
     if (item.url === '#sync' || item.id === 'app_sync') {
       openSyncModal();
       return;
@@ -3368,7 +3358,6 @@ window.clearSearchHistory = clearSearchHistory;
     refs.wallpaperModal.classList.add('active');
   }
   
-  // 搜索引擎相关功能
   window.toggleEnginePanel = function() {
     const panel = document.getElementById('enginePanel');
     panel.classList.toggle('active');
@@ -3447,7 +3436,6 @@ window.clearSearchHistory = clearSearchHistory;
     }
   }
   
-  // 自定义搜索引擎表单
   window.openEngineFormModal = function() {
     refs.engineFormModal.classList.add('active');
     document.getElementById('enginePanel').classList.remove('active');
@@ -3456,7 +3444,6 @@ window.clearSearchHistory = clearSearchHistory;
   
   window.closeEngineFormModal = function() {
     refs.engineFormModal.classList.remove('active');
-    // 清空表单
     refs.engineFormName.value = '';
     refs.engineFormIcon.value = '';
     refs.engineFormUrl.value = '';
@@ -3486,20 +3473,16 @@ window.clearSearchHistory = clearSearchHistory;
     showToast('已添加自定义搜索引擎');
   }
   
-  // 云同步模态框
   window.openSyncModal = function() {
     refs.syncModal.classList.add('active');
-    // 加载配置到表单
     refs.githubToken.value = state.githubConfig.token || '';
     refs.githubRepo.value = state.githubConfig.repo || '';
     
-    // 设置同步间隔选择
     const intervalSelect = document.getElementById('syncIntervalSelect');
     if (intervalSelect) {
       intervalSelect.value = state.githubConfig.syncInterval || 0;
     }
     
-    // 更新状态显示
     if (state.githubConfig.owner && state.githubConfig.token) {
       updateSyncStatus(true, `已验证 (${state.githubConfig.owner})`);
     } else {
@@ -3512,13 +3495,11 @@ window.clearSearchHistory = clearSearchHistory;
     refs.syncModal.classList.remove('active');
   }
   
-  // 全局函数暴露给HTML调用
   window.manualPushToGithub = async function() {
     const token = refs.githubToken.value.trim();
     const repo = refs.githubRepo.value.trim();
     const interval = parseInt(document.getElementById('syncIntervalSelect').value) || 0;
     
-    // 保存配置
     state.githubConfig.syncInterval = interval;
     
     if (token !== state.githubConfig.token) {
@@ -3538,7 +3519,6 @@ window.clearSearchHistory = clearSearchHistory;
     const repo = refs.githubRepo.value.trim();
     const interval = parseInt(document.getElementById('syncIntervalSelect').value) || 0;
     
-    // 保存配置
     state.githubConfig.syncInterval = interval;
     
     if (token !== state.githubConfig.token) {
@@ -3553,7 +3533,6 @@ window.clearSearchHistory = clearSearchHistory;
     await pullFromGithub();
   }
   
-  // 同步间隔变更处理
   function handleSyncIntervalChange() {
     const interval = parseInt(document.getElementById('syncIntervalSelect').value) || 0;
     state.githubConfig.syncInterval = interval;
@@ -3567,7 +3546,6 @@ window.clearSearchHistory = clearSearchHistory;
     }
   }
   
-  // 渲染建议列表到search-screen-body
   function renderSuggestionsToBody(remoteSuggestions = []) {
     const container = refs.searchScreenBody;
     if (!container) return;
@@ -3582,13 +3560,12 @@ window.clearSearchHistory = clearSearchHistory;
     
     let html = '<div class="suggest-list-container">';
     
-    // 远程建议（百度）
     if (remoteSuggestions.length > 0) {
       html += '<div class="suggest-section-title">搜索建议</div>';
       html += '<div class="suggest-list">';
       remoteSuggestions.forEach(text => {
         html += `
-          <div class="suggest-item" onclick="executeSuggestion('${escapeHtml(text)}')">
+          <div class="suggest-item')">
             <span class="iconify" data-icon="mdi:magnify"></span>
             <span class="suggest-text">${escapeHtml(text)}</span>
             <div class="suggest-arrow" onclick="event.stopPropagation(); fillSuggestion('${escapeHtml(text)}')" title="填入搜索框">
@@ -3600,7 +3577,6 @@ window.clearSearchHistory = clearSearchHistory;
       html += '</div>';
     }
     
-    // 历史记录
     if (history.length > 0) {
       html += `
         <div class="suggest-history-header" style="margin-top: 24px;">
@@ -3631,18 +3607,15 @@ window.clearSearchHistory = clearSearchHistory;
     }
   }
   
-  // 填充建议到搜索框
   window.fillSuggestion = function(text) {
     const searchInput = refs.searchScreenInput;
     if (searchInput) {
       searchInput.value = text;
       searchInput.focus();
-      // 将光标移到末尾
       searchInput.setSelectionRange(text.length, text.length);
     }
   }
   
-  // 执行搜索
   window.executeSuggestion = function(text) {
     addSearchHistory(text);
     handleSearchOrUrl(text, state.currentEngine);
@@ -3690,7 +3663,6 @@ window.clearSearchHistory = clearSearchHistory;
     const mainInput = document.getElementById('searchInput');
     const searchScreenInput = document.getElementById('searchScreenInput');
     if (mainInput) mainInput.disabled = false;
-
     if (isValidUrl(trimmedKeyword)) {
       let url = trimmedKeyword;
       if (!/^https?:\/\//i.test(url)) {
@@ -3727,7 +3699,6 @@ window.clearSearchHistory = clearSearchHistory;
       addSearchHistory(keyword);
       handleSearchOrUrl(keyword, state.currentEngine);
     });
-
     const searchScreenInput = $('#searchScreenInput');
     if (searchScreenInput) {
       searchScreenInput.addEventListener('keydown', (e) => {
@@ -3739,24 +3710,19 @@ window.clearSearchHistory = clearSearchHistory;
         closeSearchScreen();
       });
       
-      // 修改input事件，直接渲染到body
       searchScreenInput.addEventListener('input', (e) => {
         document.getElementById('searchScreenEnginePanel').classList.remove('active');
         const val = e.target.value.trim();
         clearTimeout(state.suggestTimer);
         
         if (!val) {
-          // 显示历史记录
           renderSuggestionsToBody([]);
           return;
         }
         
-        // 先显示本地历史匹配
-        const history = getSearchHistory().filter(h => h.includes(val));
         renderSuggestionsToBody([]);
         
         state.suggestTimer = setTimeout(() => {
-          // 请求百度建议
           const script = document.createElement('script');
           script.src = `https://www.baidu.com/su?wd=${encodeURIComponent(val)}&cb=handleRemoteSuggestions`;
           document.body.appendChild(script);
@@ -3776,7 +3742,6 @@ window.clearSearchHistory = clearSearchHistory;
       });
       
       searchScreenInput.addEventListener('focus', () => {
-        // 获取焦点时显示历史或空状态
         const val = searchScreenInput.value.trim();
         if (!val) {
           renderSuggestionsToBody([]);
@@ -3785,7 +3750,6 @@ window.clearSearchHistory = clearSearchHistory;
     }
   }
   
-  // 处理远程搜索建议回调
   window.handleRemoteSuggestions = function(data) {
     const suggestions = data.s || [];
     state.suggestions = suggestions;
@@ -3809,8 +3773,7 @@ window.clearSearchHistory = clearSearchHistory;
     refs.searchScreenInput.value = mainInput.value;
     refs.searchScreenEngineIcon.setAttribute('data-icon', state.currentEngine.icon);
     
-    // 初始化显示空状态或历史记录
-    renderSuggestionsToBody([]); // 进入搜索页时强制刷新历史，读取最新本地存储
+    renderSuggestionsToBody([]);
     setTimeout(() => {
       const val = refs.searchScreenInput.value.trim();
       if (!val) {
@@ -3864,6 +3827,233 @@ window.clearSearchHistory = clearSearchHistory;
     if (refs.quoteText.scrollWidth > refs.quoteTextWrap.clientWidth) {
       refs.quoteText.classList.add('scroll');
     }
+  }
+  
+  window.editQuote = function () {
+    $('#quoteDisplayWrap').style.display = 'none';
+    $('#quoteEditMode').classList.add('active');
+    const input = $('#quoteInput');
+    input.value = state.currentQuote;
+    input.focus();
+  };
+  
+  window.saveQuote = function () {
+    const input = $('#quoteInput');
+    const value = input.value.trim();
+    if (value) state.currentQuote = value;
+    syncQuoteUI();
+    $('#quoteDisplayWrap').style.display = '';
+    $('#quoteEditMode').classList.remove('active');
+    saveState();
+    showToast('已保存一言');
+  };
+  
+  window.cancelQuoteEdit = function () {
+    $('#quoteDisplayWrap').style.display = '';
+    $('#quoteEditMode').classList.remove('active');
+  };
+  
+  function refreshLayout() {
+    state.layout = calcLayoutMetrics();
+    applyLayoutMetrics(state.layout);
+    clampCurrentPage();
+    renderAll();
+    requestAnimationFrame(checkQuoteScroll);
+  }
+  
+  function loadWallpaper() {
+    const saved = localStorage.getItem(WALLPAPER_KEY);
+    const wallpaperEl = document.getElementById('wallpaperRoot');
+    let wallpaperUrl = DEFAULT_WALLPAPER_URL;
+    
+    if (saved && saved !== 'default') {
+      wallpaperUrl = saved;
+    }
+    wallpaperEl.style.background = `url("${wallpaperUrl}") center/cover no-repeat fixed`;
+    wallpaperEl.style.backgroundSize = 'cover';
+    if (!saved) {
+      localStorage.setItem(WALLPAPER_KEY, DEFAULT_WALLPAPER_URL);
+    }
+  }
+  
+  function applyWallpaper(url) {
+    if (!url) return;
+    localStorage.setItem(WALLPAPER_KEY, url);
+    const wallpaperEl = document.getElementById('wallpaperRoot');
+    wallpaperEl.style.background = `url("${url}") center/cover no-repeat fixed`;
+    wallpaperEl.style.backgroundSize = 'cover';
+    showToast('壁纸已更新');
+  }
+  
+  function resetWallpaper() {
+    localStorage.setItem(WALLPAPER_KEY, DEFAULT_WALLPAPER_URL);
+    loadWallpaper();  
+    showToast('已恢复默认壁纸');
+  }
+  
+  function closeWallpaperModal() {
+    refs.wallpaperModal.classList.remove('active');
+  }
+  
+  window.closeWallpaperModal = closeWallpaperModal;
+  
+  function initWallpaperEvents() {
+    $('#wallpaperSelectBtn').addEventListener('click', () => {
+      refs.wallpaperFile.click();
+    });
+    refs.wallpaperFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        refs.wallpaperUrl.value = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+    $('#applyWallpaperBtn').addEventListener('click', () => {
+      const url = refs.wallpaperUrl.value.trim();
+      if (url) {
+        applyWallpaper(url);
+        closeWallpaperModal();
+        return;
+      }
+      showToast('请输入图片URL或选择图片');
+    });
+    $('#resetWallpaperBtn').addEventListener('click', () => {
+      resetWallpaper();
+      closeWallpaperModal();
+    });
+  }
+  
+  function initIconSelectEvent() {
+    $('#iconSelectBtn').addEventListener('click', () => {
+      $('#iconFileInput').click();
+    });
+    $('#iconFileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        refs.formIcon.value = ev.target.result;
+        updateFormPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  function bindEvents() {
+    document.addEventListener('contextmenu', (e) => {
+      if (e.target.closest('.app-icon, .desktop, .dock, .folder-grid, .drag-ghost')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }, { capture: true });
+    document.addEventListener('dragstart', (e) => {
+      if (e.target.closest('.app-icon, .folder-preview-cell, .form-preview-icon')) {
+        e.preventDefault();
+      }
+    });
+    document.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    window.addEventListener('pointermove', handlePointerMove, { passive: false });
+    window.addEventListener('pointerup', handlePointerUp, { passive: false });
+    window.addEventListener('pointercancel', handlePointerCancel, { passive: false });
+    refs.indicators.addEventListener('click', (e) => {
+      const dot = e.target.closest('[data-page]');
+      if (!dot) return;
+      state.currentPage = clamp(Number(dot.dataset.page) || 0, 0, getPageCount() - 1);
+      updatePagesTransform(true);
+      saveState();
+    });
+    refs.ctxOpen.addEventListener('click', openCurrentContext);
+    refs.ctxEdit.addEventListener('click', editCurrentContext);
+    refs.ctxAdd.addEventListener('click', addByCurrentContext);
+    refs.ctxDelete.addEventListener('click', deleteCurrentContext);
+    refs.ctxWallpaper.addEventListener('click', openWallpaperContext);
+    refs.formName.addEventListener('input', updateFormPreview);
+    refs.formUrl.addEventListener('input', updateFormPreview);
+    refs.formIcon.addEventListener('input', updateFormPreview);
+    refs.formSaveBtn.addEventListener('click', saveFormModal);
+    
+    refs.githubToken.addEventListener('blur', async (e) => {
+      const token = e.target.value.trim();
+      if (token && token !== state.githubConfig.token) {
+        await validateGithubToken(token);
+      }
+    });
+    
+    refs.githubRepo.addEventListener('change', (e) => {
+      state.githubConfig.repo = e.target.value.trim();
+      saveGithubConfig();
+    });
+    
+    const intervalSelect = document.getElementById('syncIntervalSelect');
+    if (intervalSelect) {
+      intervalSelect.addEventListener('change', handleSyncIntervalChange);
+    }
+    
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.context-menu') && !e.target.closest('.app-icon')) {
+        hideContextMenu();
+      }
+      if (!e.target.closest('.search-icon') && !e.target.closest('.engine-panel')) {
+        document.getElementById('enginePanel').classList.remove('active');
+      }
+      if (!e.target.closest('#searchScreenEngineIcon') && !e.target.closest('#searchScreenEnginePanel')) {
+        document.getElementById('searchScreenEnginePanel').classList.remove('active');
+      }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (refs.searchScreen.classList.contains('active')) {
+          closeSearchScreen();
+          return;
+        }
+        closeFolder();
+        hideContextMenu();
+        closeFormModal();
+        closeWallpaperModal();
+        closeEngineFormModal();
+        closeSyncModal();
+        document.getElementById('enginePanel').classList.remove('active');
+        clearSuggestions();
+        if (dragState.active && dragState.originSnapshot) {
+          state.desktop.items = deepClone(dragState.originSnapshot.desktop);
+          state.dock.items = deepClone(dragState.originSnapshot.dock);
+          state.currentPage = dragState.originSnapshot.currentPage;
+          state.folderModalId = dragState.originSnapshot.folderModalId;
+          renderAll();
+        }
+        resetDragState();
+      }
+      if (e.key === 'ArrowLeft' && state.currentPage > 0 && !refs.searchScreen.classList.contains('active')) {
+        state.currentPage -= 1;
+        updatePagesTransform(true);
+        saveState();
+      }
+      if (e.key === 'ArrowRight' && state.currentPage < getPageCount() - 1 && !refs.searchScreen.classList.contains('active')) {
+        state.currentPage += 1;
+        updatePagesTransform(true);
+        saveState();
+      }
+    });
+    
+    window.addEventListener('resize', debounce(() => {
+      refreshLayout();
+      checkQuoteScroll();
+    }, 120));
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        const mainInput = $('#searchInput');
+        const searchScreenInput = $('#searchScreenInput');
+        if (mainInput) mainInput.value = '';
+        if (searchScreenInput) searchScreenInput.value = '';
+        closeSearchScreen();
+        triggerAutoSync();
+      }
+    });
   }
   
   function handlePointerDown(e) {
@@ -4156,7 +4346,7 @@ window.clearSearchHistory = clearSearchHistory;
     $('#iconFileInput').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
+      constReader = new FileReader();
       reader.onload = (ev) => {
         refs.formIcon.value = ev.target.result;
         updateFormPreview();
@@ -4165,17 +4355,14 @@ window.clearSearchHistory = clearSearchHistory;
     });
   }
   
-  function bindEvents() {
-    // 阻止浏览器默认上下文菜单（右键菜单），避免干扰长按操作
-    document.addEventListener('contextmenu', (e) => {
-      // 如果在应用图标、桌面区域或 Dock 上，阻止默认菜单
+  function bindEvents() {    
+    document.addEventListener('contextmenu', (e) => {      
       if (e.target.closest('.app-icon, .desktop, .dock, .folder-grid, .drag-ghost')) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
     }, { capture: true });
-    // 阻止图片默认拖拽行为
 document.addEventListener('dragstart', (e) => {
   if (e.target.closest('.app-icon, .folder-preview-cell, .form-preview-icon')) {
     e.preventDefault();
