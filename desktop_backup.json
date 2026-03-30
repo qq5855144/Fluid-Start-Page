@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-03-30T02:43:27.523Z",
+  "timestamp": "2026-03-30T03:54:44.022Z",
   "desktop": {
     "items": [
       {
@@ -108,6 +108,14 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
+        "id": "app_calendar",
+        "type": "app",
+        "title": "日历",
+        "url": "https://calendar.google.com",
+        "icon": "mdi:calendar-month-outline",
+        "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
+      },
+      {
         "id": "app_clock",
         "type": "app",
         "title": "时钟",
@@ -138,14 +146,6 @@
         "url": "https://www.canva.com",
         "icon": "mdi:palette-outline",
         "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
-      },
-      {
-        "id": "app_book",
-        "type": "app",
-        "title": "阅读",
-        "url": "https://weread.qq.com",
-        "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
       }
     ]
   },
@@ -186,12 +186,12 @@
         "bgStyle": "background:linear-gradient(135deg,#ff512f,#dd2476);"
       },
       {
-        "id": "app_calendar",
+        "id": "app_book",
         "type": "app",
-        "title": "日历",
-        "url": "https://calendar.google.com",
-        "icon": "mdi:calendar-month-outline",
-        "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
+        "title": "阅读",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:book-open-page-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
       },
       {
         "id": "app_sync",
