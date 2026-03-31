@@ -18,6 +18,14 @@
         "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
       },
       {
+        "id": "app_weather",
+        "type": "app",
+        "title": "天气",
+        "url": "https://tianqi.qq.com",
+        "icon": "mdi:weather-partly-cloudy",
+        "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+      },
+      {
         "id": "app_music",
         "type": "app",
         "title": "网易云",
@@ -42,12 +50,36 @@
         "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
       },
       {
-        "id": "app_weather",
+        "id": "app_jd",
         "type": "app",
-        "title": "天气",
-        "url": "https://tianqi.qq.com",
-        "icon": "mdi:weather-partly-cloudy",
-        "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+        "title": "京东",
+        "url": "https://www.jd.com",
+        "icon": "mdi:cart-outline",
+        "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
+      },
+      {
+        "id": "app_design",
+        "type": "app",
+        "title": "设计",
+        "url": "https://www.canva.com",
+        "icon": "mdi:palette-outline",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+      },
+      {
+        "id": "app_docs",
+        "type": "app",
+        "title": "文档",
+        "url": "https://docs.qq.com",
+        "icon": "mdi:file-document-outline",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
+      },
+      {
+        "id": "app_drive",
+        "type": "app",
+        "title": "云盘",
+        "url": "https://drive.google.com",
+        "icon": "mdi:cloud-upload-outline",
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
         "id": "app_mail",
@@ -66,38 +98,6 @@
         "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
-        "id": "app_docs",
-        "type": "app",
-        "title": "文档",
-        "url": "https://docs.qq.com",
-        "icon": "mdi:file-document-outline",
-        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
-      },
-      {
-        "id": "dock_message",
-        "type": "app",
-        "title": "消息",
-        "url": "https://mail.qq.com",
-        "icon": "mdi:message-outline",
-        "bgStyle": "background:linear-gradient(135deg,#36d1dc,#5b86e5);"
-      },
-      {
-        "id": "dock_browser",
-        "type": "app",
-        "title": "浏览器",
-        "url": "https://www.google.com",
-        "icon": "mdi:web",
-        "bgStyle": "background:linear-gradient(135deg,#f7971e,#ffd200);"
-      },
-      {
-        "id": "app_jd",
-        "type": "app",
-        "title": "京东",
-        "url": "https://www.jd.com",
-        "icon": "mdi:cart-outline",
-        "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
-      },
-      {
         "id": "app_calendar",
         "type": "app",
         "title": "日历",
@@ -106,28 +106,12 @@
         "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
       },
       {
-        "id": "app_drive",
-        "type": "app",
-        "title": "云盘",
-        "url": "https://drive.google.com",
-        "icon": "mdi:cloud-upload-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
         "id": "app_forum",
         "type": "app",
         "title": "知乎",
         "url": "https://www.zhihu.com",
         "icon": "mdi:forum-outline",
         "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
-      },
-      {
-        "id": "app_design",
-        "type": "app",
-        "title": "设计",
-        "url": "https://www.canva.com",
-        "icon": "mdi:palette-outline",
-        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_book",
@@ -196,6 +180,6 @@
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
   "currentEngineId": "preset-2",
   "customEngines": [],
-  "timestamp": "2026-03-31T09:31:49.131Z",
+  "timestamp": "2026-03-31T09:57:51.640Z",
   "version": "1.0"
 }
