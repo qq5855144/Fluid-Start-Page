@@ -1,6 +1,4 @@
 {
-  "version": "1.0",
-  "timestamp": "2026-03-30T03:54:44.022Z",
   "desktop": {
     "items": [
       {
@@ -18,14 +16,6 @@
         "url": "https://www.bilibili.com",
         "icon": "ri:bilibili-fill",
         "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
-      },
-      {
-        "id": "app_github",
-        "type": "app",
-        "title": "GitHub",
-        "url": "https://github.com",
-        "icon": "mdi:github",
-        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
       },
       {
         "id": "app_music",
@@ -68,22 +58,6 @@
         "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
       },
       {
-        "id": "app_photos",
-        "type": "app",
-        "title": "相册",
-        "url": "https://image.baidu.com",
-        "icon": "mdi:image-multiple",
-        "bgStyle": "background:linear-gradient(135deg,#f7971e,#ffd200);"
-      },
-      {
-        "id": "app_notes",
-        "type": "app",
-        "title": "笔记",
-        "url": "https://note.youdao.com",
-        "icon": "mdi:notebook-outline",
-        "bgStyle": "background:linear-gradient(135deg,#43cea2,#185a9d);"
-      },
-      {
         "id": "app_video",
         "type": "app",
         "title": "视频",
@@ -100,6 +74,22 @@
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
+        "id": "dock_message",
+        "type": "app",
+        "title": "消息",
+        "url": "https://mail.qq.com",
+        "icon": "mdi:message-outline",
+        "bgStyle": "background:linear-gradient(135deg,#36d1dc,#5b86e5);"
+      },
+      {
+        "id": "dock_browser",
+        "type": "app",
+        "title": "浏览器",
+        "url": "https://www.google.com",
+        "icon": "mdi:web",
+        "bgStyle": "background:linear-gradient(135deg,#f7971e,#ffd200);"
+      },
+      {
         "id": "app_jd",
         "type": "app",
         "title": "京东",
@@ -114,14 +104,6 @@
         "url": "https://calendar.google.com",
         "icon": "mdi:calendar-month-outline",
         "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
-      },
-      {
-        "id": "app_clock",
-        "type": "app",
-        "title": "时钟",
-        "url": "https://time.is",
-        "icon": "mdi:clock-outline",
-        "bgStyle": "background:linear-gradient(135deg,#1d4350,#a43931);"
       },
       {
         "id": "app_drive",
@@ -146,6 +128,14 @@
         "url": "https://www.canva.com",
         "icon": "mdi:palette-outline",
         "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+      },
+      {
+        "id": "app_book",
+        "type": "app",
+        "title": "阅读",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:book-open-page-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
       }
     ]
   },
@@ -153,30 +143,6 @@
     "id": "dock",
     "capacity": 6,
     "items": [
-      {
-        "id": "dock_phone",
-        "type": "app",
-        "title": "电话",
-        "url": "https://www.google.com/search?q=%E7%94%B5%E8%AF%9D",
-        "icon": "mdi:phone-outline",
-        "bgStyle": "background:linear-gradient(135deg,#00c853,#43a047);"
-      },
-      {
-        "id": "dock_message",
-        "type": "app",
-        "title": "消息",
-        "url": "https://mail.qq.com",
-        "icon": "mdi:message-outline",
-        "bgStyle": "background:linear-gradient(135deg,#36d1dc,#5b86e5);"
-      },
-      {
-        "id": "dock_browser",
-        "type": "app",
-        "title": "浏览器",
-        "url": "https://www.google.com",
-        "icon": "mdi:web",
-        "bgStyle": "background:linear-gradient(135deg,#f7971e,#ffd200);"
-      },
       {
         "id": "dock_album",
         "type": "app",
@@ -186,12 +152,36 @@
         "bgStyle": "background:linear-gradient(135deg,#ff512f,#dd2476);"
       },
       {
-        "id": "app_book",
+        "id": "app_notes",
         "type": "app",
-        "title": "阅读",
-        "url": "https://weread.qq.com",
-        "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+        "title": "笔记",
+        "url": "https://qq5855144.github.io/zddss/",
+        "icon": "mdi:notebook-outline",
+        "bgStyle": "background:linear-gradient(135deg,#43cea2,#185a9d);"
+      },
+      {
+        "id": "app_github",
+        "type": "app",
+        "title": "GitHub",
+        "url": "https://qq5855144.github.io/GitHub/",
+        "icon": "mdi:github",
+        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
+      },
+      {
+        "id": "app_clock",
+        "type": "app",
+        "title": "MT论坛",
+        "url": "https://bbs.binmt.cc/forum.php?mod=guide&view=newthread&index=1",
+        "icon": "arcticons:mt-manager",
+        "bgStyle": "background:linear-gradient(135deg,#1d4350,#a43931);"
+      },
+      {
+        "id": "dock_phone",
+        "type": "app",
+        "title": "Crx搜索",
+        "url": "https://www.crxsoso.com/",
+        "icon": "proicons:google-chrome",
+        "bgStyle": "background:linear-gradient(135deg,#00c853,#43a047);"
       },
       {
         "id": "app_sync",
@@ -203,9 +193,9 @@
       }
     ]
   },
-  "currentPage": 0,
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
   "currentEngineId": "preset-2",
   "customEngines": [],
-  "wallpaper": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80"
+  "timestamp": "2026-03-31T09:31:49.131Z",
+  "version": "1.0"
 }
