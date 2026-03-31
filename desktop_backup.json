@@ -10,14 +10,6 @@
         "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
       },
       {
-        "id": "app_bilibili",
-        "type": "app",
-        "title": "哔哩哔哩",
-        "url": "https://www.bilibili.com",
-        "icon": "ri:bilibili-fill",
-        "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
-      },
-      {
         "id": "app_weather",
         "type": "app",
         "title": "天气",
@@ -34,6 +26,14 @@
         "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
       },
       {
+        "id": "app_taobao",
+        "type": "app",
+        "title": "淘宝",
+        "url": "https://www.taobao.com",
+        "icon": "ri:shopping-bag-3-fill",
+        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
+      },
+      {
         "id": "app_map",
         "type": "app",
         "title": "地图",
@@ -42,12 +42,36 @@
         "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
-        "id": "app_taobao",
+        "id": "app_mail",
         "type": "app",
-        "title": "淘宝",
-        "url": "https://www.taobao.com",
-        "icon": "ri:shopping-bag-3-fill",
-        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
+        "title": "邮箱",
+        "url": "https://mail.qq.com",
+        "icon": "mdi:email-outline",
+        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+      },
+      {
+        "id": "app_forum",
+        "type": "app",
+        "title": "知乎",
+        "url": "https://www.zhihu.com",
+        "icon": "mdi:forum-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_bilibili",
+        "type": "app",
+        "title": "哔哩哔哩",
+        "url": "https://www.bilibili.com",
+        "icon": "ri:bilibili-fill",
+        "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
+      },
+      {
+        "id": "app_1774953875432_q94cvt",
+        "type": "app",
+        "title": "lconify",
+        "url": "https://yesicon.app/",
+        "icon": "ph:hand-fist-fill",
+        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
       },
       {
         "id": "app_jd",
@@ -74,22 +98,6 @@
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
-        "id": "app_drive",
-        "type": "app",
-        "title": "云盘",
-        "url": "https://drive.google.com",
-        "icon": "mdi:cloud-upload-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
-        "id": "app_mail",
-        "type": "app",
-        "title": "邮箱",
-        "url": "https://mail.qq.com",
-        "icon": "mdi:email-outline",
-        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
-      },
-      {
         "id": "app_video",
         "type": "app",
         "title": "视频",
@@ -98,20 +106,20 @@
         "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
+        "id": "app_drive",
+        "type": "app",
+        "title": "云盘",
+        "url": "https://drive.google.com",
+        "icon": "mdi:cloud-upload-outline",
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
+      },
+      {
         "id": "app_calendar",
         "type": "app",
         "title": "日历",
         "url": "https://calendar.google.com",
         "icon": "mdi:calendar-month-outline",
         "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
-      },
-      {
-        "id": "app_forum",
-        "type": "app",
-        "title": "知乎",
-        "url": "https://www.zhihu.com",
-        "icon": "mdi:forum-outline",
-        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
       },
       {
         "id": "app_book",
@@ -178,8 +186,8 @@
     ]
   },
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
-  "currentEngineId": "preset-2",
+  "currentEngineId": "preset-1",
   "customEngines": [],
-  "timestamp": "2026-03-31T09:57:51.640Z",
+  "timestamp": "2026-03-31T10:46:56.503Z",
   "version": "1.0"
 }
