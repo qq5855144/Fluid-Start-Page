@@ -18,6 +18,22 @@
         "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
       },
       {
+        "id": "app_1774953875432_q94cvt",
+        "type": "app",
+        "title": "lconify",
+        "url": "https://yesicon.app/",
+        "icon": "ph:hand-fist-fill",
+        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
+      },
+      {
+        "id": "app_mail",
+        "type": "app",
+        "title": "脚本猫",
+        "url": "https://scriptcat.org/zh-CN/users/181254",
+        "icon": "streamline-block:nature-cat",
+        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+      },
+      {
         "id": "app_music",
         "type": "app",
         "title": "网易云",
@@ -42,14 +58,6 @@
         "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
-        "id": "app_mail",
-        "type": "app",
-        "title": "邮箱",
-        "url": "https://mail.qq.com",
-        "icon": "mdi:email-outline",
-        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
-      },
-      {
         "id": "app_forum",
         "type": "app",
         "title": "知乎",
@@ -66,14 +74,6 @@
         "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
       },
       {
-        "id": "app_1774953875432_q94cvt",
-        "type": "app",
-        "title": "lconify",
-        "url": "https://yesicon.app/",
-        "icon": "ph:hand-fist-fill",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
-      },
-      {
         "id": "app_jd",
         "type": "app",
         "title": "京东",
@@ -82,20 +82,20 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
-        "id": "app_design",
-        "type": "app",
-        "title": "设计",
-        "url": "https://www.canva.com",
-        "icon": "mdi:palette-outline",
-        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
-      },
-      {
         "id": "app_docs",
         "type": "app",
         "title": "文档",
         "url": "https://docs.qq.com",
         "icon": "mdi:file-document-outline",
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
+      },
+      {
+        "id": "app_design",
+        "type": "app",
+        "title": "Canva",
+        "url": "https://www.canva.com",
+        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_video",
@@ -112,14 +112,6 @@
         "url": "https://drive.google.com",
         "icon": "mdi:cloud-upload-outline",
         "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
-        "id": "app_calendar",
-        "type": "app",
-        "title": "日历",
-        "url": "https://calendar.google.com",
-        "icon": "mdi:calendar-month-outline",
-        "bgStyle": "background:linear-gradient(135deg,#396afc,#2948ff);"
       },
       {
         "id": "app_book",
@@ -188,6 +180,6 @@
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
   "currentEngineId": "preset-1",
   "customEngines": [],
-  "timestamp": "2026-03-31T10:46:56.503Z",
+  "timestamp": "2026-03-31T11:05:06.155Z",
   "version": "1.0"
 }
