@@ -15,7 +15,7 @@
         "title": "lconify",
         "url": "https://yesicon.app/",
         "icon": "ph:hand-fist-fill",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
+        "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
         "id": "app_weather",
@@ -39,7 +39,7 @@
         "title": "脚本猫",
         "url": "https://scriptcat.org/zh-CN/users/181254",
         "icon": "streamline-block:nature-cat",
-        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
         "id": "app_book",
@@ -47,7 +47,7 @@
         "title": "阅读",
         "url": "https://weread.qq.com",
         "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
         "id": "app_music",
@@ -141,7 +141,7 @@
         "title": "笔记",
         "url": "https://qq5855144.github.io/zddss/",
         "icon": "mdi:notebook-outline",
-        "bgStyle": "background:linear-gradient(135deg,#43cea2,#185a9d);"
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
         "id": "app_github",
@@ -157,7 +157,7 @@
         "title": "MT论坛",
         "url": "https://bbs.binmt.cc/forum.php?mod=guide&view=newthread&index=1",
         "icon": "arcticons:mt-manager",
-        "bgStyle": "background:linear-gradient(135deg,#1d4350,#a43931);"
+        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
       },
       {
         "id": "dock_phone",
@@ -178,7 +178,7 @@
     ]
   },
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
-  "currentEngineId": "preset-2",
+  "currentEngineId": "preset-1",
   "customEngines": [
     {
       "id": "engine_1775101370461_1i3z0n",
@@ -193,6 +193,6 @@
       "url": "https://hanime1.me/search?query=%s"
     }
   ],
-  "timestamp": "2026-04-03T05:13:37.004Z",
+  "timestamp": "2026-04-03T22:45:42.534Z",
   "version": "2.0"
 }
