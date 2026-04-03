@@ -147,9 +147,7 @@
     }
     .engine-item:hover, .engine-item:focus-visible { background: var(--btn-hover-bg); transform: scale(1.05); outline: none; }
     .engine-item.add-btn:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
-    .engine-item .delete-engine { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: rgba(214, 46, 46, 0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; cursor: pointer; }
-    .engine-item:hover .delete-engine, .engine-item:focus-within .delete-engine { opacity: 1; }
-    .engine-item .delete-engine .iconify { font-size: 12px; }
+
     .engine-item .iconify { font-size: 22px; color: #fff; flex-shrink: 0; }
     .engine-name { font-size: 12px; color: #fff; text-align: center; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
     .desktop { position: relative; width: 100%; flex: 1; overflow: hidden; perspective: 1200px; }
@@ -436,6 +434,17 @@
       <span>删除</span>
     </div>
   </div>
+  <div class="context-menu" id="engineContextMenu">
+    <div class="context-item" id="ctxEngineEdit" tabindex="0">
+      <span class="iconify" data-icon="mdi:pencil-outline"></span>
+      <span>编辑</span>
+    </div>
+    <div class="context-divider"></div>
+    <div class="context-item danger" id="ctxEngineDelete" tabindex="0">
+      <span class="iconify" data-icon="mdi:delete-outline"></span>
+      <span>删除</span>
+    </div>
+  </div>
   <div class="form-modal" id="formModal">
     <div class="form-content">
       <div class="form-header">
@@ -696,9 +705,9 @@
             } 
             // 回退到 Firefox API
             else if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
-              browser.storage.local.set({ [key]: value }).then(function() {
+              browser.storage.local.set({ [key]: value }).then(function storageSetSuccess() {
                 resolve();
-              }).catch(function() {
+              }).catch(function storageSetError() {
                 localStorage.setItem(key, value);
                 resolve();
               });
@@ -725,7 +734,7 @@
             } 
             // 回退到 Firefox API
             else if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
-              browser.storage.local.remove([key]).then(function() { resolve(); }).catch(function() {
+              browser.storage.local.remove([key]).then(function storageRemoveSuccess() { resolve(); }).catch(function storageRemoveError() {
                 localStorage.removeItem(key);
                 resolve();
               });
@@ -1694,7 +1703,7 @@
       if (!appStore.folderModalId) { refs.folderModal.classList.remove('active'); refs.folderGrid.innerHTML = ''; return; }
       var folder = appStore.desktop.items.find(function findFolderModalFolder(i) { return i.id === appStore.folderModalId && i.type === 'folder'; });
       if (!folder) { appStore.folderModalId = null; refs.folderModal.classList.remove('active'); refs.folderGrid.innerHTML = ''; return; }
-      refs.folderTitle.textContent = folder.title || '文件夹'; var self = this;
+      if (refs.folderTitle) refs.folderTitle.textContent = folder.title || '文件夹'; var self = this;
       refs.folderGrid.innerHTML = folder.children.map(function renderFolderModalChild(child, index) { return self.renderFolderChild(child, index, folder.id); }).join('');
       refs.folderEmpty.style.display = folder.children.length ? 'none' : 'block'; refs.folderModal.classList.add('active'); this.setupFocusTrap(refs.folderModal);
     },
@@ -2010,15 +2019,162 @@
     }
   }
 
+  // ==================== 搜索引擎长按上下文菜单 ====================
+  var engineLongPressState = {
+    timer: null,
+    targetEngineId: null,
+    startX: 0,
+    startY: 0,
+    isLongPress: false
+  };
+
+  function resetEngineLongPress() {
+    if (engineLongPressState.timer) {
+      clearTimeout(engineLongPressState.timer);
+      engineLongPressState.timer = null;
+    }
+    engineLongPressState.targetEngineId = null;
+    engineLongPressState.isLongPress = false;
+  }
+
+  function handleEnginePointerDown(e) {
+    var engineItem = e.target.closest('.engine-item[data-engine-id]');
+    if (!engineItem) return;
+    var engineId = engineItem.dataset.engineId;
+    if (engineId.startsWith('preset-')) return;
+    engineLongPressState.targetEngineId = engineId;
+    engineLongPressState.startX = e.clientX;
+    engineLongPressState.startY = e.clientY;
+    engineLongPressState.isLongPress = false;
+    engineLongPressState.timer = setTimeout(function engineLongPressTimeout() {
+      engineLongPressState.isLongPress = true;
+      showEngineContextMenu(engineLongPressState.startX, engineLongPressState.startY, engineId);
+    }, 500);
+  }
+
+  function handleEnginePointerMove(e) {
+    if (!engineLongPressState.timer) return;
+    var dx = e.clientX - engineLongPressState.startX;
+    var dy = e.clientY - engineLongPressState.startY;
+    if (Math.hypot(dx, dy) > 10) {
+      resetEngineLongPress();
+    }
+  }
+
+  function handleEnginePointerUp(e) {
+    if (engineLongPressState.timer) {
+      clearTimeout(engineLongPressState.timer);
+      engineLongPressState.timer = null;
+    }
+    if (engineLongPressState.isLongPress) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    engineLongPressState.isLongPress = false;
+    engineLongPressState.targetEngineId = null;
+  }
+
+  function showEngineContextMenu(x, y, engineId) {
+    var engine = searchStore.engines.find(function findEngine(e) { return e.id === engineId; });
+    if (!engine) return;
+    state.engineContextTarget = engine;
+    if (refs.engineContextMenu) {
+      refs.engineContextMenu.style.visibility = 'hidden';
+      refs.engineContextMenu.style.left = '0';
+      refs.engineContextMenu.style.top = '0';
+      refs.engineContextMenu.classList.add('active');
+      var menuRect = refs.engineContextMenu.getBoundingClientRect();
+      var menuWidth = menuRect.width;
+      var menuHeight = menuRect.height;
+      var viewportWidth = window.innerWidth;
+      var viewportHeight = window.innerHeight;
+      var safeMargin = 8;
+      var left = x;
+      if (left + menuWidth > viewportWidth - safeMargin) {
+        left = Math.max(x - menuWidth, safeMargin);
+      } else {
+        left = Math.max(left, safeMargin);
+      }
+      var top = y;
+      if (top + menuHeight > viewportHeight - safeMargin) {
+        top = Math.max(y - menuHeight, safeMargin);
+      } else {
+        top = Math.max(top, safeMargin);
+      }
+      refs.engineContextMenu.style.left = left + 'px';
+      refs.engineContextMenu.style.top = top + 'px';
+      refs.engineContextMenu.style.visibility = 'visible';
+    }
+    if (window.Iconify && refs.engineContextMenu) {
+      try { Iconify.scan(refs.engineContextMenu); } catch (_) {}
+    }
+  }
+
+  function hideEngineContextMenu() {
+    if (refs.engineContextMenu) {
+      refs.engineContextMenu.classList.remove('active');
+    }
+    state.engineContextTarget = null;
+  }
+
+  function openEngineEditModal() {
+    var engine = state.engineContextTarget;
+    if (!engine) return;
+    hideEngineContextMenu();
+    refs.engineFormModal.classList.add('active');
+    document.getElementById('enginePanel').classList.remove('active');
+    document.getElementById('searchScreenEnginePanel').classList.remove('active');
+    refs.engineFormTitle.textContent = '编辑搜索引擎';
+    refs.engineFormName.value = engine.name || '';
+    refs.engineFormIcon.value = engine.icon || '';
+    refs.engineFormUrl.value = engine.url || '';
+    state.engineEditMode = true;
+    state.engineEditId = engine.id;
+    refs.engineFormName.focus();
+  }
+
+  function deleteEngineFromContextMenu() {
+    var engine = state.engineContextTarget;
+    if (!engine) return;
+    hideEngineContextMenu();
+    if (confirm('确定删除搜索引擎"' + engine.name + '"吗？')) {
+      if (searchStore.deleteCustomEngine(engine.id)) {
+        renderEngineList();
+        showToast('已删除');
+      }
+    }
+  }
+
+  function bindEngineLongPressEvents(container) {
+    if (!container) return;
+    container.addEventListener('pointerdown', handleEnginePointerDown, { passive: true });
+    container.addEventListener('pointermove', handleEnginePointerMove, { passive: true });
+    container.addEventListener('pointerup', handleEnginePointerUp, { passive: false });
+    container.addEventListener('pointercancel', resetEngineLongPress, { passive: true });
+  }
+
   function renderEngineList() {
     var engineHtml = searchStore.engines.map(function renderEngineMap(engine) {
-      var isCustom = !engine.id.startsWith('preset-'), isActive = engine.id === searchStore.currentEngine.id;
-      var deleteBtn = isCustom ? '<div class="delete-engine" data-engine-id="' + engine.id + '" tabindex="0" role="button" aria-label="删除引擎"><span class="iconify" data-icon="mdi:close"></span></div>' : '';
-      return '<div class="engine-item ' + (isActive ? 'active' : '') + '" data-engine-id="' + engine.id + '" tabindex="0" role="button">' + deleteBtn + '<span class="iconify" data-icon="' + engine.icon + '"></span><span class="engine-name">' + engine.name + '</span></div>';
+      var isCustom = !engine.id.startsWith('preset-');
+      var isActive = engine.id === searchStore.currentEngine.id;
+      return '<div class="engine-item ' + (isActive ? 'active' : '') + '" data-engine-id="' + engine.id + '" data-is-custom="' + isCustom + '" tabindex="0" role="button"><span class="iconify" data-icon="' + engine.icon + '"></span><span class="engine-name">' + engine.name + '</span></div>';
     }).join('') + '<div class="engine-item add-btn" data-action="add-engine" tabindex="0" role="button"><span class="iconify" data-icon="mdi:plus"></span><span class="engine-name">添加</span></div>';
-    var listEl = document.getElementById('engineList'), searchListEl = document.getElementById('searchScreenEngineList');
-    if (listEl) { listEl.innerHTML = engineHtml; if (window.Iconify) { try { Iconify.scan(listEl); } catch (_) {} } }
-    if (searchListEl) { searchListEl.innerHTML = engineHtml; if (window.Iconify) { try { Iconify.scan(searchListEl); } catch (_) {} } }
+    var listEl = document.getElementById('engineList');
+    var searchListEl = document.getElementById('searchScreenEngineList');
+    if (listEl) {
+      listEl.innerHTML = engineHtml;
+      if (window.Iconify) {
+        try { Iconify.scan(listEl); } catch (_) {}
+      }
+      bindEngineLongPressEvents(listEl);
+    }
+    if (searchListEl) {
+      searchListEl.innerHTML = engineHtml;
+      if (window.Iconify) {
+        try { Iconify.scan(searchListEl); } catch (_) {}
+      }
+      bindEngineLongPressEvents(searchListEl);
+    }
   }
 
   function switchEngine(engineId) {
@@ -2032,37 +2188,65 @@
     appStore.save();
   }
 
-  function deleteEngine(engineId) { 
-    if (!engineId.startsWith('preset-')) { 
-      if (confirm('确定删除此自定义搜索引擎吗？')) { 
-        if (searchStore.deleteCustomEngine(engineId)) { 
-          renderEngineList(); 
-          showToast('已删除'); 
-        } 
-      } 
-    } 
+  function deleteEngine(engineId) {
+    if (!engineId || engineId.startsWith('preset-')) return;
+    var engine = searchStore.engines.find(function findDelEngine(e) { return e.id === engineId; });
+    if (!engine) return;
+    if (confirm('确定删除搜索引擎"' + engine.name + '"吗？')) {
+      if (searchStore.deleteCustomEngine(engineId)) {
+        renderEngineList();
+        showToast('已删除');
+      }
+    }
   }
-  function openEngineFormModal() { 
-    refs.engineFormModal.classList.add('active'); 
-    document.getElementById('enginePanel').classList.remove('active'); 
-    document.getElementById('searchScreenEnginePanel').classList.remove('active'); 
-    refs.engineFormName.focus(); 
+  function openEngineFormModal() {
+    refs.engineFormModal.classList.add('active');
+    document.getElementById('enginePanel').classList.remove('active');
+    document.getElementById('searchScreenEnginePanel').classList.remove('active');
+    refs.engineFormTitle.textContent = '添加搜索引擎';
+    refs.engineFormName.value = '';
+    refs.engineFormIcon.value = '';
+    refs.engineFormUrl.value = '';
+    state.engineEditMode = false;
+    state.engineEditId = null;
+    refs.engineFormName.focus();
   }
-  function closeEngineFormModal() { 
-    refs.engineFormModal.classList.remove('active'); 
-    refs.engineFormName.value = ''; 
-    refs.engineFormIcon.value = ''; 
-    refs.engineFormUrl.value = ''; 
+  function closeEngineFormModal() {
+    refs.engineFormModal.classList.remove('active');
+    refs.engineFormName.value = '';
+    refs.engineFormIcon.value = '';
+    refs.engineFormUrl.value = '';
+    refs.engineFormTitle.textContent = '添加搜索引擎';
+    state.engineEditMode = false;
+    state.engineEditId = null;
   }
   function saveCustomEngine() {
-    var name = refs.engineFormName.value.trim(), icon = refs.engineFormIcon.value.trim() || 'mdi:magnify', url = refs.engineFormUrl.value.trim();
-    if (!name) { showToast('请输入引擎名称'); return; } 
-    if (!url) { showToast('请输入搜索URL'); return; } 
+    var name = refs.engineFormName.value.trim();
+    var icon = refs.engineFormIcon.value.trim() || 'mdi:magnify';
+    var url = refs.engineFormUrl.value.trim();
+    if (!name) { showToast('请输入引擎名称'); return; }
+    if (!url) { showToast('请输入搜索URL'); return; }
     if (!url.includes('%s')) { showToast('URL必须包含%s作为搜索词占位符'); return; }
-    searchStore.addCustomEngine(name, icon, url); 
-    closeEngineFormModal(); 
-    renderEngineList(); 
-    showToast('已添加自定义搜索引擎');
+    if (state.engineEditMode && state.engineEditId) {
+      var engine = searchStore.engines.find(function findEditEngine(e) { return e.id === state.engineEditId; });
+      if (engine) {
+        engine.name = name;
+        engine.icon = icon;
+        engine.url = url.indexOf('%s') > -1 ? url : url + '%s';
+        searchStore.saveCustomEngines();
+        if (searchStore.currentEngine.id === state.engineEditId) {
+          searchStore.syncIcons();
+        }
+        showToast('已保存');
+      }
+      state.engineEditMode = false;
+      state.engineEditId = null;
+    } else {
+      searchStore.addCustomEngine(name, icon, url);
+      showToast('已添加自定义搜索引擎');
+    }
+    closeEngineFormModal();
+    renderEngineList();
   }
 
   // ==================== 同步模态框 UI ====================
@@ -2184,8 +2368,7 @@
     if (refs.quoteEditMode) refs.quoteEditMode.classList.remove('active'); 
   }
   function syncQuoteUI() { 
-    var display = querySelector('#quoteDisplay'); 
-    if (display) display.textContent = appStore.currentQuote; 
+    if (refs.quoteDisplay) refs.quoteDisplay.textContent = appStore.currentQuote; 
     requestAnimationFrame(checkQuoteScroll); 
   }
 
@@ -2390,11 +2573,12 @@
   function closeFolder() { appStore.folderModalId = null; if (refs.folderModal) refs.folderModal.classList.remove('active'); }
 
   // ==================== 全局引用 ====================
-  var state = { contextTarget: null, formState: null };
+  var state = { contextTarget: null, formState: null, engineContextTarget: null, engineEditMode: false, engineEditId: null };
   var refs = {
     root: null, body: null, desktop: null, pagesContainer: null, indicators: null, dock: null, deleteZone: null,
     folderModal: null, folderTitle: null, folderGrid: null, folderEmpty: null, folderCloseBtn: null,
     contextMenu: null, ctxOpen: null, ctxEdit: null, ctxAdd: null, ctxDelete: null, ctxWallpaper: null,
+    engineContextMenu: null, ctxEngineEdit: null, ctxEngineDelete: null,
     formModal: null, formTitle: null, formName: null, formUrl: null, formIcon: null, formUrlRow: null, formIconRow: null,
     formPreviewIcon: null, formPreviewName: null, formPreviewLink: null, formCloseBtn: null, formSaveBtn: null, formCancelBtn: null,
     engineFormModal: null, engineFormName: null, engineFormIcon: null, engineFormUrl: null, engineFormCloseBtn: null, engineFormCancelBtn: null, engineFormSaveBtn: null,
@@ -2426,6 +2610,9 @@
     refs.ctxAdd = safeQuery('#ctxAdd'); 
     refs.ctxDelete = safeQuery('#ctxDelete'); 
     refs.ctxWallpaper = safeQuery('#ctxWallpaper');
+    refs.engineContextMenu = safeQuery('#engineContextMenu');
+    refs.ctxEngineEdit = safeQuery('#ctxEngineEdit');
+    refs.ctxEngineDelete = safeQuery('#ctxEngineDelete');
     refs.formModal = safeQuery('#formModal'); 
     refs.formTitle = safeQuery('#formTitle'); 
     refs.formName = safeQuery('#formName'); 
@@ -2478,10 +2665,14 @@
     refs.iconSelectBtn = safeQuery('#iconSelectBtn'); 
     refs.iconFileInput = safeQuery('#iconFileInput');
     refs.syncStatusIcon = safeQuery('#syncStatusIcon'); 
-    refs.syncStatusTitle = safeQuery('#syncStatusTitle'); 
-    refs.syncStatusDesc = safeQuery('#syncStatusDesc'); 
-    refs.lastSyncInfo = safeQuery('#lastSyncInfo'); 
+    refs.syncStatusTitle = safeQuery('#syncStatusTitle');
+    refs.syncStatusDesc = safeQuery('#syncStatusDesc');
+    refs.engineFormTitle = safeQuery('#engineFormTitle');
+    refs.lastSyncInfo = safeQuery('#lastSyncInfo');
     refs.nextSyncInfo = safeQuery('#nextSyncInfo');
+    refs.quoteDisplay = safeQuery('#quoteDisplay');
+    refs.bigTime = safeQuery('#bigTime');
+    refs.headerDate = safeQuery('#headerDate');
   }
 
   // ==================== 事件绑定 ====================
@@ -2516,10 +2707,10 @@
       if (target && target.tagName === 'IMG' && target.classList.contains('custom-icon')) {
         handleImageError(target);
       }
-    }, true);
+    }, { capture: true, passive: true });
     
     document.addEventListener('pointerdown', function documentPointerdownHandler(e) { dragStore.handlePointerDown(e); }, { passive: true });
-    window.addEventListener('pointermove', function windowPointermoveHandler(e) { dragStore.handlePointerMove(e); }, { passive: false });
+    window.addEventListener('pointermove', function windowPointermoveHandler(e) { dragStore.handlePointerMove(e); }, { passive: false, capture: false });
     window.addEventListener('pointerup', function windowPointerupHandler(e) { dragStore.handlePointerUp(e); }, { passive: false });
     window.addEventListener('pointercancel', function windowPointercancelHandler() { 
       if (dragStore.originSnapshot) { 
@@ -2570,11 +2761,12 @@
       if (e.key === 'Escape') {
         var isSearchActive = refs.searchScreen && refs.searchScreen.classList.contains('active'); 
         if (isSearchActive) { closeSearchScreen(); return; }
-        closeFolder(); 
-        hideContextMenu(); 
-        closeFormModal(); 
-        closeWallpaperModal(); 
-        closeEngineFormModal(); 
+        closeFolder();
+        hideContextMenu();
+        hideEngineContextMenu();
+        closeFormModal();
+        closeWallpaperModal();
+        closeEngineFormModal();
         closeSyncModal();
         var enginePanel = document.getElementById('enginePanel'); 
         if (enginePanel) enginePanel.classList.remove('active');
@@ -2635,11 +2827,17 @@
       });
     }
     
-    safeBind(refs.ctxOpen, 'click', function ctxOpenClickHandler() { 
-      if (!state.contextTarget || state.contextTarget.kind !== 'item') return; 
-      var item = appStore.getItemById(state.contextTarget.itemId); 
-      hideContextMenu(); 
-      openItem(item); 
+    safeBind(refs.ctxOpen, 'click', function ctxOpenClickHandler() {
+      if (!state.contextTarget || state.contextTarget.kind !== 'item') return;
+      var item = appStore.getItemById(state.contextTarget.itemId);
+      hideContextMenu();
+      openItem(item);
+    });
+    safeBind(refs.ctxEngineEdit, 'click', function ctxEngineEditClickHandler() {
+      openEngineEditModal();
+    });
+    safeBind(refs.ctxEngineDelete, 'click', function ctxEngineDeleteClickHandler() {
+      deleteEngineFromContextMenu();
     });
     safeBind(refs.ctxEdit, 'click', function ctxEditClickHandler() { 
       if (!state.contextTarget || state.contextTarget.kind !== 'item') return; 
@@ -2726,10 +2924,10 @@
       reader.onload = function iconReaderHandler(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); }; 
       reader.readAsDataURL(file); 
     });
-    
     document.addEventListener('click', function modalOverlayClickHandler(e) {
       if (e.target === refs.folderModal) { closeFolder(); return; }
       if (!e.target.closest('.context-menu') && !e.target.closest('.app-icon')) hideContextMenu();
+      if (!e.target.closest('#engineContextMenu') && !e.target.closest('.engine-item')) hideEngineContextMenu();
       if (!e.target.closest('.search-icon') && !e.target.closest('.engine-panel')) { 
         var enginePanel = document.getElementById('enginePanel'); 
         if (enginePanel) enginePanel.classList.remove('active'); 
@@ -2739,10 +2937,9 @@
         if (searchEnginePanel) searchEnginePanel.classList.remove('active'); 
       }
       if (e.target === refs.formModal) closeFormModal();
-      if (e.target === refs.engineFormModal) closeEngineFormModal();
       if (e.target === refs.syncModal) closeSyncModal();
       if (e.target === refs.wallpaperModal) closeWallpaperModal();
-    });
+    }, { passive: true });
     
     var blankClickTimer = null;
     document.addEventListener('click', function blankClickHandler(e) {
@@ -2820,23 +3017,21 @@
     
     if (refs.enginePanel) {
       refs.enginePanel.addEventListener('click', function enginePanelClickHandler(e) {
+        if (engineLongPressState.isLongPress) return;
         var engineItem = e.target.closest('.engine-item[data-engine-id]');
         if (engineItem) { var engineId = engineItem.dataset.engineId; switchEngine(engineId); }
         var addBtn = e.target.closest('[data-action="add-engine"]');
         if (addBtn) openEngineFormModal();
-        var deleteBtn = e.target.closest('.delete-engine[data-engine-id]');
-        if (deleteBtn) { var engineId = deleteBtn.dataset.engineId; deleteEngine(engineId); e.stopPropagation(); }
       });
     }
     
     if (refs.searchScreenEnginePanel) {
       refs.searchScreenEnginePanel.addEventListener('click', function searchEnginePanelClickHandler(e) {
+        if (engineLongPressState.isLongPress) return;
         var engineItem = e.target.closest('.engine-item[data-engine-id]');
         if (engineItem) { var engineId = engineItem.dataset.engineId; switchEngine(engineId); }
         var addBtn = e.target.closest('[data-action="add-engine"]');
         if (addBtn) openEngineFormModal();
-        var deleteBtn = e.target.closest('.delete-engine[data-engine-id]');
-        if (deleteBtn) { var engineId = deleteBtn.dataset.engineId; deleteEngine(engineId); e.stopPropagation(); }
       });
     }
   }
@@ -2858,21 +3053,19 @@
       if (Math.abs(dx) < 36 || Math.abs(dy) > Math.abs(dx) * 0.8) return; 
       if (dx < 0 && appStore.currentPage < appStore.getPageCount() - 1) pageManager.turnTo(appStore.currentPage + 1); 
       else if (dx > 0 && appStore.currentPage > 0) pageManager.turnTo(appStore.currentPage - 1); 
-    }, { passive: true });
+    }, { passive: false });
   }
 
   // ==================== 时间更新 ====================
   function updateTime() { 
-    var el = querySelector('#bigTime'); 
-    if (!el) return; 
+    if (!refs.bigTime) return; 
     var now = new Date(), h = String(now.getHours()).padStart(2, '0'), m = String(now.getMinutes()).padStart(2, '0'); 
-    el.textContent = h + ':' + m; 
+    refs.bigTime.textContent = h + ':' + m; 
   }
   function updateDate() { 
-    var el = querySelector('#headerDate'); 
-    if (!el) return; 
+    if (!refs.headerDate) return; 
     var now = new Date(), weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六']; 
-    el.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + weekdays[now.getDay()]; 
+    refs.headerDate.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + weekdays[now.getDay()]; 
   }
 
   // ==================== 初始化 ====================
