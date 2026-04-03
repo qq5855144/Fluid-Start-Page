@@ -327,6 +327,54 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
+  
+    /* 背景色选择器样式 */
+    .bg-color-select-btn {
+      width: 100%; height: 44px; border-radius: 14px; background: var(--btn-bg);
+      border: 1px solid var(--panel-border); display: flex; align-items: center;
+      gap: 10px; padding: 0 14px; cursor: pointer; transition: all 0.2s ease;
+      color: #fff; font-size: 14px;
+    }
+    .bg-color-select-btn:hover { background: var(--btn-hover-bg); }
+    .bg-color-preview {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg,#4f86ff,#2f5fff);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .bg-color-text { flex: 1; text-align: left; }
+    .bg-color-select-btn .iconify { font-size: 18px; opacity: 0.7; }
+
+    /* 背景色模态框 */
+    .bg-color-modal {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 2600; padding: 20px;
+    }
+    .bg-color-modal.active { display: flex; }
+    .bg-color-content {
+      width: min(480px, 92vw); border-radius: 28px; background: var(--panel-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.3); overflow: hidden; border: 1px solid var(--panel-border);
+      max-height: 85vh; display: flex; flex-direction: column;
+    }
+    .bg-color-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 18px 18px 0; color: #fff;
+    }
+    .bg-color-title { font-size: 18px; font-weight: 600; }
+    .bg-color-body { padding: 18px; overflow-y: auto; flex: 1; }
+    .bg-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .bg-color-item { 
+      width: 100%; aspect-ratio: 1; border-radius: 12px; cursor: pointer; 
+      border: 2px solid transparent; transition: all 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .bg-color-item:hover { transform: scale(1.08); border-color: rgba(255,255,255,0.5); }
+    .bg-color-item.selected { border-color: #fff; box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.6), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .bg-color-custom-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--panel-border); }
+    .bg-color-custom-row { display: flex; gap: 10px; margin-top: 10px; }
+    .bg-color-custom-row .form-input { flex: 1; }
+    .bg-color-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
   </style>
 </head>
 <body>
@@ -472,6 +520,14 @@
             <input type="file" id="iconFileInput" accept="image/*" style="display: none;" />
           </div>
         </div>
+        <div class="form-row" id="formBgColorRow">
+          <label class="form-label">图标背景色</label>
+          <button class="bg-color-select-btn" id="bgColorSelectBtn" tabindex="0">
+            <span class="bg-color-preview" id="bgColorPreview"></span>
+            <span class="bg-color-text">点击选择</span>
+            <span class="iconify" data-icon="mdi:chevron-right"></span>
+          </button>
+        </div>
         <div class="form-preview">
           <div class="form-preview-icon" id="formPreviewIcon"></div>
           <div class="form-preview-text">
@@ -517,6 +573,33 @@
       </div>
     </div>
   </div>
+  <div class="bg-color-modal" id="bgColorModal">
+    <div class="bg-color-content">
+      <div class="bg-color-header">
+        <div class="bg-color-title">选择图标背景色</div>
+        <button class="top-btn" id="bgColorModalCloseBtn" tabindex="0">
+          <span class="iconify" data-icon="mdi:close"></span>
+        </button>
+      </div>
+      <div class="bg-color-body">
+        <div class="bg-color-grid" id="bgColorModalGrid">
+          <!-- 预设渐变颜色将通过 JS 生成 -->
+        </div>
+        <div class="bg-color-custom-section">
+          <label class="form-label">自定义颜色</label>
+          <div class="bg-color-custom-row">
+            <input type="text" id="bgColorCustomInput" class="form-input" placeholder="输入16进制颜色或CSS渐变，如: #ff0000 或 linear-gradient(135deg,#ff0000,#00ff00)" />
+            <button class="form-btn primary" id="bgColorApplyBtn">应用</button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-color-actions">
+        <button class="form-btn" id="bgColorCancelBtn" tabindex="0">取消</button>
+        <button class="form-btn primary" id="bgColorConfirmBtn" tabindex="0">确定</button>
+      </div>
+    </div>
+  </div>
+
   <div class="sync-modal" id="syncModal">
     <div class="sync-content">
       <div class="sync-header">
@@ -799,7 +882,7 @@
     requestAnimationFrame(function showToastRAF() { toast.style.opacity = '1'; });
     setTimeout(function showToastTimeout() {
       toast.style.opacity = '0';
-      setTimeout(function showToastRemove() { toast.remove(); }, 260);
+      setTimeout(function removeToast() { toast.remove(); }, 260);
     }, 1800);
   }
   function isImageIcon(value) {
@@ -826,7 +909,14 @@
     return '<span class="iconify" data-icon="' + escapeHtml(icon || 'mdi:apps') + '"></span>';
   }
   function createApp(id, title, url, icon, bg) {
-    return { id: id, type: 'app', title: title, url: url, icon: icon, bgStyle: bg ? 'background:' + bg + ';' : 'background:rgba(255,255,255,.12);' };
+    // bg参数是纯颜色值，需要包装成完整的background样式
+    var bgStyle = '';
+    if (bg) {
+      bgStyle = 'background:' + bg + ';';
+    } else {
+      bgStyle = 'background:rgba(255,255,255,.12);';
+    }
+    return { id: id, type: 'app', title: title, url: url, icon: icon, bgStyle: bgStyle };
   }
   function createFolder(id, title, children) {
     return { id: id, type: 'folder', title: title, children: children || [] };
@@ -846,6 +936,33 @@
     { id: 'preset-3', name: 'DuckDuckGo', icon: 'cib:duckduckgo', url: 'https://duckduckgo.com/?q=%s' },
     { id: 'preset-4', name: 'Yandex', icon: 'brandico:yandex', url: 'https://yandex.com/search/?text=%s' }
   ];
+  var PRESET_BG_COLORS = [
+    { name: '经典蓝', style: 'linear-gradient(135deg,#4f86ff,#2f5fff)' },
+    { name: '天空蓝', style: 'linear-gradient(135deg,#00c6ff,#0072ff)' },
+    { name: '深空灰', style: 'linear-gradient(135deg,#232526,#414345)' },
+    { name: '热情红', style: 'linear-gradient(135deg,#ff4b2b,#ff416c)' },
+    { name: '清新绿', style: 'linear-gradient(135deg,#00b09b,#96c93d)' },
+    { name: '活力橙', style: 'linear-gradient(135deg,#ff7a18,#ffb347)' },
+    { name: '湖水青', style: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
+    { name: '梦幻紫', style: 'linear-gradient(135deg,#667eea,#764ba2)' },
+    { name: '阳光黄', style: 'linear-gradient(135deg,#f7971e,#ffd200)' },
+    { name: '海洋蓝', style: 'linear-gradient(135deg,#43cea2,#185a9d)' },
+    { name: '火焰红', style: 'linear-gradient(135deg,#fc4a1a,#f7b733)' },
+    { name: '薄荷绿', style: 'linear-gradient(135deg,#11998e,#38ef7d)' },
+    { name: '珊瑚粉', style: 'linear-gradient(135deg,#ff5f6d,#ffc371)' },
+    { name: '皇家蓝', style: 'linear-gradient(135deg,#396afc,#2948ff)' },
+    { name: '古铜棕', style: 'linear-gradient(135deg,#1d4350,#a43931)' },
+    { name: '森林绿', style: 'linear-gradient(135deg,#56ab2f,#a8e063)' },
+    { name: '冰川蓝', style: 'linear-gradient(135deg,#2193b0,#6dd5ed)' },
+    { name: '霓虹紫', style: 'linear-gradient(135deg,#7f00ff,#e100ff)' },
+    { name: '深紫罗兰', style: 'linear-gradient(135deg,#8e2de2,#4a00e0)' },
+    { name: '玫瑰金', style: 'linear-gradient(135deg,#f4c4f3,#fc67fa)' },
+    { name: '午夜蓝', style: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)' },
+    { name: '日落橙', style: 'linear-gradient(135deg,#ff512f,#f09819)' },
+    { name: '极光绿', style: 'linear-gradient(135deg,#00f260,#0575e6)' },
+    { name: '樱花粉', style: 'linear-gradient(135deg,#ff9a9e,#fecfef)' }
+  ];
+
   var DEFAULT_WALLPAPER_URL = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80';
   var VIRTUAL_SCROLL_THRESHOLD = 200;
 
@@ -856,7 +973,7 @@
       this.metrics = this.calcMetrics(); this.applyMetrics();
       var self = this;
       if (window.ResizeObserver) {
-        this.resizeObserver = new ResizeObserver(function resizeObserverCallback() { requestAnimationFrame(function resizeObserverRAF() { self.refresh(); }); });
+        this.resizeObserver = new ResizeObserver(function resizeObserverCallback() { requestAnimationFrame(function handleResizeObserverRAF() { self.refresh(); }); });
         var appShell = querySelector('.app-shell');
         if (appShell) this.resizeObserver.observe(appShell);
       } else {
@@ -1408,6 +1525,8 @@
   // ==================== 增强的 GitHub 同步模块 ====================
   var syncStore = {
     config: { token: '', owner: '', repo: '', syncInterval: 0, lastSyncTime: null, fileName: 'desktop_backup.json' },
+    autoSyncTimer: null,
+    AUTO_SYNC_CHECK_INTERVAL: 60 * 1000, // 每分钟检查一次
     load: function syncStoreLoad() { 
       var self = this; 
       storageAdapter.getItem(STORAGE_KEYS.GITHUB_CONFIG).then(function syncStoreLoadThen(saved) { 
@@ -1418,10 +1537,64 @@
           } catch (e) {} 
         } 
         updateSyncTimeInfo(); 
-      }).catch(function syncStoreLoadCatch() {}); 
+        self.startAutoSync(); 
+      }).catch(function syncStoreLoadCatch() { self.startAutoSync(); }); 
     },
     save: function syncStoreSave() { 
       storageAdapter.setItem(STORAGE_KEYS.GITHUB_CONFIG, JSON.stringify(this.config)); 
+    },
+    startAutoSync: function syncStoreStartAutoSync() {
+      var self = this;
+      if (self.autoSyncTimer) {
+        clearInterval(self.autoSyncTimer);
+        self.autoSyncTimer = null;
+      }
+      if (self.config.syncInterval > 0 && self.config.token && self.config.owner && self.config.repo) {
+        self.autoSyncTimer = setInterval(function autoSyncIntervalCallback() {
+          self.checkAndPerformAutoSync();
+        }, self.AUTO_SYNC_CHECK_INTERVAL);
+      }
+    },
+    stopAutoSync: function syncStoreStopAutoSync() {
+      if (this.autoSyncTimer) {
+        clearInterval(this.autoSyncTimer);
+        this.autoSyncTimer = null;
+      }
+    },
+    checkAndPerformAutoSync: function syncStoreCheckAndPerformAutoSync() {
+      var self = this;
+      if (!self.config.syncInterval || self.config.syncInterval <= 0) return;
+      if (!self.config.lastSyncTime) {
+        self.performAutoSync();
+        return;
+      }
+      var lastSync = new Date(self.config.lastSyncTime);
+      var now = new Date();
+      var daysSinceLastSync = (now - lastSync) / (1000 * 60 * 60 * 24);
+      if (daysSinceLastSync >= self.config.syncInterval) {
+        self.performAutoSync();
+      }
+    },
+    performAutoSync: function syncStorePerformAutoSync() {
+      var self = this;
+      if (!self.config.token || !self.config.owner || !self.config.repo) return;
+      console.log('[AutoSync] 开始自动同步...');
+      self.push(false).then(function autoSyncPushThen(success) {
+        if (success) {
+          console.log('[AutoSync] 自动同步成功');
+          showToast('✅ 自动同步成功');
+        } else {
+          console.log('[AutoSync] 自动同步失败');
+        }
+        updateSyncTimeInfo();
+      });
+    },
+    updateSyncInterval: function syncStoreUpdateSyncInterval(interval) {
+      this.config.syncInterval = interval;
+      this.save();
+      this.stopAutoSync();
+      this.startAutoSync();
+      updateSyncTimeInfo();
     },
     validateToken: function syncStoreValidateToken(token) {
       if (!token) return Promise.resolve(null);
@@ -1443,16 +1616,16 @@
       });
     },
     push: function syncStorePush(showToastMsg) {
-      if (!this.config.token || !this.config.owner) { 
-        showToast('请先配置 GitHub Token'); 
+      var self = this;
+      if (!self.config.token || !self.config.owner) { 
+        if (showToastMsg) showToast('请先配置 GitHub Token'); 
         return Promise.resolve(false); 
       }
-      if (!this.config.repo) { 
-        showToast('请先填写仓库名称'); 
+      if (!self.config.repo) { 
+        if (showToastMsg) showToast('请先填写仓库名称'); 
         return Promise.resolve(false); 
       }
-      var self = this, 
-          syncData = { 
+      var syncData = { 
             desktop: appStore.desktop, 
             dock: appStore.dock, 
             currentQuote: appStore.currentQuote, 
@@ -1463,8 +1636,8 @@
           },
           content = JSON.stringify(syncData, null, 2),
           base64Content, 
-          fileName = this.config.fileName,
-          apiUrl = 'https://api.github.com/repos/' + this.config.owner + '/' + this.config.repo + '/contents/' + fileName;
+          fileName = self.config.fileName,
+          apiUrl = 'https://api.github.com/repos/' + self.config.owner + '/' + self.config.repo + '/contents/' + fileName;
 
       try {
         base64Content = btoa(unescape(encodeURIComponent(content)));
@@ -1475,7 +1648,7 @@
 
       return fetch(apiUrl, { 
         headers: { 
-          'Authorization': 'token ' + this.config.token, 
+          'Authorization': 'token ' + self.config.token, 
           'Accept': 'application/vnd.github.v3+json' 
         } 
       }).then(function pushGetThen(res) { 
@@ -1531,7 +1704,7 @@
 
       return fetch(apiUrl, { 
         headers: { 
-          'Authorization': 'token ' + this.config.token, 
+          'Authorization': 'token ' + self.config.token, 
           'Accept': 'application/vnd.github.v3+json' 
         } 
       }).then(function pullThen(res) { 
@@ -1605,7 +1778,7 @@
           el.style.transition = 'none'; el.style.transform = 'translate3d(' + dx + 'px, ' + dy + 'px, 0)'; el.offsetHeight;
           var rafId = requestAnimationFrame(function playFLIPRAF() {
             el.style.transition = 'transform 230ms cubic-bezier(.2,.8,.2,1)'; el.style.transform = 'translate3d(0, 0, 0)';
-            var timeoutId = setTimeout(function playFLIPTimeout() { el.style.transition = ''; el.style.transform = ''; self.flipAnimations.delete(el); }, 250);
+            var timeoutId = setTimeout(function cleanupFLIP() { el.style.transition = ''; el.style.transform = ''; self.flipAnimations.delete(el); }, 250);
             self.flipAnimations.set(el, { rafId: null, timeoutId: timeoutId });
           });
           self.flipAnimations.set(el, { rafId: rafId, timeoutId: null });
@@ -1669,22 +1842,32 @@
     renderDesktopItem: function renderEngineRenderDesktopItem(item, pageIndex, localIndex) {
       var displayTitle = item.title || '', tabIndex = 0;
       if (item.type === 'folder') return '<div class="app-icon" data-id="' + item.id + '" data-scope="desktop" data-item-type="folder" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="button" aria-label="文件夹：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="background:rgba(255,255,255,.18);">' + this.renderFolderPreview(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="desktop" data-item-type="app" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="link" aria-label="应用：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + (item.bgStyle || '') + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
+      var bgStyle = item.bgStyle || '';
+      console.log('renderDesktopItem - item.bgStyle:', item.bgStyle, 'item.title:', item.title);
+      return '<div class="app-icon" data-id="' + item.id + '" data-scope="desktop" data-item-type="app" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="link" aria-label="应用：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
     },
     renderDockItem: function renderEngineRenderDockItem(item, index) { 
       if (item.type === 'folder') return ''; 
-      var displayTitle = item.title || ''; 
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="dock" data-item-type="app" data-local-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + (item.bgStyle || '') + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
+      var displayTitle = item.title || '';
+      var bgStyle = item.bgStyle || '';
+      return '<div class="app-icon" data-id="' + item.id + '" data-scope="dock" data-item-type="app" data-local-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
     },
     renderFolderChild: function renderEngineRenderFolderChild(item, index, folderId) { 
-      var displayTitle = item.title || ''; 
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="folder" data-folder-id="' + folderId + '" data-child-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + (item.bgStyle || '') + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
+      var displayTitle = item.title || '';
+      var bgStyle = item.bgStyle || '';
+      return '<div class="app-icon" data-id="' + item.id + '" data-scope="folder" data-folder-id="' + folderId + '" data-child-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
     },
     renderFolderPreview: function renderEngineRenderFolderPreview(folderItem) { 
       var preview = folderItem.children.slice(0, 4), cells = []; 
       for (var i = 0; i < 4; i++) { 
         var child = preview[i]; 
-        cells.push('<div class="folder-preview-cell" style="' + (child && child.bgStyle ? child.bgStyle : 'background:rgba(255,255,255,.08);') + '">' + (child ? renderIconContent(child) : '') + '</div>'); 
+        var cellStyle = '';
+        if (child && child.bgStyle) {
+          cellStyle = child.bgStyle;
+        } else {
+          cellStyle = 'background:rgba(255,255,255,.08);';
+        }
+        cells.push('<div class="folder-preview-cell" style="' + cellStyle + '">' + (child ? renderIconContent(child) : '') + '</div>'); 
       } 
       return '<div class="folder-preview">' + cells.join('') + '</div>'; 
     },
@@ -1729,8 +1912,8 @@
       if (appStore.desktop.items.length > VIRTUAL_SCROLL_THRESHOLD) { renderEngine.loadVirtualPage(targetPage); if (targetPage > 0) renderEngine.loadVirtualPage(targetPage - 1); if (targetPage < appStore.getPageCount() - 1) renderEngine.loadVirtualPage(targetPage + 1); }
       setTimeout(function turnToTimeout() {
         var targetPageEls = querySelectorAll('.page[data-page-index="' + targetPage + '"] .app-icon');
-        targetPageEls.forEach(function turnInEach(el, i) { el.style.transition = 'none'; el.style.transform = targetPage > currentPage ? 'translateX(40px)' : 'translateX(-40px)'; el.style.opacity = '0.5'; el.offsetHeight; requestAnimationFrame(function turnInRAF() { el.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) ' + (i * 0.03) + 's'; el.style.transform = 'translateX(0)'; el.style.opacity = '1'; }); });
-        setTimeout(function turnInCleanupTimeout() { currentPageEls.forEach(function turnInCleanupEach(el) { el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }); }, 350);
+        targetPageEls.forEach(function turnInEach(el, i) { el.style.transition = 'none'; el.style.transform = targetPage > currentPage ? 'translateX(40px)' : 'translateX(-40px)'; el.style.opacity = '0.5'; el.offsetHeight; requestAnimationFrame(function handleTurnInRAF() { el.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) ' + (i * 0.03) + 's'; el.style.transform = 'translateX(0)'; el.style.opacity = '1'; }); });
+        setTimeout(function cleanupTurnIn() { currentPageEls.forEach(function cleanupTurnInEach(el) { el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }); }, 350);
       }, 50);
       appStore.save();
     }
@@ -2278,7 +2461,7 @@
         repo = refs.githubRepo ? refs.githubRepo.value.trim() : '', 
         intervalSelect = document.getElementById('syncIntervalSelect'), 
         interval = intervalSelect ? parseInt(intervalSelect.value) || 0 : 0;
-    syncStore.config.syncInterval = interval;
+    syncStore.updateSyncInterval(interval);
     function continuePush() { 
       if (repo !== syncStore.config.repo) syncStore.config.repo = repo; 
       syncStore.save(); 
@@ -2296,7 +2479,7 @@
         repo = refs.githubRepo ? refs.githubRepo.value.trim() : '', 
         intervalSelect = document.getElementById('syncIntervalSelect'), 
         interval = intervalSelect ? parseInt(intervalSelect.value) || 0 : 0;
-    syncStore.config.syncInterval = interval;
+    syncStore.updateSyncInterval(interval);
     function continuePull() { 
       if (repo !== syncStore.config.repo) syncStore.config.repo = repo; 
       syncStore.save(); 
@@ -2312,9 +2495,7 @@
   function handleSyncIntervalChange() { 
     var intervalSelect = document.getElementById('syncIntervalSelect'), 
         interval = intervalSelect ? parseInt(intervalSelect.value) || 0 : 0; 
-    syncStore.config.syncInterval = interval; 
-    syncStore.save(); 
-    updateSyncTimeInfo(); 
+    syncStore.updateSyncInterval(interval);
     if (interval > 0) showToast('已设置每' + interval + '天自动同步'); 
     else showToast('已关闭自动同步'); 
   }
@@ -2446,10 +2627,157 @@
     if (refs.formPreviewLink) refs.formPreviewLink.textContent = url;
     if (refs.formPreviewIcon) { 
       if (isImageIcon(icon)) refs.formPreviewIcon.innerHTML = '<img src="' + escapeHtml(icon) + '" alt="" loading="lazy" decoding="async">'; 
-      else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '"></span>'; 
+      else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '"></span>';
+      var bgStyle = getSelectedBgStyle();
+      console.log('updateFormPreview - applying background:', bgStyle);
+      refs.formPreviewIcon.style.background = bgStyle;
     }
     if (window.Iconify && refs.formPreviewIcon) { try { Iconify.scan(refs.formPreviewIcon); } catch (_) {} }
   }
+  // ==================== 背景色选择器 ====================
+  var selectedBgColor = PRESET_BG_COLORS[0].style;
+  var tempSelectedBgColor = PRESET_BG_COLORS[0].style;
+
+  function openBgColorModal() {
+    var modal = document.getElementById('bgColorModal');
+    if (!modal) return;
+    tempSelectedBgColor = selectedBgColor;
+    renderBgColorGrid();
+    updateBgColorPreview();
+    modal.classList.add('active');
+  }
+
+  function closeBgColorModal() {
+    var modal = document.getElementById('bgColorModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function renderBgColorGrid() {
+    var grid = document.getElementById('bgColorModalGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    PRESET_BG_COLORS.forEach(function renderBgColorEach(color, index) {
+      var item = document.createElement('div');
+      item.className = 'bg-color-item';
+      item.style.background = color.style;
+      item.dataset.index = index;
+      item.dataset.style = color.style;
+      item.title = color.name;
+      if (color.style === tempSelectedBgColor) {
+        item.classList.add('selected');
+      }
+      item.addEventListener('click', function bgColorItemClickHandler() {
+        selectBgColorInModal(color.style, item);
+      });
+      grid.appendChild(item);
+    });
+  }
+
+  function selectBgColorInModal(style, element) {
+    console.log('selectBgColorInModal - style:', style);
+    tempSelectedBgColor = style;
+    var grid = document.getElementById('bgColorModalGrid');
+    if (grid) {
+      querySelectorAll('.bg-color-item', grid).forEach(function removeSelectedClass(el) {
+        el.classList.remove('selected');
+      });
+    }
+    if (element) element.classList.add('selected');
+    var customInput = document.getElementById('bgColorCustomInput');
+    if (customInput) {
+      // 如果是16进制颜色，显示在输入框中；如果是渐变，清空输入框
+      var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      if (hexColorPattern.test(style)) {
+        customInput.value = style;
+      } else {
+        customInput.value = '';
+      }
+    }
+  }
+
+  function applyCustomBgColorInModal() {
+    var input = document.getElementById('bgColorCustomInput');
+    if (!input) return;
+    var value = input.value.trim();
+    if (!value) {
+      showToast('请输入CSS渐变代码或16进制颜色');
+      return;
+    }
+    
+    // 更智能的颜色类型检测
+    var finalValue;
+    
+    // 检查是否为16进制颜色（#开头）
+    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    if (hexColorPattern.test(value)) {
+      // 16进制颜色直接使用
+      finalValue = value;
+    } else if (value.toLowerCase().includes('gradient') || value.includes('rgb') || value.includes('hsl') || /^[a-zA-Z]+$/.test(value)) {
+      // CSS渐变、rgb、hsl、颜色名称等直接使用
+      finalValue = value;
+    } else {
+      showToast('请输入有效的CSS颜色值(如#ff0000)或渐变代码');
+      return;
+    }
+    
+    tempSelectedBgColor = finalValue;
+    var grid = document.getElementById('bgColorModalGrid');
+    if (grid) {
+      querySelectorAll('.bg-color-item', grid).forEach(function removeSelected(el) {
+        el.classList.remove('selected');
+      });
+    }
+    showToast('已应用自定义颜色');
+  }
+
+  function confirmBgColorSelection() {
+    console.log('confirmBgColorSelection - before: selectedBgColor=', selectedBgColor, 'tempSelectedBgColor=', tempSelectedBgColor);
+    selectedBgColor = tempSelectedBgColor;
+    console.log('confirmBgColorSelection - after: selectedBgColor=', selectedBgColor);
+    updateBgColorPreview();
+    updateFormPreview();
+    closeBgColorModal();
+  }
+
+  function updateBgColorPreview() {
+    var preview = document.getElementById('bgColorPreview');
+    if (preview) preview.style.background = selectedBgColor;
+  }
+
+  function getSelectedBgStyle() {
+    // 直接返回当前选择的颜色值，无论是16进制还是渐变
+    return selectedBgColor || PRESET_BG_COLORS[0].style;
+  }
+
+  function setSelectedBgStyle(style) {
+    console.log('setSelectedBgStyle - input style:', style);
+    // 处理预格式化的背景样式，提取纯颜色值
+    var cleanStyle = style;
+    if (style && style.startsWith('background:')) {
+      // 提取 background: 和结尾的 ; 之间的内容
+      cleanStyle = style.replace(/^background:\s*/, '').replace(/;\s*$/, '');
+    }
+    
+    // 更智能的颜色类型检测
+    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    
+    if (hexColorPattern.test(cleanStyle)) {
+      // 16进制颜色
+      selectedBgColor = cleanStyle;
+    } else if (cleanStyle && (cleanStyle.includes('gradient') || cleanStyle.includes('rgb') || cleanStyle.includes('hsl') || /^[a-zA-Z]+$/.test(cleanStyle))) {
+      // CSS渐变、rgb、hsl、颜色名称等
+      selectedBgColor = cleanStyle;
+    } else {
+      // 默认使用预设颜色
+      selectedBgColor = cleanStyle || PRESET_BG_COLORS[0].style;
+    }
+    
+    console.log('setSelectedBgStyle - selectedBgColor:', selectedBgColor);
+    tempSelectedBgColor = selectedBgColor;
+    updateBgColorPreview();
+  }
+
+
 
   function openFormModal(mode, context) {
     state.formState = { mode: mode, context: context }; 
@@ -2462,12 +2790,17 @@
       if (item.type === 'folder') { 
         if (refs.formUrlRow) refs.formUrlRow.style.display = 'none'; 
         if (refs.formIconRow) refs.formIconRow.style.display = 'none'; 
+        if (refs.formBgColorRow) refs.formBgColorRow.style.display = 'none';
       }
       else { 
         if (refs.formUrlRow) refs.formUrlRow.style.display = ''; 
         if (refs.formIconRow) refs.formIconRow.style.display = ''; 
+        if (refs.formBgColorRow) refs.formBgColorRow.style.display = ''; 
         if (refs.formUrl) refs.formUrl.value = item.url || ''; 
-        if (refs.formIcon) refs.formIcon.value = item.icon || ''; 
+        if (refs.formIcon) refs.formIcon.value = item.icon || '';
+        console.log('openFormModal edit mode - item.bgStyle:', item.bgStyle);
+        console.log('openFormModal edit mode - item.bgStyle:', item.bgStyle);
+        setSelectedBgStyle(item.bgStyle || PRESET_BG_COLORS[0].style);
       }
     } else {
       if (refs.formName) refs.formName.value = ''; 
@@ -2475,6 +2808,9 @@
       if (refs.formIcon) refs.formIcon.value = '';
       if (refs.formUrlRow) refs.formUrlRow.style.display = ''; 
       if (refs.formIconRow) refs.formIconRow.style.display = '';
+      if (refs.formBgColorRow) refs.formBgColorRow.style.display = '';
+      setSelectedBgStyle(PRESET_BG_COLORS[0].style);
+      console.log('openFormModal new mode - setSelectedBgStyle called with:', PRESET_BG_COLORS[0].style);
     }
     updateFormPreview(); 
     if (refs.formName) refs.formName.focus();
@@ -2487,18 +2823,58 @@
         url = refs.formUrl ? refs.formUrl.value.trim() : '', 
         icon = refs.formIcon ? refs.formIcon.value.trim() : '';
     if (!name) { showToast('请填写名称'); if (refs.formName) refs.formName.focus(); return; }
+    console.log('=== saveFormModal START ===');
+    console.log('mode:', mode, 'selectedBgColor:', selectedBgColor);
     if (mode === 'edit') {
       var item = appStore.getItemById(context.itemId); 
       if (!item) return;
+      console.log('edit mode - item.bgStyle before:', item.bgStyle);
       item.title = name; 
-      if (item.type !== 'folder') { item.url = url || '#'; item.icon = icon || 'mdi:apps'; }
+      if (item.type !== 'folder') { 
+        item.url = url || '#'; 
+        item.icon = icon || 'mdi:apps'; 
+        var bgStyleValue = getSelectedBgStyle();
+        console.log('edit mode - getSelectedBgStyle returned:', bgStyleValue);
+        console.log('edit mode - bgStyleValue:', bgStyleValue);
+        if (!bgStyleValue) {
+          console.warn('edit mode - bgStyleValue is empty! Using default color.');
+          bgStyleValue = PRESET_BG_COLORS[0].style;
+        }
+        // 确保返回的是完整的background样式
+        var finalBgStyle;
+        if (bgStyleValue.startsWith('background:')) {
+          finalBgStyle = bgStyleValue;
+        } else {
+          finalBgStyle = 'background:' + bgStyleValue + ';';
+        }
+        console.log('edit mode - finalBgStyle:', finalBgStyle);
+        // 如果是16进制颜色，直接作为背景色；如果是渐变，保持原样
+        item.bgStyle = finalBgStyle;
+        console.log('edit mode - item.bgStyle after:', item.bgStyle);
+        console.log('edit mode - item.bgStyle after:', item.bgStyle);
+      }
       appStore.cleanupFolders(); 
       closeFormModal(); 
       renderEngine.renderAll(); 
       showToast('已保存'); 
       return;
     }
-    var newItem = { id: generateId('app'), type: 'app', title: name, url: url || '#', icon: icon || 'mdi:apps', bgStyle: 'background:linear-gradient(135deg,#4f86ff,#7b61ff);' };
+    var bgStyleValue = getSelectedBgStyle();
+    console.log('saveFormModal newItem - getSelectedBgStyle returned:', bgStyleValue);
+    console.log('saveFormModal newItem - bgStyleValue:', bgStyleValue);
+    if (!bgStyleValue) {
+      console.warn('bgStyleValue is empty! Using default color.');
+      bgStyleValue = PRESET_BG_COLORS[0].style;
+    }
+    // 确保返回的是完整的background样式
+    var finalBgStyle;
+    if (bgStyleValue.startsWith('background:')) {
+      finalBgStyle = bgStyleValue;
+    } else {
+      finalBgStyle = 'background:' + bgStyleValue + ';';
+    }
+    console.log('saveFormModal newItem - finalBgStyle:', finalBgStyle);
+    var newItem = { id: generateId('app'), type: 'app', title: name, url: url || '#', icon: icon || 'mdi:apps', bgStyle: finalBgStyle };
     if (context && context.scope === 'folder' && context.folderId) { 
       appStore.insertFolderChild(context.folderId, newItem, Number.MAX_SAFE_INTEGER); 
       renderEngine.renderAll(); 
@@ -2620,7 +2996,8 @@
     refs.formIcon = safeQuery('#formIcon'); 
     refs.formUrlRow = safeQuery('#formUrlRow'); 
     refs.formIconRow = safeQuery('#formIconRow');
-    refs.formPreviewIcon = safeQuery('#formPreviewIcon'); 
+    refs.formPreviewIcon = safeQuery('#formPreviewIcon');
+    refs.formBgColorRow = safeQuery('#formBgColorRow'); 
     refs.formPreviewName = safeQuery('#formPreviewName'); 
     refs.formPreviewLink = safeQuery('#formPreviewLink'); 
     refs.formCloseBtn = safeQuery('#formCloseBtn'); 
@@ -2673,6 +3050,9 @@
     refs.quoteDisplay = safeQuery('#quoteDisplay');
     refs.bigTime = safeQuery('#bigTime');
     refs.headerDate = safeQuery('#headerDate');
+    refs.bgColorModal = safeQuery('#bgColorModal');
+    refs.bgColorSelectBtn = safeQuery('#bgColorSelectBtn');
+    refs.bgColorPreview = safeQuery('#bgColorPreview');
   }
 
   // ==================== 事件绑定 ====================
@@ -2761,6 +3141,8 @@
       if (e.key === 'Escape') {
         var isSearchActive = refs.searchScreen && refs.searchScreen.classList.contains('active'); 
         if (isSearchActive) { closeSearchScreen(); return; }
+        var isBgColorActive = refs.bgColorModal && refs.bgColorModal.classList.contains('active');
+        if (isBgColorActive) { closeBgColorModal(); return; }
         closeFolder();
         hideContextMenu();
         hideEngineContextMenu();
@@ -2877,6 +3259,11 @@
     safeBind(refs.formName, 'input', updateFormPreview); 
     safeBind(refs.formUrl, 'input', updateFormPreview); 
     safeBind(refs.formIcon, 'input', updateFormPreview);
+    safeBind(document.getElementById('bgColorSelectBtn'), 'click', openBgColorModal);
+    safeBind(document.getElementById('bgColorModalCloseBtn'), 'click', closeBgColorModal);
+    safeBind(document.getElementById('bgColorCancelBtn'), 'click', closeBgColorModal);
+    safeBind(document.getElementById('bgColorConfirmBtn'), 'click', confirmBgColorSelection);
+    safeBind(document.getElementById('bgColorApplyBtn'), 'click', applyCustomBgColorInModal);
     safeBind(refs.formCloseBtn, 'click', closeFormModal); 
     safeBind(refs.formCancelBtn, 'click', closeFormModal); 
     safeBind(refs.formSaveBtn, 'click', saveFormModal);
@@ -2939,6 +3326,7 @@
       if (e.target === refs.formModal) closeFormModal();
       if (e.target === refs.syncModal) closeSyncModal();
       if (e.target === refs.wallpaperModal) closeWallpaperModal();
+      if (e.target === refs.bgColorModal) closeBgColorModal();
     }, { passive: true });
     
     var blankClickTimer = null;
