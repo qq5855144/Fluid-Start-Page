@@ -10,6 +10,14 @@
         "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
       },
       {
+        "id": "app_1774953875432_q94cvt",
+        "type": "app",
+        "title": "lconify",
+        "url": "https://yesicon.app/",
+        "icon": "ph:hand-fist-fill",
+        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
+      },
+      {
         "id": "app_weather",
         "type": "app",
         "title": "天气",
@@ -18,12 +26,12 @@
         "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
       },
       {
-        "id": "app_1774953875432_q94cvt",
+        "id": "app_drive",
         "type": "app",
-        "title": "lconify",
-        "url": "https://yesicon.app/",
-        "icon": "ph:hand-fist-fill",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
+        "title": "云盘",
+        "url": "https://drive.google.com",
+        "icon": "mdi:cloud-upload-outline",
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
         "id": "app_mail",
@@ -34,36 +42,20 @@
         "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
       },
       {
+        "id": "app_book",
+        "type": "app",
+        "title": "阅读",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:book-open-page-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+      },
+      {
         "id": "app_music",
         "type": "app",
         "title": "网易云",
         "url": "https://music.163.com",
         "icon": "mdi:music-note",
         "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
-      },
-      {
-        "id": "app_taobao",
-        "type": "app",
-        "title": "淘宝",
-        "url": "https://www.taobao.com",
-        "icon": "ri:shopping-bag-3-fill",
-        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
-      },
-      {
-        "id": "app_map",
-        "type": "app",
-        "title": "地图",
-        "url": "https://ditu.amap.com",
-        "icon": "mdi:map-marker-radius",
-        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
-      },
-      {
-        "id": "app_forum",
-        "type": "app",
-        "title": "知乎",
-        "url": "https://www.zhihu.com",
-        "icon": "mdi:forum-outline",
-        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
       },
       {
         "id": "app_bilibili",
@@ -82,12 +74,20 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
-        "id": "app_docs",
+        "id": "app_forum",
         "type": "app",
-        "title": "文档",
-        "url": "https://docs.qq.com",
-        "icon": "mdi:file-document-outline",
-        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
+        "title": "知乎",
+        "url": "https://www.zhihu.com",
+        "icon": "mdi:forum-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_map",
+        "type": "app",
+        "title": "地图",
+        "url": "https://ditu.amap.com",
+        "icon": "mdi:map-marker-radius",
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
         "id": "app_design",
@@ -98,6 +98,14 @@
         "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
+        "id": "app_taobao",
+        "type": "app",
+        "title": "淘宝",
+        "url": "https://www.taobao.com",
+        "icon": "ri:shopping-bag-3-fill",
+        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
+      },
+      {
         "id": "app_video",
         "type": "app",
         "title": "视频",
@@ -106,20 +114,12 @@
         "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
-        "id": "app_drive",
+        "id": "app_docs",
         "type": "app",
-        "title": "云盘",
-        "url": "https://drive.google.com",
-        "icon": "mdi:cloud-upload-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
-        "id": "app_book",
-        "type": "app",
-        "title": "阅读",
-        "url": "https://weread.qq.com",
-        "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+        "title": "脚本",
+        "url": "https://qq5855144.github.io/ScriptSearch/",
+        "icon": "hugeicons:java-script",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       }
     ]
   },
@@ -178,7 +178,7 @@
     ]
   },
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
-  "currentEngineId": "engine_1775101370461_1i3z0n",
+  "currentEngineId": "preset-2",
   "customEngines": [
     {
       "id": "engine_1775101370461_1i3z0n",
@@ -193,6 +193,6 @@
       "url": "https://hanime1.me/search?query=%s"
     }
   ],
-  "timestamp": "2026-04-02T03:43:44.309Z",
-  "version": "1.0"
+  "timestamp": "2026-04-03T05:13:37.004Z",
+  "version": "2.0"
 }
