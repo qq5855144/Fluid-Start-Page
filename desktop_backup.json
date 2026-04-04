@@ -232,7 +232,7 @@
     ]
   },
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
-  "currentEngineId": "preset-1",
+  "currentEngineId": "engine_1775294427242_jc8a60jkh",
   "customEngines": [
     {
       "id": "engine_1775101370461_1i3z0n",
@@ -245,8 +245,20 @@
       "name": "H漫",
       "icon": "cib:vimeo-v",
       "url": "https://hanime1.me/search?query=%s"
+    },
+    {
+      "id": "engine_1775294032979_ve93f27d8",
+      "name": "脚本搜索",
+      "icon": "simple-icons:tampermonkey",
+      "url": "https://greasyfork.org/zh-CN/scripts?q=%s"
+    },
+    {
+      "id": "engine_1775294427242_jc8a60jkh",
+      "name": "Apkpure",
+      "icon": "uil:letter-english-a",
+      "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-04-04T08:19:30.361Z",
+  "timestamp": "2026-04-04T11:40:22.419Z",
   "version": "2.0"
 }
