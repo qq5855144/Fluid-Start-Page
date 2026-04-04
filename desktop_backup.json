@@ -2,12 +2,12 @@
   "desktop": {
     "items": [
       {
-        "id": "app_baidu",
+        "id": "app_mail",
         "type": "app",
-        "title": "百度",
-        "url": "https://www.baidu.com",
-        "icon": "simple-icons:baidu",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+        "title": "脚本猫",
+        "url": "https://scriptcat.org/zh-CN/users/181254",
+        "icon": "streamline-block:nature-cat",
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
         "id": "app_1774953875432_q94cvt",
@@ -15,7 +15,7 @@
         "title": "lconify",
         "url": "https://yesicon.app/",
         "icon": "ph:hand-fist-fill",
-        "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_weather",
@@ -34,12 +34,12 @@
         "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
-        "id": "app_mail",
+        "id": "app_baidu",
         "type": "app",
-        "title": "脚本猫",
-        "url": "https://scriptcat.org/zh-CN/users/181254",
-        "icon": "streamline-block:nature-cat",
-        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
+        "title": "百度",
+        "url": "https://www.baidu.com",
+        "icon": "simple-icons:baidu",
+        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
       },
       {
         "id": "app_book",
@@ -50,12 +50,12 @@
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
-        "id": "app_music",
+        "id": "app_design",
         "type": "app",
-        "title": "网易云",
-        "url": "https://music.163.com",
-        "icon": "mdi:music-note",
-        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
+        "title": "Canva",
+        "url": "https://www.canva.com",
+        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_bilibili",
@@ -74,14 +74,6 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
-        "id": "app_forum",
-        "type": "app",
-        "title": "知乎",
-        "url": "https://www.zhihu.com",
-        "icon": "mdi:forum-outline",
-        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
-      },
-      {
         "id": "app_map",
         "type": "app",
         "title": "地图",
@@ -90,12 +82,20 @@
         "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
-        "id": "app_design",
+        "id": "app_music",
         "type": "app",
-        "title": "Canva",
-        "url": "https://www.canva.com",
-        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
-        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+        "title": "网易云",
+        "url": "https://music.163.com",
+        "icon": "mdi:music-note",
+        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
+      },
+      {
+        "id": "app_forum",
+        "type": "app",
+        "title": "知乎",
+        "url": "https://www.zhihu.com",
+        "icon": "mdi:forum-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
       },
       {
         "id": "app_taobao",
@@ -120,6 +120,68 @@
         "url": "https://qq5855144.github.io/ScriptSearch/",
         "icon": "hugeicons:java-script",
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
+      },
+      {
+        "id": "folder_1775272076006_a41e5slf4",
+        "type": "folder",
+        "title": "小游戏",
+        "children": [
+          {
+            "id": "app_1775271972245_7yn0zq86b",
+            "type": "app",
+            "title": "Poki",
+            "url": "https://poki.com/zh",
+            "icon": "https://icdn.binmt.cc/2603/69a400811da1d.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775272065952_9kyuhfed8",
+            "type": "app",
+            "title": "小霸王",
+            "url": "https://www.yikm.net/",
+            "icon": "https://icdn.binmt.cc/2603/69a4045b5bb7c.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775272025281_9wqmh3src",
+            "type": "app",
+            "title": "games",
+            "url": "https://zh.crazygames.plus/",
+            "icon": "https://icdn.binmt.cc/2603/69a40100e9f19.jpg",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          }
+        ]
+      },
+      {
+        "id": "folder_1775272128323_hlzs53519",
+        "type": "folder",
+        "title": "网盘",
+        "children": [
+          {
+            "id": "app_1775271815521_agcnf8phi",
+            "type": "app",
+            "title": "小飞机网盘",
+            "url": "https://www.feejii.com/m/login",
+            "icon": "https://icdn.binmt.cc/2603/69a3e59a3b5e9.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775271779443_1xp52bobu",
+            "type": "app",
+            "title": "黄云盘",
+            "url": "https://pan.huang1111.cn/login",
+            "icon": "https://icdn.binmt.cc/2603/69a3e9eeaca50.png",
+            "bgStyle": "background:#fff;"
+          },
+          {
+            "id": "app_1775271683578_zfjbm4ycu",
+            "type": "app",
+            "title": "蓝奏云",
+            "url": "https://pc.woozooo.com/account.php?action=login&ref=/mydisk.php",
+            "icon": "https://icdn.binmt.cc/2603/69a3e3f574694.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          }
+        ]
       }
     ]
   },
@@ -193,6 +255,6 @@
       "url": "https://hanime1.me/search?query=%s"
     }
   ],
-  "timestamp": "2026-04-03T22:45:42.534Z",
+  "timestamp": "2026-04-04T03:11:32.035Z",
   "version": "2.0"
 }
