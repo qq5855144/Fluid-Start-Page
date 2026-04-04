@@ -26,14 +26,6 @@
         "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
       },
       {
-        "id": "app_drive",
-        "type": "app",
-        "title": "云盘",
-        "url": "https://drive.google.com",
-        "icon": "mdi:cloud-upload-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
         "id": "app_baidu",
         "type": "app",
         "title": "百度",
@@ -74,12 +66,12 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
-        "id": "app_map",
+        "id": "app_docs",
         "type": "app",
-        "title": "地图",
-        "url": "https://ditu.amap.com",
-        "icon": "mdi:map-marker-radius",
-        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
+        "title": "脚本",
+        "url": "https://qq5855144.github.io/ScriptSearch/",
+        "icon": "hugeicons:java-script",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
         "id": "app_music",
@@ -106,6 +98,14 @@
         "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
       },
       {
+        "id": "app_map",
+        "type": "app",
+        "title": "地图",
+        "url": "https://ditu.amap.com",
+        "icon": "mdi:map-marker-radius",
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
+      },
+      {
         "id": "app_video",
         "type": "app",
         "title": "视频",
@@ -114,15 +114,7 @@
         "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
-        "id": "app_docs",
-        "type": "app",
-        "title": "脚本",
-        "url": "https://qq5855144.github.io/ScriptSearch/",
-        "icon": "hugeicons:java-script",
-        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
-      },
-      {
-        "id": "folder_1775272076006_a41e5slf4",
+        "id": "folder_1775287938453_dm26ubv5s",
         "type": "folder",
         "title": "小游戏",
         "children": [
@@ -135,25 +127,25 @@
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           },
           {
-            "id": "app_1775272065952_9kyuhfed8",
-            "type": "app",
-            "title": "小霸王",
-            "url": "https://www.yikm.net/",
-            "icon": "https://icdn.binmt.cc/2603/69a4045b5bb7c.png",
-            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
-          },
-          {
             "id": "app_1775272025281_9wqmh3src",
             "type": "app",
             "title": "games",
             "url": "https://zh.crazygames.plus/",
             "icon": "https://icdn.binmt.cc/2603/69a40100e9f19.jpg",
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775272065952_9kyuhfed8",
+            "type": "app",
+            "title": "小霸王",
+            "url": "https://www.yikm.net/",
+            "icon": "https://icdn.binmt.cc/2603/69a4045b5bb7c.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           }
         ]
       },
       {
-        "id": "folder_1775272128323_hlzs53519",
+        "id": "folder_1775287958278_z78pev7p5",
         "type": "folder",
         "title": "网盘",
         "children": [
@@ -166,20 +158,20 @@
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           },
           {
-            "id": "app_1775271779443_1xp52bobu",
-            "type": "app",
-            "title": "黄云盘",
-            "url": "https://pan.huang1111.cn/login",
-            "icon": "https://icdn.binmt.cc/2603/69a3e9eeaca50.png",
-            "bgStyle": "background:#fff;"
-          },
-          {
             "id": "app_1775271683578_zfjbm4ycu",
             "type": "app",
             "title": "蓝奏云",
             "url": "https://pc.woozooo.com/account.php?action=login&ref=/mydisk.php",
             "icon": "https://icdn.binmt.cc/2603/69a3e3f574694.png",
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775271779443_1xp52bobu",
+            "type": "app",
+            "title": "黄云盘",
+            "url": "https://pan.huang1111.cn/login",
+            "icon": "https://icdn.binmt.cc/2603/69a3e9eeaca50.png",
+            "bgStyle": "background:#fff;"
           }
         ]
       }
@@ -255,6 +247,6 @@
       "url": "https://hanime1.me/search?query=%s"
     }
   ],
-  "timestamp": "2026-04-04T03:11:32.035Z",
+  "timestamp": "2026-04-04T08:19:30.361Z",
   "version": "2.0"
 }
