@@ -2,12 +2,20 @@
   "desktop": {
     "items": [
       {
-        "id": "app_baidu",
+        "id": "app_mail",
         "type": "app",
-        "title": "百度",
-        "url": "https://www.baidu.com",
-        "icon": "simple-icons:baidu",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+        "title": "脚本猫",
+        "url": "https://scriptcat.org/zh-CN/users/181254",
+        "icon": "streamline-block:nature-cat",
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
+      },
+      {
+        "id": "app_1774953875432_q94cvt",
+        "type": "app",
+        "title": "lconify",
+        "url": "https://yesicon.app/",
+        "icon": "ph:hand-fist-fill",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_weather",
@@ -18,52 +26,28 @@
         "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
       },
       {
-        "id": "app_1774953875432_q94cvt",
+        "id": "app_baidu",
         "type": "app",
-        "title": "lconify",
-        "url": "https://yesicon.app/",
-        "icon": "ph:hand-fist-fill",
-        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#7b61ff);"
+        "title": "百度",
+        "url": "https://www.baidu.com",
+        "icon": "simple-icons:baidu",
+        "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
       },
       {
-        "id": "app_mail",
+        "id": "app_book",
         "type": "app",
-        "title": "脚本猫",
-        "url": "https://scriptcat.org/zh-CN/users/181254",
-        "icon": "streamline-block:nature-cat",
-        "bgStyle": "background:linear-gradient(135deg,#667eea,#764ba2);"
+        "title": "阅读",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:book-open-page-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
-        "id": "app_music",
+        "id": "app_design",
         "type": "app",
-        "title": "网易云",
-        "url": "https://music.163.com",
-        "icon": "mdi:music-note",
-        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
-      },
-      {
-        "id": "app_taobao",
-        "type": "app",
-        "title": "淘宝",
-        "url": "https://www.taobao.com",
-        "icon": "ri:shopping-bag-3-fill",
-        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
-      },
-      {
-        "id": "app_map",
-        "type": "app",
-        "title": "地图",
-        "url": "https://ditu.amap.com",
-        "icon": "mdi:map-marker-radius",
-        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
-      },
-      {
-        "id": "app_forum",
-        "type": "app",
-        "title": "知乎",
-        "url": "https://www.zhihu.com",
-        "icon": "mdi:forum-outline",
-        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+        "title": "Canva",
+        "url": "https://www.canva.com",
+        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_bilibili",
@@ -84,18 +68,42 @@
       {
         "id": "app_docs",
         "type": "app",
-        "title": "文档",
-        "url": "https://docs.qq.com",
-        "icon": "mdi:file-document-outline",
+        "title": "脚本",
+        "url": "https://qq5855144.github.io/ScriptSearch/",
+        "icon": "hugeicons:java-script",
         "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
-        "id": "app_design",
+        "id": "app_music",
         "type": "app",
-        "title": "Canva",
-        "url": "https://www.canva.com",
-        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
-        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+        "title": "网易云",
+        "url": "https://music.163.com",
+        "icon": "mdi:music-note",
+        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
+      },
+      {
+        "id": "app_forum",
+        "type": "app",
+        "title": "知乎",
+        "url": "https://www.zhihu.com",
+        "icon": "mdi:forum-outline",
+        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+      },
+      {
+        "id": "app_taobao",
+        "type": "app",
+        "title": "淘宝",
+        "url": "https://www.taobao.com",
+        "icon": "ri:shopping-bag-3-fill",
+        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
+      },
+      {
+        "id": "app_map",
+        "type": "app",
+        "title": "地图",
+        "url": "https://ditu.amap.com",
+        "icon": "mdi:map-marker-radius",
+        "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
       },
       {
         "id": "app_video",
@@ -106,20 +114,66 @@
         "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
-        "id": "app_drive",
-        "type": "app",
-        "title": "云盘",
-        "url": "https://drive.google.com",
-        "icon": "mdi:cloud-upload-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
+        "id": "folder_1775287938453_dm26ubv5s",
+        "type": "folder",
+        "title": "小游戏",
+        "children": [
+          {
+            "id": "app_1775271972245_7yn0zq86b",
+            "type": "app",
+            "title": "Poki",
+            "url": "https://poki.com/zh",
+            "icon": "https://icdn.binmt.cc/2603/69a400811da1d.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775272025281_9wqmh3src",
+            "type": "app",
+            "title": "games",
+            "url": "https://zh.crazygames.plus/",
+            "icon": "https://icdn.binmt.cc/2603/69a40100e9f19.jpg",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775272065952_9kyuhfed8",
+            "type": "app",
+            "title": "小霸王",
+            "url": "https://www.yikm.net/",
+            "icon": "https://icdn.binmt.cc/2603/69a4045b5bb7c.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          }
+        ]
       },
       {
-        "id": "app_book",
-        "type": "app",
-        "title": "阅读",
-        "url": "https://weread.qq.com",
-        "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#8e2de2,#4a00e0);"
+        "id": "folder_1775287958278_z78pev7p5",
+        "type": "folder",
+        "title": "网盘",
+        "children": [
+          {
+            "id": "app_1775271815521_agcnf8phi",
+            "type": "app",
+            "title": "小飞机网盘",
+            "url": "https://www.feejii.com/m/login",
+            "icon": "https://icdn.binmt.cc/2603/69a3e59a3b5e9.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775271683578_zfjbm4ycu",
+            "type": "app",
+            "title": "蓝奏云",
+            "url": "https://pc.woozooo.com/account.php?action=login&ref=/mydisk.php",
+            "icon": "https://icdn.binmt.cc/2603/69a3e3f574694.png",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
+          },
+          {
+            "id": "app_1775271779443_1xp52bobu",
+            "type": "app",
+            "title": "黄云盘",
+            "url": "https://pan.huang1111.cn/login",
+            "icon": "https://icdn.binmt.cc/2603/69a3e9eeaca50.png",
+            "bgStyle": "background:#fff;"
+          }
+        ]
       }
     ]
   },
@@ -141,7 +195,7 @@
         "title": "笔记",
         "url": "https://qq5855144.github.io/zddss/",
         "icon": "mdi:notebook-outline",
-        "bgStyle": "background:linear-gradient(135deg,#43cea2,#185a9d);"
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
         "id": "app_github",
@@ -157,7 +211,7 @@
         "title": "MT论坛",
         "url": "https://bbs.binmt.cc/forum.php?mod=guide&view=newthread&index=1",
         "icon": "arcticons:mt-manager",
-        "bgStyle": "background:linear-gradient(135deg,#1d4350,#a43931);"
+        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
       },
       {
         "id": "dock_phone",
@@ -178,8 +232,33 @@
     ]
   },
   "currentQuote": "生活不是等待风暴过去，而是学会在雨中跳舞。",
-  "currentEngineId": "preset-1",
-  "customEngines": [],
-  "timestamp": "2026-04-04T11:56:02.581Z",
+  "currentEngineId": "engine_1775294032979_ve93f27d8",
+  "customEngines": [
+    {
+      "id": "engine_1775101370461_1i3z0n",
+      "name": "AV",
+      "icon": "lets-icons:video",
+      "url": "https://www.missav365.icu/cn/search/%s"
+    },
+    {
+      "id": "engine_1775101418629_fh68jd",
+      "name": "H漫",
+      "icon": "cib:vimeo-v",
+      "url": "https://hanime1.me/search?query=%s"
+    },
+    {
+      "id": "engine_1775294032979_ve93f27d8",
+      "name": "脚本搜索",
+      "icon": "simple-icons:greasyfork",
+      "url": "https://greasyfork.org/zh-CN/scripts?q=%s"
+    },
+    {
+      "id": "engine_1775294427242_jc8a60jkh",
+      "name": "Apkpure",
+      "icon": "uil:letter-english-a",
+      "url": "https://apkpure.com/search?q=%s"
+    }
+  ],
+  "timestamp": "2026-04-05T01:04:57.176Z",
   "version": "2.0"
 }
