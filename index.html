@@ -80,7 +80,7 @@
       border: 1px solid var(--panel-border);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-      z-index: 3000; opacity: 0; pointer-events: none;
+      z-index: 2000; opacity: 0; pointer-events: none;
       transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease, background .18s ease, border-color .18s ease;
       box-shadow: 0 16px 34px rgba(0,0,0,.2);
     }
@@ -167,7 +167,8 @@
     .app-icon {
       width: var(--icon-size); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
       cursor: pointer; touch-action: none; will-change: transform; position: relative; transition: transform .2s ease, opacity .2s ease;
-      outline: none; contain: layout style;
+      outline: none; contain: layout style; position: relative;   /* 新增 */
+  z-index: 2500;
     }
     .app-icon:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 4px; border-radius: 8px; }
     .app-icon:active { transform: scale(.96); }
@@ -1303,6 +1304,7 @@
       this.lastMoveEvent = null; this.contextTriggered = false; this.originSnapshot = null; this.overDelete = false;
       this.swapTargetId = null; this.insertTarget = null; this.isInGap = false; this.dragOffsetX = 0; this.dragOffsetY = 0; this.mergeTargetId = null;
       this.targetCache = null; this.targetCacheVersion = -1; dragInteraction.clearMergeHover(); dragInteraction.setDeleteZoneHover(false); dragInteraction.forceCleanup(); edgeHoverManager.clear();
+      this.deleteZoneRect = null; // 清除缓存的删除区位置
     },
     showPlaceholder: function dragStoreShowPlaceholder(target) {
       this.clearPlaceholder(); if (!target || target.container === 'dock') return;
@@ -1380,9 +1382,16 @@
     detectDropTargetOptimized: function dragStoreDetectDropTargetOptimized(x, y, excludeId) {
       var deleteZone = querySelector('#deleteZone');
       if (deleteZone) {
-        if (!this.deleteZoneRect) this.deleteZoneRect = deleteZone.getBoundingClientRect();
+        // 关键修复：如果删除区已激活（可见），实时获取其当前位置，不使用缓存的rect
+        if (deleteZone.classList.contains('active')) {
+          this.deleteZoneRect = deleteZone.getBoundingClientRect();
+        } else if (!this.deleteZoneRect) {
+          this.deleteZoneRect = deleteZone.getBoundingClientRect();
+        }
         var r = this.deleteZoneRect;
-        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return { type: 'delete', target: null, insertIndex: -1, container: null };
+        // 添加额外的容错边距，让删除区更容易触发（增加20像素的宽容区域）
+        var tolerance = 20;
+        if (x >= r.left - tolerance && x <= r.right + tolerance && y >= r.top - tolerance && y <= r.bottom + tolerance) return { type: 'delete', target: null, insertIndex: -1, container: null };
       }
       var m = layoutStore.metrics, pages = querySelectorAll('.page');
       for (var p = 0; p < pages.length; p++) {
