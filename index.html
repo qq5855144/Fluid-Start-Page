@@ -7,29 +7,13 @@
   <title>灵动起始页</title>
   <style>
     /* ============================================
-       灵动起始页 - 样式表
-       功能：iOS风格的桌面启动页，支持拖拽、文件夹、搜索、云同步
+       基础变量与主题定义
        ============================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none; 
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: #0b1220;
-    }
     :root {
+      /* 布局变量 - 两种风格共享 */
       --icon-size: clamp(46px, 12vw, 58px);
       --icon-radius: clamp(12px, 3vmin, 18px);
-      --grid-gap: 18px 14px;
+      --grid-gap: 14px 12px;
       --grid-columns: 5;
       --page-padding: 0 20px 32px;
       --header-time-size: clamp(42px, 12vw, 52px);
@@ -43,309 +27,623 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
-      --panel-bg: rgba(8, 14, 26, 0.96);
+    }
+
+    /* 新拟态风格变量 (默认) */
+    [data-theme="neumorphism"] {
+      --bg-color: #e0e5ec;
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --accent-color: #667eea;
+      --accent-light: #764ba2;
+      
+      /* 新拟态阴影系统 */
+      --shadow-light: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff;
+      --shadow-inset: inset 4px 4px 8px #b8b9be, inset -4px -4px 8px #ffffff;
+      --shadow-convex: 5px 5px 10px #b8b9be, -5px -5px 10px #ffffff, inset 1px 1px 1px rgba(255,255,255,0.6);
+      --shadow-concave: inset 3px 3px 6px #b8b9be, inset -3px -3px 6px #ffffff;
+      --shadow-float: 8px 8px 16px #b8b9be, -8px -8px 16px #ffffff;
+      --shadow-pressed: inset 2px 2px 4px #b8b9be, inset -2px -2px 4px #ffffff;
+      
+      --panel-bg: #e0e5ec;
+      --panel-border: rgba(255, 255, 255, 0.5);
+      --btn-bg: #e0e5ec;
+      --btn-hover-bg: #e6ebf3;
+      --btn-active-bg: #d4d9e1;
+      --backdrop-filter: none;
+      --wallpaper-overlay: none;
+    }
+
+    /* 毛玻璃风格变量 - 深色配色 */
+    [data-theme="glass"] {
+      --bg-color: #0b1220;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --accent-color: #5b8cff;
+      --accent-light: #7c5cff;
+      
+      /* 毛玻璃阴影系统 */
+      --shadow-light: 0 8px 24px rgba(0, 0, 0, 0.2);
+      --shadow-inset: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      --shadow-convex: 0 8px 20px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --shadow-concave: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-float: 0 12px 28px rgba(0, 0, 0, 0.15);
+      --shadow-pressed: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+      
+      --panel-bg: rgba(30, 30, 40, 0.85);
       --panel-border: rgba(255, 255, 255, 0.12);
       --btn-bg: rgba(255, 255, 255, 0.14);
       --btn-hover-bg: rgba(255, 255, 255, 0.22);
       --btn-active-bg: rgba(255, 255, 255, 0.28);
-      --primary-gradient: linear-gradient(135deg, #5b8cff, #7c5cff);
-      --primary-hover-gradient: linear-gradient(135deg, #6a99ff, #8b6dff);
-      --success-color: #48bb78;
-      --danger-color: #f56565;
-      --swap-highlight: rgba(255, 255, 255, 0.25);
-      --insert-placeholder-bg: rgba(255, 255, 255, 0.15);
-      --exchange-shadow: 0 4px 20px rgba(91, 140, 255, 0.4);
+      --backdrop-filter: blur(20px);
+      --wallpaper-overlay: linear-gradient(to bottom, rgba(255,255,255,.07), rgba(255,255,255,.01) 18%, rgba(0,0,0,.08) 100%);
     }
-    body { color: #fff; position: relative; overflow: hidden; }
-    .wallpaper {
+
+    /* ============================================
+       全局重置与基础样式
+       ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none; 
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      transition: background 0.5s ease, color 0.3s ease;
+    }
+    
+    body { 
+      position: relative; 
+      overflow: hidden; 
+    }
+    
+    /* 毛玻璃风格专用背景层 - 渐变背景 */
+    [data-theme="glass"] .wallpaper {
       position: fixed; inset: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(94,129,244,.34), transparent 35%), radial-gradient(circle at 80% 15%, rgba(62,226,173,.18), transparent 30%), radial-gradient(circle at 50% 80%, rgba(233,124,255,.18), transparent 35%), linear-gradient(180deg, #223352 0%, #132038 42%, #0b1426 100%);
-      z-index: 0; transition: background 0.3s ease;
+      background: radial-gradient(circle at 20% 20%, rgba(94,129,244,.34), transparent 35%), 
+                  radial-gradient(circle at 80% 15%, rgba(62,226,173,.18), transparent 30%), 
+                  radial-gradient(circle at 50% 80%, rgba(233,124,255,.18), transparent 35%), 
+                  linear-gradient(180deg, #223352 0%, #132038 42%, #0b1426 100%);
+      z-index: 0;
+      transition: background 0.5s ease;
     }
-    .wallpaper::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,.07), rgba(255,255,255,.01) 18%, rgba(0,0,0,.08) 100%);
-      pointer-events: none;
+    
+    [data-theme="glass"] .wallpaper::after { 
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      background: var(--wallpaper-overlay);
+      pointer-events: none; 
     }
+
+    /* 新拟态风格背景 - 纯色无壁纸 */
+    [data-theme="neumorphism"] .wallpaper {
+      position: fixed; inset: 0;
+      background: var(--bg-color);
+      z-index: 0;
+    }
+    [data-theme="neumorphism"] .wallpaper::after { 
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      pointer-events: none; 
+    }
+    
     .app-shell {
       position: relative; z-index: 1; width: 100%; height: 100vh; height: 100dvh;
       display: flex; flex-direction: column; overflow: hidden;
       padding: 0 var(--safe-right) 0 var(--safe-left);
     }
+    
+    /* ============================================
+       组件样式 - 适配双主题
+       ============================================ */
     .delete-zone {
       position: fixed; top: calc(var(--safe-top) + 6px); left: 50%;
       transform: translateX(-50%) translateY(-120%);
       width: clamp(70px, 12vw, 90px); height: clamp(70px, 12vw, 90px);
-      border-radius: 50%; background: rgba(18, 20, 27, .25);
+      border-radius: 50%; background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: var(--backdrop-filter); 
+      -webkit-backdrop-filter: var(--backdrop-filter);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
       z-index: 2000; opacity: 0; pointer-events: none;
       transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease, background .18s ease, border-color .18s ease;
-      box-shadow: 0 16px 34px rgba(0,0,0,.2);
+      box-shadow: var(--shadow-float);
     }
     .delete-zone.active { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .delete-zone.hover { background: rgba(214, 46, 46, .86); border-color: rgba(255,255,255,.15); }
-    .delete-zone .iconify { font-size: 24px; }
-    .delete-zone span { font-size: 11px; font-weight: 600; letter-spacing: .2px; text-align: center; line-height: 1; }
+    [data-theme="glass"] .delete-zone.hover { background: rgba(245, 101, 101, 0.2); border-color: rgba(255,255,255,0.6); }
+    [data-theme="neumorphism"] .delete-zone.hover { background: rgba(245, 101, 101, 0.1); border-color: rgba(255,255,255,0.8); }
+    .delete-zone .iconify { font-size: 24px; color: var(--text-secondary); }
+    .delete-zone span { font-size: 11px; font-weight: 600; letter-spacing: .2px; text-align: center; line-height: 1; color: var(--text-secondary); }
+    
     .top-btn {
-      width: 32px; height: 32px; border-radius: 8px; border: none; background: var(--btn-bg);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff;
-      transition: background .18s ease, transform .15s ease; flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 10px; border: none; background: var(--btn-bg);
+      box-shadow: var(--shadow-light);
+      display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary);
+      transition: all .2s ease; flex-shrink: 0;
     }
     .top-btn:hover, .top-btn:focus-visible { background: var(--btn-hover-bg); outline: 2px solid rgba(255,255,255,0.3); outline-offset: 2px; }
-    .top-btn:active { transform: scale(.95); }
+    .top-btn:active { transform: scale(.95); box-shadow: var(--shadow-pressed); }
     .top-btn .iconify { font-size: 18px; }
+    
     .top-actions { position: absolute; top: calc(var(--safe-top) + 12px); right: 16px; z-index: 20; display: none; }
+    
     .header-section {
       width: 100%; flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
-      color: #fff; padding: calc(var(--safe-top) + 12px) 20px 0; text-shadow: 0 2px 8px rgba(0,0,0,.22); z-index: 5;
+      color: var(--text-primary); padding: calc(var(--safe-top) + 12px) 20px 0; z-index: 5;
     }
-    .header-time { font-size: var(--header-time-size); font-weight: 200; line-height: 1; letter-spacing: -1px; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
-    .header-date { font-size: var(--header-date-size); opacity: .96; margin-bottom: 16px; }
+    .header-time { font-size: var(--header-time-size); font-weight: 600; line-height: 1; letter-spacing: -1px; margin-bottom: 6px; color: var(--text-primary); }
+    .header-date { font-size: var(--header-date-size); color: var(--text-secondary); margin-bottom: 16px; font-weight: 500; }
+    
     .quote-container { width: 90%; max-width: var(--quote-max-width); margin-bottom: 14px; min-height: 22px; }
     .quote-display { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     .quote-text-wrap { flex: 0 1 auto; max-width: 85%; overflow: hidden; position: relative; }
-    .quote-text { color: rgba(255,255,255,.96); font-size: 14px; line-height: 18px; white-space: nowrap; display: inline-block; }
+    .quote-text { color: var(--text-secondary); font-size: 14px; line-height: 18px; white-space: nowrap; display: inline-block; }
     .quote-text.scroll { animation: quoteScroll 10s linear infinite; }
     .quote-text-wrap:hover .quote-text.scroll { animation-play-state: paused; }
     @keyframes quoteScroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    .quote-edit-btn { display: inline-flex; align-items: center; cursor: pointer; opacity: .82; transition: opacity .18s ease; flex-shrink: 0; }
+    .quote-edit-btn { display: inline-flex; align-items: center; cursor: pointer; opacity: .82; transition: opacity .18s ease; flex-shrink: 0; color: var(--text-secondary); }
     .quote-edit-btn:hover { opacity: 1; }
     .quote-edit-mode { display: none; width: 100%; gap: 8px; align-items: center; }
     .quote-edit-mode.active { display: flex; }
-    .quote-input { flex: 1; height: 36px; border: none; outline: none; border-radius: 10px; padding: 0 12px; background: var(--btn-bg); color: #fff; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 13px; border: 1px solid var(--panel-border); }
-    .quote-input::placeholder { color: rgba(255,255,255,.6); }
-    .quote-action-btn { height: 36px; border: none; outline: none; padding: 0 12px; border-radius: 10px; background: var(--btn-bg); color: #fff; cursor: pointer; font-size: 12px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background .18s ease; }
+    .quote-input { flex: 1; height: 36px; border: none; outline: none; border-radius: 10px; padding: 0 12px; background: var(--panel-bg); color: var(--text-primary); box-shadow: var(--shadow-inset); font-size: 13px; border: 1px solid var(--panel-border); }
+    .quote-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+    .quote-action-btn { height: 36px; border: none; outline: none; padding: 0 12px; border-radius: 10px; background: var(--btn-bg); color: var(--text-primary); cursor: pointer; font-size: 12px; box-shadow: var(--shadow-light); transition: all .18s ease; font-weight: 500; }
     .quote-action-btn:hover, .quote-action-btn:focus-visible { background: var(--btn-hover-bg); outline: 2px solid rgba(255,255,255,0.3); }
+    .quote-action-btn:active { box-shadow: var(--shadow-pressed); }
+    
+    /* 搜索栏双主题适配 */
     .search-bar {
-      width: 90%; max-width: var(--search-max-width); height: 40px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 14px; margin-bottom: 28px; border-radius: 20px; background: rgba(255,255,255,.16);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 24px rgba(0,0,0,.08); position: relative; border: 1px solid var(--panel-border);
+      width: 90%; max-width: var(--search-max-width); height: 44px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 18px; margin-bottom: 28px; border-radius: 22px; background: var(--bg-color);
+      box-shadow: var(--shadow-convex);
+      position: relative; border: none;
+    }
+    [data-theme="glass"] .search-bar {
+      background: rgba(255,255,255,.16);
+      backdrop-filter: blur(16px); 
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
     .search-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-    .search-icon { font-size: 18px; color: white; flex-shrink: 0; cursor: pointer; transition: transform .18s ease; -webkit-tap-highlight-color: transparent; outline: none; }
+    .search-icon { font-size: 18px; color: var(--accent-color); flex-shrink: 0; cursor: pointer; transition: transform .18s ease; outline: none; }
     .search-icon:active { transform: scale(.92); }
     .search-icon:focus { outline: none; }
-    .search-input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: rgba(255,255,255,.95); font-size: 14px; }
-    .search-input::placeholder { color: rgba(255,255,255,.72); }
+    .search-input {
+      flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: var(--text-primary); font-size: 14px;
+    }
+    .search-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
     .search-actions { display: flex; gap: 10px; opacity: .95; flex-shrink: 0; }
-    .search-actions .iconify { font-size: 17px; color: rgba(255,255,255,.92); }
+    .search-actions .iconify { font-size: 17px; color: var(--text-secondary); }
+    
     .engine-panel {
       position: absolute; top: calc(100% + 8px); left: 0; width: 100%; border-radius: 16px;
-      background: rgba(30, 30, 40, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); z-index: 100; opacity: 0; pointer-events: none;
+      background: var(--panel-bg); 
+      backdrop-filter: var(--backdrop-filter); 
+      -webkit-backdrop-filter: var(--backdrop-filter);
+      box-shadow: var(--shadow-float); z-index: 100; opacity: 0; pointer-events: none;
       transform: translateY(-8px); transition: all 0.25s ease; overflow: hidden; border: 1px solid var(--panel-border);
     }
     .engine-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
     .engine-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; }
     .engine-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-      padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: background .18s ease, transform .15s ease;
+      padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: all .18s ease;
       background: transparent; position: relative;
     }
-    .engine-item:hover, .engine-item:focus-visible { background: var(--btn-hover-bg); transform: scale(1.05); outline: none; }
+    .engine-item:hover, .engine-item:focus-visible { background: var(--btn-hover-bg); transform: scale(1.05); outline: none; box-shadow: var(--shadow-light); }
     .engine-item.add-btn:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
-
-    .engine-item .iconify { font-size: 22px; color: #fff; flex-shrink: 0; }
-    .engine-name { font-size: 12px; color: #fff; text-align: center; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+    .engine-item .iconify { font-size: 22px; color: var(--accent-color); flex-shrink: 0; }
+    .engine-name { font-size: 12px; color: var(--text-primary); text-align: center; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+    
     .desktop { position: relative; width: 100%; flex: 1; overflow: hidden; perspective: 1200px; }
     .pages-container { display: flex; width: fit-content; height: 100%; transform: translate3d(0,0,0); will-change: transform; transition: transform .42s cubic-bezier(.22,.88,.24,1); }
     .page {
       width: 100vw; height: 100%; padding: var(--page-padding); display: grid;
-      grid-template-columns: repeat(var(--grid-columns), 1fr); grid-auto-rows: min-content;
-      gap: var(--grid-gap); align-content: start; justify-items: center; position: relative;
+      grid-template-columns: repeat(var(--grid-columns), 1fr); 
+      grid-auto-rows: min-content;
+      gap: var(--grid-gap);
+      padding-top: 10px !important; align-content: start; justify-items: center; position: relative;
       transform-origin: center center; transition: opacity .34s ease, transform .42s cubic-bezier(.22,.88,.24,1), filter .34s ease;
       opacity: .72; filter: saturate(.88); transform: scale(.94) rotateY(9deg); contain: layout style paint;
     }
     .page.page-current { opacity: 1; filter: saturate(1); transform: scale(1) rotateY(0); }
     .page.page-prev { transform: scale(.965) rotateY(8deg); }
     .page.page-next { transform: scale(.965) rotateY(-8deg); }
-    .virtual-scroll-spacer { grid-column: 1 / -1; height: var(--spacer-height, 0); pointer-events: none; }
+    
+    /* 应用图标双主题 */
     .app-icon {
       width: var(--icon-size); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
       cursor: pointer; touch-action: none; will-change: transform; position: relative; transition: transform .2s ease, opacity .2s ease;
-      outline: none; contain: layout style; position: relative;   /* 新增 */
-  z-index: 2500;
+      outline: none; contain: layout style; z-index: 2500;
     }
     .app-icon:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 4px; border-radius: 8px; }
-    .app-icon:active { transform: scale(.96); }
+    .app-icon:active .icon-bg { box-shadow: var(--shadow-pressed); transform: scale(0.98); }
+    
     .icon-bg {
-      width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: rgba(255,255,255,.12);
-      display: flex; align-items: center; justify-content: center; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 8px 20px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.08);
-      transition: transform .18s ease, outline .18s ease, box-shadow .18s ease, background .18s ease; position: relative;
+      width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: var(--bg-color);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      box-shadow: var(--shadow-convex);
+      transition: all .2s ease; position: relative;
     }
-    .icon-bg .iconify { font-size: calc(var(--icon-size) * .6); color: #fff; }
+    /* 毛玻璃风格下的图标适配 */
+    [data-theme="glass"] .icon-bg {
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .icon-bg .iconify { font-size: calc(var(--icon-size) * .5); color: var(--accent-color); }
     .icon-bg img.custom-icon { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .icon-label-wrap { width: 100%; display: flex; justify-content: center; margin-top: 7px; }
-    .icon-label { color: #fff; font-size: var(--label-font-size); line-height: 1.25; text-shadow: 0 1px 4px rgba(0,0,0,.2); white-space: nowrap; overflow: visible; max-width: none; width: auto; text-align: center; position: static; left: auto; transform: none; margin: 0; padding: 0 2px; }
+    
+    /* 新拟态风格下强制白色图标 */
+    [data-theme="neumorphism"] .app-icon .iconify {
+      color: white !important;
+    }
+    /* 毛玻璃风格下图标颜色 */
+    [data-theme="glass"] .app-icon .iconify {
+      color: #ffffff;
+    }
+    
+    .icon-label-wrap { width: 100%; display: flex; justify-content: center; margin-top: 5px; }
+    .icon-label { color: var(--text-secondary); font-size: var(--label-font-size); line-height: 1.25; white-space: nowrap; overflow: visible; width: auto; text-align: center; margin: 0; padding: 0 2px; font-weight: 500; }
+    [data-theme="glass"] .icon-label {
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    
     .folder-preview { position: absolute; inset: 8%; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4px; }
     .folder-preview-cell { border-radius: 6px; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-    .folder-preview-cell .iconify { font-size: calc(var(--icon-size) * .22); }
+    [data-theme="neumorphism"] .folder-preview-cell { background: rgba(255,255,255,.08); }
+    .folder-preview-cell .iconify { font-size: calc(var(--icon-size) * .22); color: var(--accent-color); }
     .folder-preview-cell img.custom-icon { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
-    .page-indicators { position: absolute; left: 50%; bottom: calc(10px + var(--safe-bottom)); transform: translateX(-50%); display: flex; gap: 8px; z-index: 6; }
-    .indicator-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.36); transition: all .25s ease; cursor: pointer; }
-    .indicator-dot:hover, .indicator-dot:focus-visible { transform: scale(1.3); background: rgba(255,255,255,0.6); outline: none; }
-    .indicator-dot.active { width: 18px; border-radius: 999px; background: rgba(255,255,255,.96); }
+    
+    .page-indicators { 
+      position: absolute; left: 50%; bottom: calc(8px + var(--safe-bottom)); transform: translateX(-50%); display: flex; gap: 8px; z-index: 6; 
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--bg-color);
+    }
+    [data-theme="glass"] .page-indicators {
+      background: transparent;
+    }
+    .indicator-dot { 
+      width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); opacity: 0.4;
+      transition: all .25s ease; cursor: pointer;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    [data-theme="glass"] .indicator-dot {
+      background: rgba(255,255,255,.36);
+      box-shadow: none;
+    }
+    .indicator-dot:hover, .indicator-dot:focus-visible { 
+      transform: scale(1.3); opacity: 0.7;
+      outline: none; 
+    }
+    .indicator-dot.active { 
+      width: 20px; border-radius: 10px; background: var(--accent-color);
+      opacity: 1;
+      box-shadow: 2px 2px 4px rgba(102, 126, 234, 0.3);
+    }
+    [data-theme="glass"] .indicator-dot.active {
+      background: rgba(255,255,255,.96);
+      box-shadow: none;
+    }
+    
+    /* Dock双主题 */
     .dock-wrap { width: 100%; padding: 0 16px calc(12px + var(--safe-bottom)); flex-shrink: 0; display: flex; justify-content: center; position: relative; z-index: 8; }
     .dock {
-      width: 100%; max-width: var(--dock-max-width); min-height: var(--dock-height); border-radius: 24px; padding: 10px 14px;
-      display: flex; align-items: center; justify-content: flex-start; gap: 9px; background: rgba(255,255,255,.14);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 12px 28px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.10); position: relative; border: 1px solid var(--panel-border);
+      width: 100%; max-width: var(--dock-max-width); min-height: var(--dock-height); border-radius: 28px; padding: 12px;
+      display: flex; align-items: center; justify-content: space-evenly; gap: 0; background: var(--bg-color);
+      box-shadow: var(--shadow-float);
+      position: relative; border: none;
+    }
+    [data-theme="glass"] .dock {
+      background: rgba(255,255,255,.14);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 12px 28px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.10);
+      justify-content: space-evenly !important;
+      padding: 12px 8px !important;  
+      gap: 0 !important;
     }
     .dock .app-icon { width: calc(var(--icon-size) * .92); flex-shrink: 0; }
-    .dock .icon-bg { width: calc(var(--icon-size) * .92); height: calc(var(--icon-size) * .92); }
-    .dock .icon-label { display: none; }
+    .dock .icon-bg {
+      width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: var(--bg-color);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      box-shadow: var(--shadow-convex);
+      transition: all .2s ease; position: relative;
+    }
+    [data-theme="glass"] .dock .icon-bg {
+      background: rgba(255,255,255,.12);
+    }
+    .dock .icon-label-wrap { display: none; }
+    
+    /* 新拟态Dock */
+    [data-theme="neumorphism"] .dock {
+      justify-content: space-evenly !important;
+      padding: 12px 8px !important;  
+      gap: 0 !important;
+    }
+    [data-theme="neumorphism"] .dock .icon-bg {
+      box-shadow: none !important;
+    }
+    
     .drag-ghost { position: fixed; left: 0; top: 0; z-index: 4000; pointer-events: none; will-change: transform; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; filter: drop-shadow(0 12px 24px rgba(0,0,0,.28)); }
     .drag-ghost .app-icon { transform: scale(1.06); }
     .drag-ghost .icon-bg img.custom-icon { width: 100%; height: 100%; object-fit: cover; }
+    
     .app-icon.drag-source { opacity: .18 !important; }
-    .app-icon.exchange-target .icon-bg { transform: scale(0.9); box-shadow: var(--exchange-shadow); outline: 2px solid rgba(255,255,255,0.4); outline-offset: 2px; }
-    .app-icon.merge-hover .icon-bg { outline: 3px solid rgba(255,255,255,.95); outline-offset: 4px; transform: scale(1.12); box-shadow: 0 12px 30px rgba(0,0,0,.18), 0 0 0 12px rgba(255,255,255,.15), inset 0 1px 0 rgba(255,255,255,.08); }
-    .app-icon.merge-hover::after { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; font-weight: 600; line-height: 1; padding: 6px 10px; border-radius: 999px; background: rgba(0,0,0,.72); color: #fff; z-index: 100; animation: mergePulse 1.5s ease-in-out infinite; content: "合并"; }
+    .app-icon.exchange-target .icon-bg {
+      box-shadow: var(--exchange-shadow), var(--shadow-convex);
+      transform: scale(1.05);
+    }
+    [data-theme="glass"] .app-icon.exchange-target .icon-bg {
+      outline: 2px solid rgba(255,255,255,0.4);
+      outline-offset: 2px;
+    }
+    .app-icon.merge-hover .icon-bg {
+      box-shadow: 0 0 0 3px var(--accent-color), var(--shadow-convex);
+      animation: mergePulse 1.5s ease-in-out infinite;
+    }
+    [data-theme="glass"] .app-icon.merge-hover .icon-bg {
+      outline: 3px solid rgba(255,255,255,.95);
+      outline-offset: 4px;
+      transform: scale(1.12);
+      box-shadow: 0 12px 30px rgba(0,0,0,.18), 0 0 0 12px rgba(255,255,255,.15);
+    }
+    .app-icon.merge-hover::after { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; font-weight: 600; line-height: 1; padding: 6px 10px; border-radius: 999px; background: var(--accent-color); color: #fff; z-index: 100; content: "合并"; box-shadow: var(--shadow-light); }
     @keyframes mergePulse { 0%, 100% { opacity: 0.9; transform: translateX(-50%) translateY(0); } 50% { opacity: 1; transform: translateX(-50%) translateY(-2px); } }
-    .app-icon.swap-hover .icon-bg { outline: 2px solid var(--swap-highlight); outline-offset: 2px; transform: scale(1.05); }
-    .insert-placeholder { width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: var(--insert-placeholder-bg); border: 2px dashed rgba(255,255,255,0.4); backdrop-filter: blur(4px); animation: placeholderPulse 1.2s ease-in-out infinite; pointer-events: none; }
+    
+    .app-icon.swap-hover .icon-bg {
+      box-shadow: var(--swap-highlight), var(--shadow-convex);
+    }
+    
+    .insert-placeholder { width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: var(--insert-placeholder-bg); border: 2px dashed var(--accent-color); backdrop-filter: blur(4px); animation: placeholderPulse 1.2s ease-in-out infinite; pointer-events: none; }
     @keyframes placeholderPulse { 0%, 100% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } }
     .insert-placeholder-gap { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-    .dock.drag-over { background: rgba(91, 140, 255, 0.25) !important; border-color: rgba(91, 140, 255, 0.6) !important; box-shadow: 0 12px 28px rgba(0,0,0,.15), 0 0 0 3px rgba(91, 140, 255, 0.3), inset 0 1px 0 rgba(255,255,255,.10) !important; }
-    .page.drag-over { background: rgba(91, 140, 255, 0.08); border-radius: 20px; }
-    .folder-grid.drag-over { background: rgba(91, 140, 255, 0.12); box-shadow: inset 0 0 0 2px rgba(91, 140, 255, 0.4); }
+    
+    .dock.drag-over { background: rgba(102, 126, 234, 0.1) !important; border-color: rgba(102, 126, 234, 0.4) !important; box-shadow: var(--shadow-float), inset 0 0 0 2px rgba(102, 126, 234, 0.3) !important; }
+    [data-theme="glass"] .dock.drag-over {
+      background: rgba(91, 140, 255, 0.25) !important;
+      border-color: rgba(91, 140, 255, 0.6) !important;
+    }
+    .page.drag-over { background: rgba(102, 126, 234, 0.05); border-radius: 20px; }
+    .folder-grid.drag-over { background: rgba(102, 126, 234, 0.08); box-shadow: inset 0 0 0 2px rgba(102, 126, 234, 0.3); }
+    
+    /* 模态框双主题 */
     .folder-modal, .form-modal, .wallpaper-modal, .engine-form-modal, .sync-modal {
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
       background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       z-index: 2500; padding: 20px;
     }
     .folder-modal.active, .form-modal.active, .wallpaper-modal.active, .engine-form-modal.active, .sync-modal.active { display: flex; }
+    
     .folder-content, .form-content, .wallpaper-content, .engine-form-content, .sync-content {
-      width: min(560px, 92vw); border-radius: 28px; background: var(--panel-bg);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 18px 40px rgba(0,0,0,.3); overflow: hidden; border: 1px solid var(--panel-border);
+      width: min(560px, 92vw); border-radius: 32px; background: var(--panel-bg);
+      box-shadow: var(--shadow-float);
+      overflow: hidden; border: 1px solid var(--panel-border);
+      backdrop-filter: var(--backdrop-filter);
+      -webkit-backdrop-filter: var(--backdrop-filter);
+    }
+    /* 新拟态风格移除模态框阴影 */
+    [data-theme="neumorphism"] .form-content, 
+    [data-theme="neumorphism"] .folder-content, 
+    [data-theme="neumorphism"] .wallpaper-content, 
+    [data-theme="neumorphism"] .engine-form-content, 
+    [data-theme="neumorphism"] .sync-content {
+      box-shadow: none !important;
     }
     .folder-content { min-height: 320px; max-height: 78vh; display: flex; flex-direction: column; }
-    .folder-header, .form-header, .wallpaper-header, .engine-form-header, .sync-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 18px 0; color: #fff; }
+    .folder-header, .form-header, .wallpaper-header, .engine-form-header, .sync-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 18px 0; color: var(--text-primary); }
     .folder-title, .form-title, .wallpaper-title, .engine-form-title, .sync-title { font-size: 18px; font-weight: 600; }
     .folder-body { padding: 20px; overflow: auto; flex: 1; }
     .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; min-height: 180px; border-radius: 20px; padding: 6px; position: relative; }
-    .folder-tip { margin-top: 16px; text-align: center; color: rgba(255,255,255,.78); font-size: 12px; }
+    .folder-tip { margin-top: 16px; text-align: center; color: var(--text-secondary); font-size: 12px; }
+    
     .context-menu {
       position: fixed; min-width: 188px; padding: 8px 0; border-radius: 16px; background: var(--panel-bg);
-      color: #fff; box-shadow: 0 18px 40px rgba(0,0,0,.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      color: var(--text-primary); box-shadow: var(--shadow-float); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       z-index: 3500; opacity: 0; pointer-events: none; transform: scale(.96); transform-origin: top left;
       transition: opacity .18s ease, transform .18s ease; border: 1px solid var(--panel-border);
     }
     .context-menu.active { opacity: 1; pointer-events: auto; transform: scale(1); }
-    .context-item { height: 42px; padding: 0 14px; display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; transition: background .18s ease; }
-    .context-item:hover, .context-item:focus-visible { background: var(--btn-hover-bg); outline: none; }
-    .context-item .iconify { font-size: 18px; }
-    .context-item.danger { color: #ff6b6b; }
+    .context-item { height: 42px; padding: 0 14px; display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; transition: all .18s ease; color: var(--text-primary); }
+    .context-item:hover, .context-item:focus-visible { background: var(--btn-hover-bg); outline: none; box-shadow: var(--shadow-light); }
+    .context-item .iconify { font-size: 18px; color: var(--accent-color); }
+    .context-item.danger { color: var(--danger-color); }
+    .context-item.danger .iconify { color: var(--danger-color); }
     .context-divider { height: 1px; margin: 6px 0; background: var(--panel-border); }
+    
     .form-body, .wallpaper-body, .engine-form-body, .sync-body { padding: 18px; }
     .form-row { margin-bottom: 14px; }
-    .form-label { display: block; font-size: 13px; margin-bottom: 8px; opacity: .92; }
-    .form-input, .form-select { width: 100%; height: 42px; border: none; outline: none; border-radius: 14px; padding: 0 14px; background: var(--btn-bg); color: #fff; font-size: 14px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--panel-border); }
-    .form-input:focus-visible, .form-select:focus-visible { outline: 2px solid rgba(255,255,255,0.3); outline-offset: 2px; }
-    .form-input::placeholder { color: rgba(255,255,255,.6); }
+    .form-label { display: block; font-size: 13px; margin-bottom: 8px; opacity: .92; color: var(--text-secondary); font-weight: 500; }
+    .form-input, .form-select {
+      width: 100%; height: 44px; border: none; outline: none; border-radius: 12px; padding: 0 16px; background: var(--bg-color);
+      box-shadow: var(--shadow-inset);
+      color: var(--text-primary); font-size: 14px;
+    }
+    [data-theme="glass"] .form-input, [data-theme="glass"] .form-select {
+      background: var(--btn-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: none;
+    }
+    .form-input:focus-visible, .form-select:focus-visible { outline: 2px solid rgba(102, 126, 234, 0.3); outline-offset: 2px; }
+    /* 新拟态风格移除聚焦边线 */
+    [data-theme="neumorphism"] .form-input:focus-visible,
+    [data-theme="neumorphism"] .form-select:focus-visible {
+      outline: none !important;
+    }
+    .form-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
     .icon-input-row { display: flex; gap: 8px; align-items: center; }
     .icon-input-row .form-input { flex: 1; }
-    .icon-select-btn { height: 42px; min-width: 42px; border: none; outline: none; border-radius: 14px; background: var(--btn-bg); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .18s ease; flex-shrink: 0; }
+    .icon-select-btn { height: 42px; min-width: 42px; border: none; outline: none; border-radius: 14px; background: var(--btn-bg); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .18s ease; flex-shrink: 0; box-shadow: var(--shadow-light); }
     .icon-select-btn:hover, .icon-select-btn:focus-visible { background: var(--btn-hover-bg); outline: 2px solid rgba(255,255,255,0.3); }
-    .icon-select-btn .iconify { font-size: 18px; }
+    .icon-select-btn:active { box-shadow: var(--shadow-pressed); }
+    .icon-select-btn .iconify { font-size: 18px; color: var(--accent-color); }
+    
     .file-input-wrapper { position: relative; width: 100%; }
     .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
-    .file-input-label { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 42px; border-radius: 14px; background: var(--btn-bg); color: #fff; cursor: pointer; font-size: 14px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px dashed var(--panel-border); transition: background .18s ease, border-color .18s ease; }
+    .file-input-label { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 42px; border-radius: 14px; background: var(--btn-bg); color: var(--text-primary); cursor: pointer; font-size: 14px; box-shadow: var(--shadow-light); border: 1px dashed var(--panel-border); transition: all .18s ease; font-weight: 500; }
     .file-input-label:hover, .file-input-label:focus-visible { background: var(--btn-hover-bg); border-color: rgba(255,255,255,.2); outline: none; }
-    .file-input-label .iconify { font-size: 16px; }
-    .form-preview { margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--btn-bg); border: 1px solid var(--panel-border); }
-    .form-preview-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.12); overflow: hidden; flex-shrink: 0; }
-    .form-preview-icon .iconify { font-size: 30px; color: #fff; }
+    .file-input-label:active { box-shadow: var(--shadow-pressed); }
+    .file-input-label .iconify { font-size: 16px; color: var(--accent-color); }
+    
+    .form-preview { margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--btn-bg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-light); }
+    .form-preview-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg-color); overflow: hidden; flex-shrink: 0; box-shadow: var(--shadow-convex); }
+    .form-preview-icon .iconify { font-size: 30px; color: var(--accent-color); }
     .form-preview-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
-    .form-preview-name { font-size: 14px; font-weight: 500; color: #fff; }
-    .form-preview-link { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 2px; }
+    .form-preview-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .form-preview-link { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    
     .form-actions, .wallpaper-actions, .engine-form-actions, .sync-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
-    .form-btn { min-width: 84px; height: 40px; border: none; outline: none; border-radius: 14px; padding: 0 16px; cursor: pointer; color: #fff; background: var(--btn-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background .18s ease, transform .15s ease; font-size: 14px; }
+    .form-btn { min-width: 84px; height: 40px; border: none; outline: none; border-radius: 14px; padding: 0 16px; cursor: pointer; color: var(--text-primary); background: var(--btn-bg); box-shadow: var(--shadow-light); transition: all .18s ease; font-size: 14px; font-weight: 500; }
     .form-btn:hover, .form-btn:focus-visible { background: var(--btn-hover-bg); outline: 2px solid rgba(255,255,255,0.3); }
-    .form-btn:active { transform: scale(.98); }
-    .form-btn.primary { background: var(--primary-gradient); }
-    .form-btn.primary:hover, .form-btn.primary:focus-visible { background: var(--primary-hover-gradient); outline: 2px solid rgba(255,255,255,0.4); }
-    .form-btn.success { background: linear-gradient(135deg, var(--success-color), #38a169); }
-    .form-btn.danger { background: linear-gradient(135deg, var(--danger-color), #c53030); }
-    .wallpaper-file-input { margin-bottom: 14px; }
+    .form-btn:active { transform: scale(.98); box-shadow: var(--shadow-pressed); }
+    .form-btn.primary { background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); color: white; }
+    .form-btn.primary:hover, .form-btn.primary:focus-visible { outline: 2px solid rgba(255,255,255,0.4); box-shadow: var(--shadow-light); }
+    .form-btn.success { background: linear-gradient(135deg, var(--success-color), #38a169); color: white; }
+    .form-btn.danger { background: linear-gradient(135deg, var(--danger-color), #c53030); color: white; }
+    
+    /* 搜索屏幕双主题 */
     .search-screen {
-      position: fixed; inset: 0; linear-gradient(180deg, rgba(40, 80, 130, 0.8) 0%, rgba(70, 110, 150, 0.6) 40%, rgba(120, 100, 70, 0.6) 100%);
+      position: fixed; inset: 0; background: var(--bg-color);
       backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 5000;
       display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease;
       padding: 0 var(--safe-right) 0 var(--safe-left); 
-        }
+    }
+    [data-theme="glass"] .search-screen {
+      background: linear-gradient(180deg, rgba(40, 80, 130, 0.8) 0%, rgba(70, 110, 150, 0.6) 40%, rgba(120, 100, 70, 0.6) 100%);
+    }
     .search-screen.active { display: flex; opacity: 1; transform: translateY(0); }
     .search-screen-header { width: 100%; padding: calc(var(--safe-top) + 12px) 20px 0; flex-shrink: 0; position: relative; }
-    .search-screen-bar { width: 100%; max-width: none; margin: 0; }
-    .search-close-btn { width: 32px; height: 32px; background: rgba(255, 255, 255, 0); padding: 0; }
+    .search-screen-bar { width: 100%; max-width: none; margin: 0; box-shadow: var(--shadow-convex); }
+    [data-theme="glass"] .search-screen-bar {
+      background: rgba(255,255,255,.16);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+    }
+    .search-close-btn { width: 32px; height: 32px; background: var(--btn-bg); padding: 0; box-shadow: var(--shadow-light); }
+    [data-theme="glass"] .search-close-btn {
+      background: transparent;
+      box-shadow: none;
+    }
     .search-engine-panel { top: calc(100% + 8px); left: 0; width: 100%; }
     .search-screen-body { flex: 1; width: 100%; padding: 20px; overflow-y: auto; position: relative; }
+    
     .suggest-list-container { width: 100%; max-width: 600px; margin: 0 auto; }
-    .suggest-section-title { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 12px; padding-left: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .suggest-section-title { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; padding-left: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
     .suggest-list { display: flex; flex-direction: column; gap: 8px; }
-    .suggest-item { display: flex; align-items: center; gap: 12px; padding: 6px 16px; border-radius: 12px; cursor: pointer; transition: all .2s ease; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
-    .suggest-item:hover, .suggest-item:focus-visible { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); transform: translateX(4px); outline: none; }
-    .suggest-item .iconify { font-size: 20px; flex-shrink: 0; color: rgba(255,255,255,.85); }
-    .suggest-text { font-size: 15px; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; letter-spacing: 0.2px; }
-    .suggest-arrow { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: all .2s ease; color: rgba(255,255,255,0.8); cursor: pointer; flex-shrink: 0; background: rgba(255,255,255,0.06); }
-    .suggest-arrow:hover, .suggest-arrow:focus-visible { background: rgba(255,255,255,0.2); transform: scale(1.02); outline: none; }
-    .suggest-arrow .iconify { font-size: 18px; pointer-events: none; }
-    .suggest-empty { text-align: center; color: rgba(255,255,255,0.5); padding: 40px 20px; font-size: 14px; }
+    .suggest-item { display: flex; align-items: center; gap: 12px; padding: 6px 16px; border-radius: 12px; cursor: pointer; transition: all .2s ease; background: var(--btn-bg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-light); }
+    [data-theme="glass"] .suggest-item {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: none;
+    }
+    .suggest-item:hover, .suggest-item:focus-visible { background: var(--btn-hover-bg); border-color: rgba(102, 126, 234, 0.3); transform: translateX(4px); outline: none; box-shadow: var(--shadow-convex); }
+    [data-theme="glass"] .suggest-item:hover, [data-theme="glass"] .suggest-item:focus-visible {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.2);
+      box-shadow: none;
+    }
+    .suggest-item .iconify { font-size: 20px; flex-shrink: 0; color: var(--accent-color); }
+    [data-theme="glass"] .suggest-item .iconify { color: rgba(255,255,255,.85); }
+    .suggest-text { font-size: 15px; color: var(--text-primary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; letter-spacing: 0.2px; }
+    .suggest-arrow { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: all .2s ease; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; background: var(--bg-color); box-shadow: var(--shadow-light); }
+    [data-theme="glass"] .suggest-arrow {
+      background: rgba(255,255,255,0.06);
+      box-shadow: none;
+    }
+    .suggest-arrow:hover, .suggest-arrow:focus-visible { background: var(--btn-hover-bg); transform: scale(1.02); outline: none; box-shadow: var(--shadow-convex); }
+    [data-theme="glass"] .suggest-arrow:hover, [data-theme="glass"] .suggest-arrow:focus-visible {
+      background: rgba(255,255,255,0.2);
+      box-shadow: none;
+    }
+    .suggest-arrow .iconify { font-size: 18px; pointer-events: none; color: var(--accent-color); }
+    .suggest-empty { text-align: center; color: var(--text-secondary); padding: 40px 20px; font-size: 14px; }
     .suggest-history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-left: 8px; }
-    .suggest-clear-history { font-size: 12px; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all .2s; }
-    .suggest-clear-history:hover, .suggest-clear-history:focus-visible { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); outline: none; }
+    .suggest-clear-history { font-size: 12px; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all .2s; background: var(--btn-bg); box-shadow: var(--shadow-light); }
+    .suggest-clear-history:hover, .suggest-clear-history:focus-visible { color: var(--danger-color); background: var(--btn-hover-bg); outline: none; }
+    [data-theme="glass"] .suggest-clear-history {
+      background: transparent;
+      box-shadow: none;
+    }
+    [data-theme="glass"] .suggest-clear-history:hover, [data-theme="glass"] .suggest-clear-history:focus-visible {
+      background: rgba(255,255,255,0.1);
+    }
+    
     .search-screen .search-input:focus, .search-screen .search-input:focus-visible { outline: none; box-shadow: none; border-color: transparent; }
-    .__xs_toast__ { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--panel-bg); color: #fff; padding: 10px 16px; border-radius: 999px; font-size: 13px; z-index: 99999; pointer-events: none; opacity: 0; transition: opacity .25s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--panel-border); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
-    .sync-status { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); }
-    .sync-status-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--btn-bg); }
+    
+    .__xs_toast__ { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--panel-bg); color: var(--text-primary); padding: 10px 16px; border-radius: 999px; font-size: 13px; z-index: 99999; pointer-events: none; opacity: 0; transition: opacity .25s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--panel-border); box-shadow: var(--shadow-float); font-weight: 500; }
+    
+    .sync-status { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 12px; border-radius: 12px; background: var(--btn-bg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-light); }
+    [data-theme="glass"] .sync-status {
+      background: rgba(255,255,255,0.05);
+    }
+    .sync-status-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg-color); box-shadow: var(--shadow-convex); }
     .sync-status-icon.success { background: rgba(72, 187, 120, 0.2); color: var(--success-color); }
     .sync-status-icon.error { background: rgba(245, 101, 101, 0.2); color: var(--danger-color); }
     .sync-status-text { flex: 1; }
-    .sync-status-title { font-size: 14px; font-weight: 600; color: #fff; }
-    .sync-status-desc { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
-    .sync-interval-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .sync-interval-label { font-weight: 600; color: #fff; font-size: 14px; }
-    .sync-interval-select { width: 120px; height: 36px; border-radius: 10px; background: var(--btn-bg); color: #fff; border: 1px solid var(--panel-border); font-size: 14px; padding: 0 10px; cursor: pointer; outline: none; }
-    .sync-interval-select:focus-visible { outline: 2px solid rgba(255,255,255,0.3); }
-    .sync-interval-select option { background: var(--panel-bg); color: #fff; }
-    .last-sync-info { font-size: 12px; color: rgba(255,255,255,0.5); text-align: center; margin-top: 10px; }
-    .next-sync-info { font-size: 11px; color: rgba(255,255,255,0.4); text-align: center; margin-top: 4px; }
+    .sync-status-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .sync-status-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .sync-interval-row { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 10px 0; border-top: 1px solid var(--panel-border); border-bottom: 1px solid var(--panel-border); }
+    .sync-interval-label { font-weight: 600; color: var(--text-primary); font-size: 14px; }
+    .sync-interval-select { width: 120px; height: 36px; border-radius: 10px; background: var(--btn-bg); color: var(--text-primary); border: 1px solid var(--panel-border); font-size: 14px; padding: 0 10px; cursor: pointer; outline: none; box-shadow: var(--shadow-light); }
+    .sync-interval-select:focus-visible { outline: 2px solid rgba(102, 126, 234, 0.3); }
+    .sync-interval-select option { background: var(--panel-bg); color: var(--text-primary); }
+    .last-sync-info { font-size: 12px; color: var(--text-secondary); text-align: center; margin-top: 10px; }
+    .next-sync-info { font-size: 11px; color: var(--text-secondary); opacity: 0.7; text-align: center; margin-top: 4px; }
+    
     .app-icon img, .folder-preview-cell img, .form-preview-icon img { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; pointer-events: none; }
     .app-icon .icon-bg, .folder-preview-cell, .form-preview-icon { pointer-events: auto; }
+    
     @media (min-width: 768px) {
       :root { --dock-max-width: 620px; }
-      .header-section { padding-top: 22px; }
-      .search-bar { height: 44px; }
+      .header-section { width: 100%; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: calc(var(--safe-top) + 12px) 20px 0; z-index: 5; }
+      .search-bar { width: 90%; max-width: var(--search-max-width); height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 18px; margin-bottom: 28px; border-radius: 22px; background: var(--bg-color); box-shadow: var(--shadow-convex); position: relative; border: none; }
+      [data-theme="glass"] .search-bar {
+        background: rgba(255,255,255,.16);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--panel-border);
+      }
       .folder-grid { grid-template-columns: repeat(4, 1fr); }
       .engine-list { grid-template-columns: repeat(5, 1fr); }
     }
-    *:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+    
+    *:focus-visible { outline: 2px solid rgba(102, 126, 234, 0.3); outline-offset: 2px; }
+    
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
   
-    /* 背景色选择器样式 */
+    /* 背景色选择器样式 - 双主题 */
     .bg-color-select-btn {
       width: 100%; height: 44px; border-radius: 14px; background: var(--btn-bg);
       border: 1px solid var(--panel-border); display: flex; align-items: center;
       gap: 10px; padding: 0 14px; cursor: pointer; transition: all 0.2s ease;
-      color: #fff; font-size: 14px;
+      color: var(--text-primary); font-size: 14px; font-weight: 500;
+      box-shadow: var(--shadow-light);
     }
     .bg-color-select-btn:hover { background: var(--btn-hover-bg); }
     .bg-color-preview {
       width: 28px; height: 28px; border-radius: 8px;
       background: linear-gradient(135deg,#4f86ff,#2f5fff);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), var(--shadow-light);
     }
     .bg-color-text { flex: 1; text-align: left; }
-    .bg-color-select-btn .iconify { font-size: 18px; opacity: 0.7; }
+    .bg-color-select-btn .iconify { font-size: 18px; opacity: 0.7; color: var(--accent-color); }
 
     /* 背景色模态框 */
     .bg-color-modal {
@@ -356,13 +654,13 @@
     .bg-color-modal.active { display: flex; }
     .bg-color-content {
       width: min(480px, 92vw); border-radius: 28px; background: var(--panel-bg);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 18px 40px rgba(0,0,0,.3); overflow: hidden; border: 1px solid var(--panel-border);
+      backdrop-filter: var(--backdrop-filter); -webkit-backdrop-filter: var(--backdrop-filter);
+      box-shadow: var(--shadow-float); overflow: hidden; border: 1px solid var(--panel-border);
       max-height: 85vh; display: flex; flex-direction: column;
     }
     .bg-color-header {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: 18px 18px 0; color: #fff;
+      padding: 18px 18px 0; color: var(--text-primary);
     }
     .bg-color-title { font-size: 18px; font-weight: 600; }
     .bg-color-body { padding: 18px; overflow-y: auto; flex: 1; }
@@ -370,29 +668,97 @@
     .bg-color-item { 
       width: 100%; aspect-ratio: 1; border-radius: 12px; cursor: pointer; 
       border: 2px solid transparent; transition: all 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-convex);
     }
     .bg-color-item:hover { transform: scale(1.08); border-color: rgba(255,255,255,0.5); }
-    .bg-color-item.selected { border-color: #fff; box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.6), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .bg-color-item.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--accent-color), var(--shadow-convex); }
     .bg-color-custom-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--panel-border); }
     .bg-color-custom-row { display: flex; gap: 10px; margin-top: 10px; }
     .bg-color-custom-row .form-input { flex: 1; }
     .bg-color-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 0 18px 18px; }
-    .icon-bg { border-radius: 25% !important; }
+    
+    /* 风格切换按钮样式 */
+    .style-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--btn-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--shadow-light);
+    }
+    [data-theme="glass"] .style-toggle-row {
+      background: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    .style-toggle-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .style-toggle-label .iconify {
+      font-size: 20px;
+      color: var(--accent-color);
+    }
+    .style-toggle-btn {
+      display: flex;
+      gap: 8px;
+      padding: 4px;
+      border-radius: 20px;
+      background: var(--bg-color);
+      box-shadow: var(--shadow-inset);
+    }
+    [data-theme="glass"] .style-toggle-btn {
+      background: rgba(0,0,0,0.3);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .style-option {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .style-option.active {
+      background: var(--accent-color);
+      color: white;
+      box-shadow: var(--shadow-light);
+    }
+    [data-theme="glass"] .style-option.active {
+      background: rgba(91, 140, 255, 0.8);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .style-option:hover:not(.active) {
+      background: var(--btn-hover-bg);
+      color: var(--text-primary);
+    }
+
     /* 搜索引擎图标预览 */
     .engine-icon-preview {
       width: 32px; height: 32px; border-radius: 8px; background: var(--btn-bg);
       border: 1px solid var(--panel-border); display: flex; align-items: center;
       justify-content: center; overflow: hidden; flex-shrink: 0;
+      box-shadow: var(--shadow-light);
     }
-    .engine-icon-preview .iconify { font-size: 20px; color: #fff; }
+    .engine-icon-preview .iconify { font-size: 20px; color: var(--accent-color); }
     .engine-icon-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
-    .engine-icon-preview-hint { font-size: 12px; color: rgba(255,255,255,.6); }
+    .engine-icon-preview-hint { font-size: 12px; color: var(--text-secondary); }
+    
     /* 搜索引擎列表中的图片图标 */
     .engine-item .engine-img-icon {
       width: 22px; height: 22px; border-radius: 4px; object-fit: cover;
       display: block; flex-shrink: 0; pointer-events: none;
     }
+    
     /* 搜索栏引擎图标为图片时 */
     .search-icon.engine-img-wrap {
       display: inline-flex; align-items: center; justify-content: center;
@@ -401,9 +767,30 @@
     .search-icon.engine-img-wrap img {
       width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
     }
+
+    /* 壁纸区域在新拟态下的提示 */
+    .wallpaper-disabled-hint {
+      display: none;
+      padding: 12px;
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px dashed rgba(255, 193, 7, 0.3);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    [data-theme="neumorphism"] .wallpaper-disabled-hint {
+      display: block;
+    }
+    [data-theme="neumorphism"] .wallpaper-active-content {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.5);
+    }
   </style>
 </head>
-<body>
+<body data-theme="neumorphism">
   <div class="wallpaper" id="wallpaperRoot"></div>
   <div class="delete-zone" id="deleteZone">
     <span class="iconify" data-icon="mdi:trash-can-outline"></span>
@@ -698,57 +1085,158 @@
       </div>
     </div>
   </div>
+  
+  <!-- 背景设置模态框 - 增加风格切换功能 -->
   <div class="wallpaper-modal" id="wallpaperModal">
     <div class="wallpaper-content">
       <div class="wallpaper-header">
-        <div class="wallpaper-title">自定义壁纸</div>
+        <div class="wallpaper-title">背景设置</div>
         <button class="top-btn" id="wallpaperCloseBtn" tabindex="0">
           <span class="iconify" data-icon="mdi:close"></span>
         </button>
       </div>
       <div class="wallpaper-body">
-        <div class="form-row">
-          <label class="form-label">图片URL</label>
-          <input id="wallpaperUrl" class="form-input" placeholder="https://... 或 /local.jpg" tabindex="0" />
+        <!-- 风格切换区域 -->
+        <div class="style-toggle-row">
+          <div class="style-toggle-label">
+            <span class="iconify" data-icon="mdi:palette-swatch"></span>
+            <span>界面风格</span>
+          </div>
+          <div class="style-toggle-btn" id="styleToggleBtn">
+            <button class="style-option active" data-style="neumorphism" id="styleNeumorphism">新拟态</button>
+            <button class="style-option" data-style="glass" id="styleGlass">毛玻璃</button>
+          </div>
         </div>
-        <input type="file" id="wallpaperFile" accept="image/*" style="display: none;" />
+        
+        <!-- 新拟态模式提示 -->
+        <div class="wallpaper-disabled-hint" id="wallpaperDisabledHint">
+          <span class="iconify" data-icon="mdi:information-outline" style="margin-right: 6px;"></span>
+          当前为新拟态风格，背景图片功能仅在毛玻璃风格下可用
+        </div>
+        
+        <!-- 壁纸设置区域 - 仅在毛玻璃风格有效 -->
+        <div class="wallpaper-active-content" id="wallpaperActiveContent">
+          <div class="form-row">
+            <label class="form-label">自定义壁纸</label>
+            <input id="wallpaperUrl" class="form-input" placeholder="https://... 或 /local.jpg" tabindex="0" />
+          </div>
+          <input type="file" id="wallpaperFile" accept="image/*" style="display: none;" />
+        </div>
       </div>
-      <div class="wallpaper-actions">
-        <button class="form-btn" id="wallpaperSelectBtn" tabindex="0">选择</button>
-        <button class="form-btn" id="resetWallpaperBtn" tabindex="0">恢复</button>
+      <div class="wallpaper-actions" id="wallpaperActions">
+        <button class="form-btn" id="wallpaperSelectBtn" tabindex="0">选择图片</button>
+        <button class="form-btn" id="resetWallpaperBtn" tabindex="0">恢复默认</button>
         <button class="form-btn primary" id="applyWallpaperBtn" tabindex="0">应用</button>
       </div>
     </div>
   </div>
+
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script>
 /* ==========================================
-   灵动起始页
+   灵动起始页 - 双风格版本
    ========================================== */
 (function mainIIFE() {
   'use strict';
+
+  // ==================== 风格管理 ====================
+  var STYLE_STORAGE_KEY = 'xs_ui_style';
+  var currentStyle = 'neumorphism'; // 默认新拟态风格
+  
+  function initStyle() {
+    var savedStyle = localStorage.getItem(STYLE_STORAGE_KEY);
+    if (savedStyle && (savedStyle === 'neumorphism' || savedStyle === 'glass')) {
+      currentStyle = savedStyle;
+    } else {
+      currentStyle = 'neumorphism';
+    }
+    document.body.setAttribute('data-theme', currentStyle);
+    updateStyleUI();
+  }
+  
+  function switchStyle(style) {
+    if (style !== 'neumorphism' && style !== 'glass') return;
+    currentStyle = style;
+    document.body.setAttribute('data-theme', style);
+    localStorage.setItem(STYLE_STORAGE_KEY, style);
+    updateStyleUI();
+    
+    // 如果切换到新拟态风格，需要重置壁纸为默认（隐藏背景图）
+    if (style === 'neumorphism') {
+      resetWallpaperToDefault();
+      showToast('已切换至新拟态风格');
+    } else {
+      // 切换到毛玻璃风格时，尝试加载已保存的壁纸
+      loadWallpaperForGlass();
+      showToast('已切换至毛玻璃风格');
+    }
+  }
+  
+  function updateStyleUI() {
+    var neumorphismBtn = document.getElementById('styleNeumorphism');
+    var glassBtn = document.getElementById('styleGlass');
+    if (neumorphismBtn && glassBtn) {
+      if (currentStyle === 'neumorphism') {
+        neumorphismBtn.classList.add('active');
+        glassBtn.classList.remove('active');
+      } else {
+        neumorphismBtn.classList.remove('active');
+        glassBtn.classList.add('active');
+      }
+    }
+  }
+  
+  // 新拟态风格下的默认背景（纯色）
+  function resetWallpaperToDefault() {
+    var wallpaperEl = document.getElementById('wallpaperRoot');
+    if (wallpaperEl) {
+      wallpaperEl.style.background = '';
+      wallpaperEl.style.backgroundSize = '';
+      wallpaperEl.style.backgroundImage = '';
+    }
+  }
+  
+  // 毛玻璃风格下加载壁纸
+  function loadWallpaperForGlass() {
+    storageAdapter.getItem(STORAGE_KEYS.WALLPAPER).then(function(saved) {
+      if (saved && saved !== 'default' && currentStyle === 'glass') {
+        applyWallpaperStyle(saved);
+      } else if (currentStyle === 'glass') {
+        // 使用默认背景图片（仅对毛玻璃风格生效）
+        applyWallpaperStyle('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80');
+      }
+    }).catch(function() {
+      // 如果存储不可用，直接使用默认背景图片
+      if (currentStyle === 'glass') {
+        applyWallpaperStyle('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80');
+      }
+    });
+  }
+  
+  function applyWallpaperStyle(url) {
+    var wallpaperEl = document.getElementById('wallpaperRoot');
+    if (!wallpaperEl || currentStyle !== 'glass') return;
+    wallpaperEl.style.background = 'url("' + url + '") center/cover no-repeat fixed';
+    wallpaperEl.style.backgroundSize = 'cover';
+  }
 
   // ==================== 存储适配器 ====================
   var storageAdapter = {
     isExtension: false,
     checkExtensionEnvironment: function checkExtensionEnvironment() {
       try {
-        // 检测扩展环境的多种方式
         if (typeof chrome !== 'undefined') {
-          // 检测 chrome.runtime（Manifest V2/V3 扩展）且 chrome.storage 可用
           if (chrome.runtime && chrome.runtime.id && 
               chrome.storage && typeof chrome.storage.local === 'object') {
             this.isExtension = true;
             return this.isExtension;
           }
         }
-        // 检测 browser API（Firefox 扩展）
         if (typeof browser !== 'undefined' && browser.runtime && 
             browser.storage && typeof browser.storage.local === 'object') {
           this.isExtension = true;
           return this.isExtension;
         }
-        // 检测是否在扩展协议的页面中运行
         if (window.location.protocol === 'chrome-extension:' || 
             window.location.protocol === 'moz-extension:' ||
             window.location.protocol === 'edge-extension:') {
@@ -758,17 +1246,14 @@
       } catch (e) { this.isExtension = false; }
       return this.isExtension;
     },
-    // 检查扩展存储 API 是否真正可用
     isStorageAvailable: function isStorageAvailable() {
       try {
-        // 检查 Chrome/Edge 扩展存储
         if (typeof chrome !== 'undefined' && 
             chrome.storage && 
             typeof chrome.storage.local === 'object' &&
             typeof chrome.storage.local.get === 'function') {
           return true;
         }
-        // 检查 Firefox 扩展存储
         if (typeof browser !== 'undefined' && 
             browser.storage && 
             typeof browser.storage.local === 'object' &&
@@ -785,7 +1270,6 @@
       if (this.isExtension && this.isStorageAvailable()) {
         return new Promise(function storageGetItemPromise(resolve) {
           try {
-            // 优先使用 Chrome/Edge API
             if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
               chrome.storage.local.get([key], function storageGetItemCallback(result) {
                 if (chrome.runtime && chrome.runtime.lastError) {
@@ -795,7 +1279,6 @@
                 }
               });
             } 
-            // 回退到 Firefox API
             else if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
               browser.storage.local.get([key]).then(function browserGetResult(result) {
                 resolve(result[key] || null);
@@ -816,14 +1299,12 @@
       if (this.isExtension && this.isStorageAvailable()) {
         return new Promise(function storageSetItemPromise(resolve) {
           try {
-            // 优先使用 Chrome/Edge API
             if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
               var setObjChrome = {}; setObjChrome[key] = value;
               chrome.storage.local.set(setObjChrome, function storageSetItemCallback() {
                 resolve();
               });
             } 
-            // 回退到 Firefox API
             else if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
               var setObjFirefox = {}; setObjFirefox[key] = value;
               browser.storage.local.set(setObjFirefox).then(function storageSetSuccess() {
@@ -849,11 +1330,9 @@
       if (this.isExtension && this.isStorageAvailable()) {
         return new Promise(function storageRemoveItemPromise(resolve) {
           try {
-            // 优先使用 Chrome/Edge API
             if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
               chrome.storage.local.remove([key], function storageRemoveItemCallback() { resolve(); });
             } 
-            // 回退到 Firefox API
             else if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
               browser.storage.local.remove([key]).then(function storageRemoveSuccess() { resolve(); }).catch(function storageRemoveError() {
                 localStorage.removeItem(key);
@@ -947,7 +1426,6 @@
     return '<span class="iconify" data-icon="' + escapeHtml(icon || 'mdi:apps') + '"></span>';
   }
   function createApp(id, title, url, icon, bg) {
-    // bg参数是纯颜色值，需要包装成完整的background样式
     var bgStyle = '';
     if (bg) {
       bgStyle = 'background:' + bg + ';';
@@ -1000,8 +1478,6 @@
     { name: '极光绿', style: 'linear-gradient(135deg,#00f260,#0575e6)' },
     { name: '樱花粉', style: 'linear-gradient(135deg,#ff9a9e,#fecfef)' }
   ];
-
-  var DEFAULT_WALLPAPER_URL = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80';
   var VIRTUAL_SCROLL_THRESHOLD = 200;
 
   // ==================== 布局存储 ====================
@@ -1304,7 +1780,7 @@
       this.lastMoveEvent = null; this.contextTriggered = false; this.originSnapshot = null; this.overDelete = false;
       this.swapTargetId = null; this.insertTarget = null; this.isInGap = false; this.dragOffsetX = 0; this.dragOffsetY = 0; this.mergeTargetId = null;
       this.targetCache = null; this.targetCacheVersion = -1; dragInteraction.clearMergeHover(); dragInteraction.setDeleteZoneHover(false); dragInteraction.forceCleanup(); edgeHoverManager.clear();
-      this.deleteZoneRect = null; // 清除缓存的删除区位置
+      this.deleteZoneRect = null;
     },
     showPlaceholder: function dragStoreShowPlaceholder(target) {
       this.clearPlaceholder(); if (!target || target.container === 'dock') return;
@@ -1382,14 +1858,12 @@
     detectDropTargetOptimized: function dragStoreDetectDropTargetOptimized(x, y, excludeId) {
       var deleteZone = querySelector('#deleteZone');
       if (deleteZone) {
-        // 关键修复：如果删除区已激活（可见），实时获取其当前位置，不使用缓存的rect
         if (deleteZone.classList.contains('active')) {
           this.deleteZoneRect = deleteZone.getBoundingClientRect();
         } else if (!this.deleteZoneRect) {
           this.deleteZoneRect = deleteZone.getBoundingClientRect();
         }
         var r = this.deleteZoneRect;
-        // 添加额外的容错边距，让删除区更容易触发（增加20像素的宽容区域）
         var tolerance = 20;
         if (x >= r.left - tolerance && x <= r.right + tolerance && y >= r.top - tolerance && y <= r.bottom + tolerance) return { type: 'delete', target: null, insertIndex: -1, container: null };
       }
@@ -1557,7 +2031,6 @@
         var parent = el.parentElement;
         var id = el.id;
         if (isImageIcon(icon)) {
-          // 如果当前元素是 SVG（Iconify 已渲染），需替换为 span
           var wrapper;
           if (el.tagName && el.tagName.toLowerCase() === 'svg') {
             wrapper = document.createElement('span');
@@ -1640,7 +2113,7 @@
   var syncStore = {
     config: { token: '', owner: '', repo: '', syncInterval: 0, lastSyncTime: null, fileName: 'desktop_backup.json' },
     autoSyncTimer: null,
-    AUTO_SYNC_CHECK_INTERVAL: 60 * 1000, // 每分钟检查一次
+    AUTO_SYNC_CHECK_INTERVAL: 60 * 1000,
     load: function syncStoreLoad() { 
       var self = this; 
       storageAdapter.getItem(STORAGE_KEYS.GITHUB_CONFIG).then(function syncStoreLoadThen(saved) { 
@@ -1695,7 +2168,6 @@
       self.push(false).then(function autoSyncPushThen(success) {
         if (success) {
           showToast('✅ 自动同步成功');
-        } else {
         }
         updateSyncTimeInfo();
       });
@@ -2081,13 +2553,11 @@
         handleSearchOrUrl(keyword, searchStore.currentEngine); 
         closeSearchScreen(); 
       });
-      // 根据环境选择合适的方式获取搜索建议
       searchScreenInput.addEventListener('input', debounce(function searchScreenInputHandler(e) {
         document.getElementById('searchScreenEnginePanel').classList.remove('active');
         var val = e.target.value.trim();
         if (!val) { renderSuggestionsToBody([]); return; }
         renderSuggestionsToBody([]);
-        // 尝试使用 fetch 获取搜索建议，如果失败则回退到 JSONP
         fetchSearchSuggestionsWithFallback(val);
       }, 150));
       searchScreenInput.addEventListener('blur', function searchScreenInputBlurHandler() { 
@@ -2103,7 +2573,6 @@
     }
   }
 
-  // 全局回调函数用于 JSONP 搜索建议
   window.handleRemoteSuggestionsCallback = function handleRemoteSuggestionsCallback(data) {
     var suggestions = [];
     if (data && data.s && Array.isArray(data.s)) {
@@ -2113,7 +2582,6 @@
     renderSuggestionsToBody(suggestions);
   };
 
-  // 普通浏览器环境：使用 JSONP 获取搜索建议（绕过跨域限制）
   function fetchSearchSuggestionsJSONP(val) {
     var scriptId = 'baidu-suggest-script';
     var existingScript = document.getElementById(scriptId);
@@ -2137,7 +2605,6 @@
     };
     document.body.appendChild(script);
     
-    // 超时处理
     setTimeout(function jsonpTimeoutHandler() {
       var s = document.getElementById(scriptId);
       if (s) {
@@ -2148,9 +2615,7 @@
     }, 5000);
   }
 
-  // 带回退机制的搜索建议获取
   function fetchSearchSuggestionsWithFallback(val) {
-    // 首先尝试使用 fetch
     var apiUrl = 'https://www.baidu.com/sugrec?prod=pc&wd=' + encodeURIComponent(val);
     
     fetch(apiUrl, {
@@ -2173,12 +2638,10 @@
       renderSuggestionsToBody(suggestions);
     })
     .catch(function fetchSuggestionsCatch(err) {
-      // fetch 失败，回退到 JSONP
       fetchSearchSuggestionsJSONP(val);
     });
   }
 
-  // 扩展环境专用：使用 fetch 获取搜索建议
   function fetchSearchSuggestions(val) {
     fetchSearchSuggestionsWithFallback(val);
   }
@@ -2706,6 +3169,44 @@
     }
   }
 
+  // ==================== 壁纸与风格管理 ====================
+  function applyWallpaper(url) { 
+    if (!url || currentStyle === 'neumorphism') return; // 新拟态下不应用壁纸
+    storageAdapter.setItem(STORAGE_KEYS.WALLPAPER, url); 
+    applyWallpaperStyle(url);
+    showToast('壁纸已更新'); 
+  }
+  
+  function resetWallpaper() { 
+    storageAdapter.setItem(STORAGE_KEYS.WALLPAPER, 'default'); 
+    if (currentStyle === 'glass') {
+      loadWallpaperForGlass();
+    } else {
+      resetWallpaperToDefault();
+    }
+    showToast('已恢复默认背景'); 
+  }
+  
+  function closeWallpaperModal() { if (refs.wallpaperModal) refs.wallpaperModal.classList.remove('active'); }
+  
+  // 风格切换按钮事件绑定
+  function bindStyleToggleEvents() {
+    var neumorphismBtn = document.getElementById('styleNeumorphism');
+    var glassBtn = document.getElementById('styleGlass');
+    
+    if (neumorphismBtn) {
+      neumorphismBtn.addEventListener('click', function() {
+        switchStyle('neumorphism');
+      });
+    }
+    
+    if (glassBtn) {
+      glassBtn.addEventListener('click', function() {
+        switchStyle('glass');
+      });
+    }
+  }
+
   // ==================== 其他 UI 函数 ====================
   function checkQuoteScroll() { 
     var quoteText = querySelector('#quoteDisplay'), quoteTextWrap = querySelector('.quote-text-wrap'); 
@@ -2738,226 +3239,6 @@
     if (refs.quoteDisplay) refs.quoteDisplay.textContent = appStore.currentQuote; 
     requestAnimationFrame(checkQuoteScroll); 
   }
-
-  function loadWallpaper() {
-    var wallpaperEl = document.getElementById('wallpaperRoot');
-    if (!wallpaperEl) return;
-    
-    // 首先尝试从存储加载
-    storageAdapter.getItem(STORAGE_KEYS.WALLPAPER).then(function loadWallpaperThen(saved) {
-      var wallpaperUrl = DEFAULT_WALLPAPER_URL;
-      if (saved && saved !== 'default') wallpaperUrl = saved;
-      wallpaperEl.style.background = 'url("' + wallpaperUrl + '") center/cover no-repeat fixed';
-      wallpaperEl.style.backgroundSize = 'cover';
-      // 如果没有保存过，保存默认壁纸
-      if (!saved) storageAdapter.setItem(STORAGE_KEYS.WALLPAPER, DEFAULT_WALLPAPER_URL);
-    }).catch(function loadWallpaperCatch(err) {
-      // 出错时使用默认壁纸
-      wallpaperEl.style.background = 'url("' + DEFAULT_WALLPAPER_URL + '") center/cover no-repeat fixed';
-      wallpaperEl.style.backgroundSize = 'cover';
-    });
-  }
-  function applyWallpaper(url) { 
-    if (!url) return; 
-    storageAdapter.setItem(STORAGE_KEYS.WALLPAPER, url); 
-    var wallpaperEl = document.getElementById('wallpaperRoot'); 
-    if (wallpaperEl) { wallpaperEl.style.background = 'url("' + url + '") center/cover no-repeat fixed'; wallpaperEl.style.backgroundSize = 'cover'; } 
-    showToast('壁纸已更新'); 
-  }
-  function resetWallpaper() { 
-    storageAdapter.setItem(STORAGE_KEYS.WALLPAPER, DEFAULT_WALLPAPER_URL); 
-    loadWallpaper(); 
-    showToast('已恢复默认壁纸'); 
-  }
-  function closeWallpaperModal() { if (refs.wallpaperModal) refs.wallpaperModal.classList.remove('active'); }
-  function initWallpaperEvents() {
-    var selectBtn = querySelector('#wallpaperSelectBtn');
-    if (selectBtn) selectBtn.addEventListener('click', function wallpaperSelectClickHandler() { if (refs.wallpaperFile) refs.wallpaperFile.click(); });
-    if (refs.wallpaperFile) refs.wallpaperFile.addEventListener('change', function wallpaperFileChangeHandler(e) { 
-      var file = e.target.files[0]; 
-      if (!file) return; 
-      var reader = new FileReader(); 
-      reader.onload = function wallpaperReaderOnload(ev) { if (refs.wallpaperUrl) refs.wallpaperUrl.value = ev.target.result; }; 
-      reader.readAsDataURL(file); 
-    });
-    var applyBtn = querySelector('#applyWallpaperBtn');
-    if (applyBtn) applyBtn.addEventListener('click', function wallpaperApplyClickHandler() { 
-      if (!refs.wallpaperUrl) return; 
-      var url = refs.wallpaperUrl.value.trim(); 
-      if (url) { applyWallpaper(url); closeWallpaperModal(); return; } 
-      showToast('请输入图片URL或选择图片'); 
-    });
-    var resetBtn = querySelector('#resetWallpaperBtn');
-    if (resetBtn) resetBtn.addEventListener('click', function wallpaperResetClickHandler() { resetWallpaper(); closeWallpaperModal(); });
-  }
-
-  function initIconSelectEvent() {
-    var iconSelectBtn = querySelector('#iconSelectBtn'), iconFileInput = querySelector('#iconFileInput');
-    if (iconSelectBtn && iconFileInput) {
-      iconSelectBtn.addEventListener('click', function iconSelectClickHandler() { iconFileInput.click(); });
-      iconFileInput.addEventListener('change', function iconFileChangeHandler(e) { 
-        var file = e.target.files[0]; 
-        if (!file) return; 
-        var reader = new FileReader(); 
-        reader.onload = function iconReaderOnload(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); }; 
-        reader.readAsDataURL(file); 
-      });
-    }
-  }
-
-  function updateFormPreview() {
-    var name = refs.formName && refs.formName.value ? refs.formName.value.trim() : '应用预览', 
-        url = refs.formUrl && refs.formUrl.value ? refs.formUrl.value.trim() : 'https://example.com', 
-        icon = refs.formIcon && refs.formIcon.value ? refs.formIcon.value.trim() : 'mdi:apps';
-    if (refs.formPreviewName) refs.formPreviewName.textContent = name; 
-    if (refs.formPreviewLink) refs.formPreviewLink.textContent = url;
-    if (refs.formPreviewIcon) { 
-      if (isImageIcon(icon)) refs.formPreviewIcon.innerHTML = '<img src="' + escapeHtml(icon) + '" alt="" loading="lazy" decoding="async">'; 
-      else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '"></span>';
-      var bgStyle = getSelectedBgStyle();
-      refs.formPreviewIcon.style.background = bgStyle;
-    }
-    if (window.Iconify && refs.formPreviewIcon) { try { Iconify.scan(refs.formPreviewIcon); } catch (_) {} }
-  }
-  // ==================== 背景色选择器 ====================
-  var selectedBgColor = PRESET_BG_COLORS[0].style;
-  var tempSelectedBgColor = PRESET_BG_COLORS[0].style;
-
-  function openBgColorModal() {
-    var modal = document.getElementById('bgColorModal');
-    if (!modal) return;
-    tempSelectedBgColor = selectedBgColor;
-    renderBgColorGrid();
-    updateBgColorPreview();
-    modal.classList.add('active');
-  }
-
-  function closeBgColorModal() {
-    var modal = document.getElementById('bgColorModal');
-    if (modal) modal.classList.remove('active');
-  }
-
-  function renderBgColorGrid() {
-    var grid = document.getElementById('bgColorModalGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    PRESET_BG_COLORS.forEach(function renderBgColorEach(color, index) {
-      var item = document.createElement('div');
-      item.className = 'bg-color-item';
-      item.style.background = color.style;
-      item.dataset.index = index;
-      item.dataset.style = color.style;
-      item.title = color.name;
-      if (color.style === tempSelectedBgColor) {
-        item.classList.add('selected');
-      }
-      item.addEventListener('click', function bgColorItemClickHandler() {
-        selectBgColorInModal(color.style, item);
-      });
-      grid.appendChild(item);
-    });
-  }
-
-  function selectBgColorInModal(style, element) {
-    tempSelectedBgColor = style;
-    var grid = document.getElementById('bgColorModalGrid');
-    if (grid) {
-      querySelectorAll('.bg-color-item', grid).forEach(function removeSelectedClass(el) {
-        el.classList.remove('selected');
-      });
-    }
-    if (element) element.classList.add('selected');
-    var customInput = document.getElementById('bgColorCustomInput');
-    if (customInput) {
-      // 如果是16进制颜色，显示在输入框中；如果是渐变，清空输入框
-      var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-      if (hexColorPattern.test(style)) {
-        customInput.value = style;
-      } else {
-        customInput.value = '';
-      }
-    }
-  }
-
-  function applyCustomBgColorInModal() {
-    var input = document.getElementById('bgColorCustomInput');
-    if (!input) return;
-    var value = input.value.trim();
-    if (!value) {
-      showToast('请输入CSS渐变代码或16进制颜色');
-      return;
-    }
-    
-    // 更智能的颜色类型检测
-    var finalValue;
-    
-    // 检查是否为16进制颜色（#开头）
-    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-    if (hexColorPattern.test(value)) {
-      // 16进制颜色直接使用
-      finalValue = value;
-    } else if (value.toLowerCase().includes('gradient') || value.includes('rgb') || value.includes('hsl') || /^[a-zA-Z]+$/.test(value)) {
-      // CSS渐变、rgb、hsl、颜色名称等直接使用
-      finalValue = value;
-    } else {
-      showToast('请输入有效的CSS颜色值(如#ff0000)或渐变代码');
-      return;
-    }
-    
-    tempSelectedBgColor = finalValue;
-    var grid = document.getElementById('bgColorModalGrid');
-    if (grid) {
-      querySelectorAll('.bg-color-item', grid).forEach(function removeSelected(el) {
-        el.classList.remove('selected');
-      });
-    }
-    showToast('已应用自定义颜色');
-  }
-
-  function confirmBgColorSelection() {
-    selectedBgColor = tempSelectedBgColor;
-    updateBgColorPreview();
-    updateFormPreview();
-    closeBgColorModal();
-  }
-
-  function updateBgColorPreview() {
-    var preview = document.getElementById('bgColorPreview');
-    if (preview) preview.style.background = selectedBgColor;
-  }
-
-  function getSelectedBgStyle() {
-    // 直接返回当前选择的颜色值，无论是16进制还是渐变
-    return selectedBgColor || PRESET_BG_COLORS[0].style;
-  }
-
-  function setSelectedBgStyle(style) {
-    // 处理预格式化的背景样式，提取纯颜色值
-    var cleanStyle = style;
-    if (style && style.startsWith('background:')) {
-      // 提取 background: 和结尾的 ; 之间的内容
-      cleanStyle = style.replace(/^background:\s*/, '').replace(/;\s*$/, '');
-    }
-    
-    // 更智能的颜色类型检测
-    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-    
-    if (hexColorPattern.test(cleanStyle)) {
-      // 16进制颜色
-      selectedBgColor = cleanStyle;
-    } else if (cleanStyle && (cleanStyle.includes('gradient') || cleanStyle.includes('rgb') || cleanStyle.includes('hsl') || /^[a-zA-Z]+$/.test(cleanStyle))) {
-      // CSS渐变、rgb、hsl、颜色名称等
-      selectedBgColor = cleanStyle;
-    } else {
-      // 默认使用预设颜色
-      selectedBgColor = cleanStyle || PRESET_BG_COLORS[0].style;
-    }
-    
-    tempSelectedBgColor = selectedBgColor;
-    updateBgColorPreview();
-  }
-
-
 
   function openFormModal(mode, context) {
     state.formState = { mode: mode, context: context }; 
@@ -3011,14 +3292,12 @@
         if (!bgStyleValue) {
           bgStyleValue = PRESET_BG_COLORS[0].style;
         }
-        // 确保返回的是完整的background样式
         var finalBgStyle;
         if (bgStyleValue.startsWith('background:')) {
           finalBgStyle = bgStyleValue;
         } else {
           finalBgStyle = 'background:' + bgStyleValue + ';';
         }
-        // 如果是16进制颜色，直接作为背景色；如果是渐变，保持原样
         item.bgStyle = finalBgStyle;
       }
       appStore.cleanupFolders(); 
@@ -3031,7 +3310,6 @@
     if (!bgStyleValue) {
       bgStyleValue = PRESET_BG_COLORS[0].style;
     }
-    // 确保返回的是完整的background样式
     var finalBgStyle;
     if (bgStyleValue.startsWith('background:')) {
       finalBgStyle = bgStyleValue;
@@ -3477,7 +3755,7 @@
       var file = e.target.files[0]; 
       if (!file) return; 
       var reader = new FileReader(); 
-      reader.onload = function iconReaderHandler(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); }; 
+      reader.onload = function iconReaderOnload(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); }; 
       reader.readAsDataURL(file); 
     });
     document.addEventListener('click', function modalOverlayClickHandler(e) {
@@ -3526,11 +3804,9 @@
     safeBind(refs.engineFormCancelBtn, 'click', closeEngineFormModal); 
     safeBind(refs.engineFormSaveBtn, 'click', saveCustomEngine);
 
-    // 搜索引擎图标：本地图片选择按鈕
     safeBind(refs.engineIconSelectBtn, 'click', function engineIconSelectBtnHandler() {
       if (refs.engineIconFileInput) refs.engineIconFileInput.click();
     });
-    // 搜索引擎图标：本地文件输入变化
     if (refs.engineIconFileInput) {
       refs.engineIconFileInput.addEventListener('change', function engineIconFileInputHandler(e) {
         var file = e.target.files && e.target.files[0];
@@ -3544,7 +3820,6 @@
         reader.readAsDataURL(file);
       });
     }
-    // 搜索引擎图标：输入框实时预览
     safeBind(refs.engineFormIcon, 'input', function engineFormIconInputHandler() {
       var val = refs.engineFormIcon ? refs.engineFormIcon.value.trim() : '';
       updateEngineIconPreview(val);
@@ -3570,7 +3845,6 @@
     
     if (refs.searchScreenBody) {
       refs.searchScreenBody.addEventListener('click', function suggestClickHandler(e) {
-        // 1. 优先处理清除全部历史按钮
         var clearHistoryBtn = e.target.closest('[data-action="clear-history"]');
         if (clearHistoryBtn) { 
           searchStore.clearHistory(); 
@@ -3580,7 +3854,6 @@
           return;
         }
 
-        // 2. 处理单条记录的操作按钮（删除或填入）
         var arrowBtn = e.target.closest('.suggest-arrow');
         if (arrowBtn) {
           var text = arrowBtn.dataset.text;
@@ -3597,7 +3870,6 @@
           return;
         }
 
-        // 3. 处理点击整行（执行搜索）
         var suggestItem = e.target.closest('.suggest-item');
         if (suggestItem) {
           var text = suggestItem.dataset.text;
@@ -3631,6 +3903,9 @@
         if (addBtn) openEngineFormModal();
       });
     }
+    
+    // 绑定风格切换事件
+    bindStyleToggleEvents();
   }
 
   // ==================== 页面滑动 ====================
@@ -3665,17 +3940,164 @@
     refs.headerDate.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + weekdays[now.getDay()]; 
   }
 
+  // ==================== 图标背景色功能 ====================
+  var selectedBgColor = PRESET_BG_COLORS[0].style;
+  var tempSelectedBgColor = PRESET_BG_COLORS[0].style;
+
+  function openBgColorModal() {
+    var modal = document.getElementById('bgColorModal');
+    if (!modal) return;
+    tempSelectedBgColor = selectedBgColor;
+    renderBgColorGrid();
+    updateBgColorPreview();
+    modal.classList.add('active');
+  }
+
+  function closeBgColorModal() {
+    var modal = document.getElementById('bgColorModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function renderBgColorGrid() {
+    var grid = document.getElementById('bgColorModalGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    PRESET_BG_COLORS.forEach(function renderBgColorEach(color, index) {
+      var item = document.createElement('div');
+      item.className = 'bg-color-item';
+      item.style.background = color.style;
+      item.dataset.index = index;
+      item.dataset.style = color.style;
+      item.title = color.name;
+      if (color.style === tempSelectedBgColor) {
+        item.classList.add('selected');
+      }
+      item.addEventListener('click', function bgColorItemClickHandler() {
+        selectBgColorInModal(color.style, item);
+      });
+      grid.appendChild(item);
+    });
+  }
+
+  function selectBgColorInModal(style, element) {
+    tempSelectedBgColor = style;
+    var grid = document.getElementById('bgColorModalGrid');
+    if (grid) {
+      querySelectorAll('.bg-color-item', grid).forEach(function removeSelectedClass(el) {
+        el.classList.remove('selected');
+      });
+    }
+    if (element) element.classList.add('selected');
+    var customInput = document.getElementById('bgColorCustomInput');
+    if (customInput) {
+      var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      if (hexColorPattern.test(style)) {
+        customInput.value = style;
+      } else {
+        customInput.value = '';
+      }
+    }
+  }
+
+  function applyCustomBgColorInModal() {
+    var input = document.getElementById('bgColorCustomInput');
+    if (!input) return;
+    var value = input.value.trim();
+    if (!value) {
+      showToast('请输入CSS渐变代码或16进制颜色');
+      return;
+    }
+    
+    var finalValue;
+    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    if (hexColorPattern.test(value)) {
+      finalValue = value;
+    } else if (value.toLowerCase().includes('gradient') || value.includes('rgb') || value.includes('hsl') || /^[a-zA-Z]+$/.test(value)) {
+      finalValue = value;
+    } else {
+      showToast('请输入有效的CSS颜色值(如#ff0000)或渐变代码');
+      return;
+    }
+    
+    tempSelectedBgColor = finalValue;
+    var grid = document.getElementById('bgColorModalGrid');
+    if (grid) {
+      querySelectorAll('.bg-color-item', grid).forEach(function removeSelected(el) {
+        el.classList.remove('selected');
+      });
+    }
+    showToast('已应用自定义颜色');
+  }
+
+  function confirmBgColorSelection() {
+    selectedBgColor = tempSelectedBgColor;
+    updateBgColorPreview();
+    updateFormPreview();
+    closeBgColorModal();
+  }
+
+  function updateBgColorPreview() {
+    var preview = document.getElementById('bgColorPreview');
+    if (preview) preview.style.background = selectedBgColor;
+  }
+
+  function getSelectedBgStyle() {
+    return selectedBgColor || PRESET_BG_COLORS[0].style;
+  }
+
+  function setSelectedBgStyle(style) {
+    var cleanStyle = style;
+    if (style && style.startsWith('background:')) {
+      cleanStyle = style.replace(/^background:\s*/, '').replace(/;\s*$/, '');
+    }
+    
+    var hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    
+    if (hexColorPattern.test(cleanStyle)) {
+      selectedBgColor = cleanStyle;
+    } else if (cleanStyle && (cleanStyle.includes('gradient') || cleanStyle.includes('rgb') || cleanStyle.includes('hsl') || /^[a-zA-Z]+$/.test(cleanStyle))) {
+      selectedBgColor = cleanStyle;
+    } else {
+      selectedBgColor = cleanStyle || PRESET_BG_COLORS[0].style;
+    }
+    
+    tempSelectedBgColor = selectedBgColor;
+    updateBgColorPreview();
+  }
+
+  function updateFormPreview() {
+    var name = refs.formName && refs.formName.value ? refs.formName.value.trim() : '应用预览', 
+        url = refs.formUrl && refs.formUrl.value ? refs.formUrl.value.trim() : 'https://example.com', 
+        icon = refs.formIcon && refs.formIcon.value ? refs.formIcon.value.trim() : 'mdi:apps';
+    if (refs.formPreviewName) refs.formPreviewName.textContent = name; 
+    if (refs.formPreviewLink) refs.formPreviewLink.textContent = url;
+    if (refs.formPreviewIcon) { 
+  if (isImageIcon(icon)) refs.formPreviewIcon.innerHTML = '<img src="' + escapeHtml(icon) + '" alt="" loading="lazy" decoding="async">'; 
+  else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '" style="color: white;"></span>'; 
+  var bgStyle = getSelectedBgStyle();
+  refs.formPreviewIcon.style.background = bgStyle;
+}
+    if (window.Iconify && refs.formPreviewIcon) { try { Iconify.scan(refs.formPreviewIcon); } catch (_) {} }
+  }
+
   // ==================== 初始化 ====================
   function init() {
     try {
       storageAdapter.checkExtensionEnvironment();
       resolveRefs();
+      
+      // 先初始化风格（必须在其他UI初始化之前）
+      initStyle();
+      
       dragStore.init();
       syncStore.load();
       layoutStore.init();
-      loadWallpaper();
-      initWallpaperEvents();
-      initIconSelectEvent();
+      
+      // 根据当前风格加载壁纸（毛玻璃风格才加载）
+      if (currentStyle === 'glass') {
+        loadWallpaperForGlass();
+      }
+      
       setupSearch();
       setupPageSwipe();
       searchStore.loadCustomEngines().then(function loadEnginesThen() {
