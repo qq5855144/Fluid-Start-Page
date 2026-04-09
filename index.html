@@ -107,24 +107,12 @@
       overflow: hidden; 
     }
     
-    /* 毛玻璃风格专用背景层 - 渐变背景 */
+    /* 毛玻璃风格专用背景层 */
     [data-theme="glass"] .wallpaper {
-      position: fixed; inset: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(94,129,244,.34), transparent 35%), 
-                  radial-gradient(circle at 80% 15%, rgba(62,226,173,.18), transparent 30%), 
-                  radial-gradient(circle at 50% 80%, rgba(233,124,255,.18), transparent 35%), 
-                  linear-gradient(180deg, #223352 0%, #132038 42%, #0b1426 100%);
-      z-index: 0;
-      transition: background 0.5s ease;
-    }
-    
-    [data-theme="glass"] .wallpaper::after { 
-      content: ""; 
-      position: absolute; 
-      inset: 0; 
-      background: var(--wallpaper-overlay);
-      pointer-events: none; 
-    }
+  position: fixed; inset: 0;
+  z-index: 0;
+  background: rgba(255, 255, 255, 0);
+}
 
     /* 新拟态风格背景 - 纯色无壁纸 */
     [data-theme="neumorphism"] .wallpaper {
