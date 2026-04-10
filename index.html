@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.iconify.design https://www.baidu.com https://api.iconify.design https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src * data: blob:; connect-src * data: https:; font-src * data:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>灵动起始页</title>
   <style>
@@ -36,6 +37,8 @@
       --text-secondary: #718096;
       --accent-color: #667eea;
       --accent-light: #764ba2;
+      --danger-color: #e53e3e;
+      --success-color: #48bb78;
       
       /* 新拟态阴影系统 */
       --shadow-light: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff;
@@ -61,6 +64,8 @@
       --text-secondary: rgba(255, 255, 255, 0.7);
       --accent-color: #5b8cff;
       --accent-light: #7c5cff;
+      --danger-color: #ff6b6b;
+      --success-color: #48bb78;
       
       /* 毛玻璃阴影系统 */
       --shadow-light: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -109,10 +114,10 @@
     
     /* 毛玻璃风格专用背景层 */
     [data-theme="glass"] .wallpaper {
-  position: fixed; inset: 0;
-  z-index: 0;
-  background: rgba(255, 255, 255, 0);
-}
+      position: fixed; inset: 0;
+      z-index: 0;
+      background: rgba(255, 255, 255, 0);
+    }
 
     /* 新拟态风格背景 - 纯色无壁纸 */
     [data-theme="neumorphism"] .wallpaper {
@@ -490,6 +495,9 @@
     .file-input-label .iconify { font-size: 16px; color: var(--accent-color); }
     
     .form-preview { margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--btn-bg); border: 1px solid var(--panel-border); box-shadow: var(--shadow-light); }
+    [data-theme="glass"] .form-preview {
+      background: rgba(255,255,255,0.05);
+    }
     .form-preview-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg-color); overflow: hidden; flex-shrink: 0; box-shadow: var(--shadow-convex); }
     .form-preview-icon .iconify { font-size: 30px; color: var(--accent-color); }
     .form-preview-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
@@ -795,8 +803,6 @@
           <div class="quote-text-wrap">
             <div class="quote-text" id="quoteDisplay">生活不是等待风暴过去，而是学会在雨中跳舞。</div>
           </div>
-          
-          </span>
         </div>
         <div class="quote-edit-mode" id="quoteEditMode">
           <input id="quoteInput" class="quote-input" type="text" placeholder="输入每日一言" maxlength="100" />
@@ -1122,10 +1128,30 @@
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script>
 /* ==========================================
-   灵动起始页 - 双风格版本
+   灵动起始页 - 双风格版本 (修复版)
    ========================================== */
 (function mainIIFE() {
   'use strict';
+
+  // ==================== 全局状态定义（提前定义，避免引用错误） ====================
+  var state = { 
+    contextTarget: null, 
+    formState: null, 
+    engineContextTarget: null, 
+    engineEditMode: false, 
+    engineEditId: null 
+  };
+
+  // ==================== 全局定时器追踪（防内存泄漏） ====================
+  var globalTimers = {
+    timeInterval: null,
+    dateInterval: null,
+    hitokotoInterval: null,
+    resizeHandler: null,
+    loadHandler: null,
+    orientationHandler: null,
+    quoteResizeHandler: null
+  };
 
   // ==================== 风格管理 ====================
   var STYLE_STORAGE_KEY = 'xs_ui_style';
@@ -1204,8 +1230,15 @@
   function applyWallpaperStyle(url) {
     var wallpaperEl = document.getElementById('wallpaperRoot');
     if (!wallpaperEl || currentStyle !== 'glass') return;
-    wallpaperEl.style.background = 'url("' + url + '") center/cover no-repeat fixed';
+    // 安全过滤 URL，防止注入攻击
+    var safeUrl = sanitizeUrl(url);
+    if (!safeUrl) return;
+    // 使用 CSS API 而非字符串拼接，防止引号闭合注入
+    wallpaperEl.style.backgroundImage = 'url(' + JSON.stringify(safeUrl) + ')';
+    wallpaperEl.style.backgroundPosition = 'center';
     wallpaperEl.style.backgroundSize = 'cover';
+    wallpaperEl.style.backgroundRepeat = 'no-repeat';
+    wallpaperEl.style.backgroundAttachment = 'fixed';
   }
 
   // ==================== 存储适配器 ====================
@@ -1341,7 +1374,7 @@
     }
   };
 
-  // ==================== 工具函数 ====================
+  // ==================== 工具函数（提前定义，确保可被调用） ====================
   function throttle(fn, limit) {
     var inThrottle = false, lastFn = null, lastTime = 0;
     return function throttledFunction() {
@@ -1357,6 +1390,7 @@
       }
     };
   }
+  
   function debounce(fn, wait) {
     wait = wait || 120;
     var timeout = null;
@@ -1366,15 +1400,41 @@
       timeout = setTimeout(function debounceTimeout() { fn.apply(context, args); }, wait);
     };
   }
+  
   function querySelector(selector, root) { return (root || document).querySelector(selector); }
   function querySelectorAll(selector, root) { return Array.from((root || document).querySelectorAll(selector)); }
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
   function deepClone(v) { return JSON.parse(JSON.stringify(v)); }
   function generateId(prefix) { return (prefix || 'id') + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
+  
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
+  
+  // 安全过滤 CSS 样式值，防止通过 style 属性注入
+  function sanitizeCSSValue(str) {
+    if (!str) return '';
+    // 移除可能用于闭合 style 属性并注入 HTML 属性的危险字符
+    return String(str)
+      .replace(/["'`]/g, '')          // 移除引号
+      .replace(/javascript\s*:/gi, '') // 移除 javascript: 协议
+      .replace(/expression\s*\(/gi, '') // 移除 CSS expression
+      .replace(/url\s*\(\s*["']?\s*javascript/gi, 'url(blocked') // 移除 url(javascript:)
+      .replace(/<\/?[^>]*>/g, '')     // 移除 HTML 标签
+      .replace(/on\w+\s*=/gi, '')     // 移除事件处理器
+      .replace(/;\s*[^}\s]/g, function(m) { return m; }); // 保留合法 CSS 分号
+  }
+  
+  // 安全过滤 URL，防止 javascript: 协议注入
+  function sanitizeUrl(url) {
+    if (!url) return '';
+    var trimmed = String(url).trim();
+    // 拒绝危险协议
+    if (/^\s*(javascript|data|vbscript)\s*:/i.test(trimmed)) return '';
+    return trimmed;
+  }
+  
   function showToast(message) {
     if (!message) return;
     var old = querySelector('.__xs_toast__');
@@ -1390,6 +1450,7 @@
       setTimeout(function removeToast() { toast.remove(); }, 260);
     }, 1800);
   }
+  
   function isImageIcon(value) {
     if (!value) return false;
     return (/^(https?:\/\/|data:image\/|\.|\/)/i.test(value) || /\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(value));
@@ -1406,13 +1467,17 @@
     }
   }
   
+  // 确保 handleImageError 在全局可用（供HTML内联事件使用）
+  window.handleImageError = handleImageError;
+  
   function renderIconContent(item) {
     var icon = item.icon || '';
     if (isImageIcon(icon)) {
-      return '<img class="custom-icon" src="' + escapeHtml(icon) + '" alt="" draggable="false" loading="lazy" decoding="async">';
+      return '<img class="custom-icon" src="' + escapeHtml(icon) + '" alt="" draggable="false" loading="lazy" decoding="async" onerror="handleImageError(this)">';
     }
     return '<span class="iconify" data-icon="' + escapeHtml(icon || 'mdi:apps') + '"></span>';
   }
+  
   function createApp(id, title, url, icon, bg) {
     var bgStyle = '';
     if (bg) {
@@ -1422,6 +1487,7 @@
     }
     return { id: id, type: 'app', title: title, url: url, icon: icon, bgStyle: bgStyle };
   }
+  
   function createFolder(id, title, children) {
     return { id: id, type: 'folder', title: title, children: children || [] };
   }
@@ -1767,7 +1833,11 @@
       this.active = false; this.pointerId = null; this.sourceType = null; this.sourceEl = null; this.itemId = null; this.folderId = null;
       this.lastMoveEvent = null; this.contextTriggered = false; this.originSnapshot = null; this.overDelete = false;
       this.swapTargetId = null; this.insertTarget = null; this.isInGap = false; this.dragOffsetX = 0; this.dragOffsetY = 0; this.mergeTargetId = null;
-      this.targetCache = null; this.targetCacheVersion = -1; dragInteraction.clearMergeHover(); dragInteraction.setDeleteZoneHover(false); dragInteraction.forceCleanup(); edgeHoverManager.clear();
+      // 释放 targetCache 引用，防止内存泄漏
+      if (this.targetCache) { this.targetCache.clear(); this.targetCache = null; }
+      this.targetCacheVersion = -1; dragInteraction.clearMergeHover(); dragInteraction.setDeleteZoneHover(false); dragInteraction.forceCleanup(); edgeHoverManager.clear();
+      // 清理 FLIP 动画残留
+      renderEngine.cleanupFLIP();
       this.deleteZoneRect = null;
     },
     showPlaceholder: function dragStoreShowPlaceholder(target) {
@@ -1867,6 +1937,11 @@
           if (!iconPositions) {
             iconPositions = []; var pageItems = querySelectorAll('.app-icon[data-scope="desktop"]', page);
             for (var i = 0; i < pageItems.length; i++) { var icon = pageItems[i]; if (icon.dataset.id === excludeId) continue; var rect = icon.getBoundingClientRect(); iconPositions.push({ el: icon, id: icon.dataset.id, left: rect.left - 10, right: rect.right + 10, top: rect.top - 10, bottom: rect.bottom + 10, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 }); }
+            // 限制缓存大小，防止无限增长导致内存泄漏
+            if (this.targetCache.size > 50) {
+              var firstKey = this.targetCache.keys().next().value;
+              this.targetCache.delete(firstKey);
+            }
             this.targetCache.set(cacheKey, iconPositions);
           }
           for (var j = 0; j < iconPositions.length; j++) {
@@ -2412,20 +2487,20 @@
     },
     renderDesktopItem: function renderEngineRenderDesktopItem(item, pageIndex, localIndex) {
       var displayTitle = item.title || '', tabIndex = 0;
-      if (item.type === 'folder') return '<div class="app-icon" data-id="' + item.id + '" data-scope="desktop" data-item-type="folder" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="button" aria-label="文件夹：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="background:rgba(255,255,255,.18);">' + this.renderFolderPreview(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
-      var bgStyle = item.bgStyle || '';
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="desktop" data-item-type="app" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="link" aria-label="应用：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
+      if (item.type === 'folder') return '<div class="app-icon" data-id="' + escapeHtml(item.id) + '" data-scope="desktop" data-item-type="folder" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="button" aria-label="文件夹：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="background:rgba(255,255,255,.18);">' + this.renderFolderPreview(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
+      var bgStyle = sanitizeCSSValue(item.bgStyle || '');
+      return '<div class="app-icon" data-id="' + escapeHtml(item.id) + '" data-scope="desktop" data-item-type="app" data-page-index="' + pageIndex + '" data-local-index="' + localIndex + '" tabindex="' + tabIndex + '" role="link" aria-label="应用：' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>';
     },
     renderDockItem: function renderEngineRenderDockItem(item, index) { 
       if (item.type === 'folder') return ''; 
       var displayTitle = item.title || '';
-      var bgStyle = item.bgStyle || '';
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="dock" data-item-type="app" data-local-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
+      var bgStyle = sanitizeCSSValue(item.bgStyle || '');
+      return '<div class="app-icon" data-id="' + escapeHtml(item.id) + '" data-scope="dock" data-item-type="app" data-local-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
     },
     renderFolderChild: function renderEngineRenderFolderChild(item, index, folderId) { 
       var displayTitle = item.title || '';
-      var bgStyle = item.bgStyle || '';
-      return '<div class="app-icon" data-id="' + item.id + '" data-scope="folder" data-folder-id="' + folderId + '" data-child-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
+      var bgStyle = sanitizeCSSValue(item.bgStyle || '');
+      return '<div class="app-icon" data-id="' + escapeHtml(item.id) + '" data-scope="folder" data-folder-id="' + escapeHtml(folderId) + '" data-child-index="' + index + '" tabindex="0" role="link" aria-label="' + escapeHtml(displayTitle) + '"><div class="icon-bg" style="' + bgStyle + '">' + renderIconContent(item) + '</div><div class="icon-label-wrap"><div class="icon-label">' + escapeHtml(displayTitle) + '</div></div></div>'; 
     },
     renderFolderPreview: function renderEngineRenderFolderPreview(folderItem) { 
       var preview = folderItem.children.slice(0, 4), cells = []; 
@@ -2433,7 +2508,7 @@
         var child = preview[i]; 
         var cellStyle = '';
         if (child && child.bgStyle) {
-          cellStyle = child.bgStyle;
+          cellStyle = sanitizeCSSValue(child.bgStyle);
         } else {
           cellStyle = 'background:rgba(255,255,255,.08);';
         }
@@ -2561,38 +2636,51 @@
     }
   }
 
-  window.handleRemoteSuggestionsCallback = function handleRemoteSuggestionsCallback(data) {
-    var suggestions = [];
-    if (data && data.s && Array.isArray(data.s)) {
-      suggestions = data.s.filter(Boolean);
-    }
-    searchStore.suggestions = suggestions;
-    renderSuggestionsToBody(suggestions);
-  };
+  // JSONP 回调已改为动态命名，不再使用全局固定回调（安全修复）
 
   function fetchSearchSuggestionsJSONP(val) {
     var scriptId = 'baidu-suggest-script';
     var existingScript = document.getElementById(scriptId);
     if (existingScript) existingScript.remove();
     
+    // 安全检查：限制回调函数名，防止注入
+    var callbackName = '__baiduSuggestCb_' + Date.now();
+    window[callbackName] = function(data) {
+      // 立即清理全局回调
+      delete window[callbackName];
+      var suggestions = [];
+      if (data && data.s && Array.isArray(data.s)) {
+        suggestions = data.s.filter(Boolean).map(function(s) {
+          return typeof s === 'string' ? s.substring(0, 200) : ''; // 限制长度
+        });
+      }
+      searchStore.suggestions = suggestions;
+      renderSuggestionsToBody(suggestions);
+    };
+    
     var script = document.createElement('script');
     script.id = scriptId;
-    script.src = 'https://www.baidu.com/su?wd=' + encodeURIComponent(val) + '&cb=window.handleRemoteSuggestionsCallback';
+    // 使用动态回调名称，减少全局命名空间污染
+    script.src = 'https://www.baidu.com/su?wd=' + encodeURIComponent(val) + '&cb=' + callbackName;
     script.async = true;
     script.onload = function scriptOnloadHandler() { 
       setTimeout(function removeScriptTimeout() { 
         var s = document.getElementById(scriptId); 
-        if (s) s.remove(); 
+        if (s) s.remove();
+        // 清理可能未被调用的回调
+        delete window[callbackName];
       }, 100); 
     };
     script.onerror = function scriptOnerrorHandler() { 
       var s = document.getElementById(scriptId); 
       if (s) s.remove(); 
+      delete window[callbackName];
       searchStore.suggestions = [];
       renderSuggestionsToBody([]);
     };
     document.body.appendChild(script);
     
+    // 超时自动清理
     setTimeout(function jsonpTimeoutHandler() {
       var s = document.getElementById(scriptId);
       if (s) {
@@ -2600,6 +2688,7 @@
         searchStore.suggestions = [];
         renderSuggestionsToBody([]);
       }
+      delete window[callbackName];
     }, 5000);
   }
 
@@ -2680,7 +2769,10 @@
     if (isUrl(trimmedKeyword)) { 
       var url = trimmedKeyword; 
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url; 
-      window.open(url, '_blank'); 
+      // 安全检查：拒绝危险协议
+      url = sanitizeUrl(url);
+      if (!url) { showToast('不安全的URL'); return false; }
+      window.open(url, '_blank', 'noopener,noreferrer'); 
       if (mainInput) mainInput.value = ''; 
       if (searchScreenInput) searchScreenInput.value = ''; 
       return true; 
@@ -2688,7 +2780,9 @@
     else {
       if (!engine || !engine.url) engine = searchStore.engines.find(function findDefaultEngine(e) { return e.id === 'preset-2'; }) || searchStore.engines[2];
       var searchUrl = engine.url.replace('%s', encodeURIComponent(trimmedKeyword)); 
-      window.open(searchUrl, '_blank');
+      searchUrl = sanitizeUrl(searchUrl);
+      if (!searchUrl) { showToast('不安全的搜索URL'); return false; }
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
       if (mainInput) mainInput.value = ''; 
       if (searchScreenInput) searchScreenInput.value = ''; 
       return false;
@@ -2721,6 +2815,8 @@
       }); 
     });
     window.history.pushState({ searchOpen: true }, '搜索', ''); 
+    // 先移除旧的再绑定，防止重复绑定导致内存泄漏
+    window.removeEventListener('popstate', handleSearchPopState);
     window.addEventListener('popstate', handleSearchPopState);
   }
 
@@ -2883,7 +2979,7 @@
     var engine = state.engineContextTarget;
     if (!engine) return;
     hideEngineContextMenu();
-    if (confirm('确定删除搜索引擎"' + engine.name + '"吗？')) {
+    if (confirm('确定删除搜索引擎「' + (engine.name || '').substring(0, 50) + '」吗？')) {
       if (searchStore.deleteCustomEngine(engine.id)) {
         renderEngineList();
         showToast('已删除');
@@ -2891,8 +2987,13 @@
     }
   }
 
+  // 追踪已绑定事件的容器，避免重复绑定导致内存泄漏
+  var engineBoundContainers = new WeakSet();
   function bindEngineLongPressEvents(container) {
     if (!container) return;
+    // 防止重复绑定事件监听器
+    if (engineBoundContainers.has(container)) return;
+    engineBoundContainers.add(container);
     container.addEventListener('pointerdown', handleEnginePointerDown, { passive: true });
     container.addEventListener('pointermove', handleEnginePointerMove, { passive: true });
     container.addEventListener('pointerup', handleEnginePointerUp, { passive: false });
@@ -2976,7 +3077,7 @@
     if (!engineId || engineId.startsWith('preset-')) return;
     var engine = searchStore.engines.find(function findDelEngine(e) { return e.id === engineId; });
     if (!engine) return;
-    if (confirm('确定删除搜索引擎"' + engine.name + '"吗？')) {
+    if (confirm('确定删除搜索引擎「' + (engine.name || '').substring(0, 50) + '」吗？')) {
       if (searchStore.deleteCustomEngine(engineId)) {
         renderEngineList();
         showToast('已删除');
@@ -3072,7 +3173,17 @@
   // ==================== 同步模态框 UI ====================
   function openSyncModal() {
     refs.syncModal.classList.add('active'); 
-    if (refs.githubToken) refs.githubToken.value = syncStore.config.token || ''; 
+    // 安全：仅显示令牌摘要，不显示完整令牌
+    if (refs.githubToken) {
+      var t = syncStore.config.token || '';
+      if (t) {
+        refs.githubToken.value = t.substring(0, 8) + '****' + t.substring(Math.max(8, t.length - 4));
+        refs.githubToken.dataset.masked = 'true';
+      } else {
+        refs.githubToken.value = '';
+        refs.githubToken.dataset.masked = 'false';
+      }
+    }
     if (refs.githubRepo) refs.githubRepo.value = syncStore.config.repo || '';
     var intervalSelect = document.getElementById('syncIntervalSelect'); 
     if (intervalSelect) intervalSelect.value = syncStore.config.syncInterval || 0;
@@ -3094,10 +3205,13 @@
 
   function closeSyncModal() { if (refs.syncModal) refs.syncModal.classList.remove('active'); }
   function manualPushToGithub() {
-    var token = refs.githubToken ? refs.githubToken.value.trim() : '', 
+    var rawToken = refs.githubToken ? refs.githubToken.value.trim() : '', 
         repo = refs.githubRepo ? refs.githubRepo.value.trim() : '', 
         intervalSelect = document.getElementById('syncIntervalSelect'), 
         interval = intervalSelect ? parseInt(intervalSelect.value) || 0 : 0;
+    // 如果输入框是掩码状态且内容未修改，使用已保存的 token
+    var isMasked = refs.githubToken && refs.githubToken.dataset.masked === 'true';
+    var token = (isMasked && rawToken.indexOf('****') > -1) ? syncStore.config.token : rawToken;
     syncStore.updateSyncInterval(interval);
     function continuePush() { 
       if (repo !== syncStore.config.repo) syncStore.config.repo = repo; 
@@ -3105,17 +3219,19 @@
       updateSyncTimeInfo(); 
       syncStore.push(true); 
     }
-    if (token !== syncStore.config.token) { 
+    if (token && token !== syncStore.config.token) { 
       syncStore.validateToken(token).then(function validateTokenThen() { continuePush(); }); 
     } else { 
       continuePush(); 
     }
   }
   function manualPullFromGithub() {
-    var token = refs.githubToken ? refs.githubToken.value.trim() : '', 
+    var rawToken = refs.githubToken ? refs.githubToken.value.trim() : '', 
         repo = refs.githubRepo ? refs.githubRepo.value.trim() : '', 
         intervalSelect = document.getElementById('syncIntervalSelect'), 
         interval = intervalSelect ? parseInt(intervalSelect.value) || 0 : 0;
+    var isMasked = refs.githubToken && refs.githubToken.dataset.masked === 'true';
+    var token = (isMasked && rawToken.indexOf('****') > -1) ? syncStore.config.token : rawToken;
     syncStore.updateSyncInterval(interval);
     function continuePull() { 
       if (repo !== syncStore.config.repo) syncStore.config.repo = repo; 
@@ -3123,7 +3239,7 @@
       updateSyncTimeInfo(); 
       syncStore.pull(); 
     }
-    if (token !== syncStore.config.token) { 
+    if (token && token !== syncStore.config.token) { 
       syncStore.validateToken(token).then(function validateTokenThen() { continuePull(); }); 
     } else { 
       continuePull(); 
@@ -3373,13 +3489,17 @@
     if (!item) return;
     if (item.type === 'folder') { appStore.folderModalId = item.id; renderEngine.renderFolderModal(); return; }
     if (item.url === '#sync' || item.id === 'app_sync') { openSyncModal(); return; }
-    if (item.url && item.url !== '#') { window.open(item.url, '_blank'); return; }
+    if (item.url && item.url !== '#') { 
+      var safeUrl = sanitizeUrl(item.url);
+      if (safeUrl) window.open(safeUrl, '_blank', 'noopener,noreferrer'); 
+      else showToast('不安全的链接'); 
+      return; 
+    }
     showToast('打开 ' + item.title);
   }
   function closeFolder() { appStore.folderModalId = null; if (refs.folderModal) refs.folderModal.classList.remove('active'); }
 
   // ==================== 全局引用 ====================
-  var state = { contextTarget: null, formState: null, engineContextTarget: null, engineEditMode: false, engineEditId: null };
   var refs = {
     root: null, body: null, desktop: null, pagesContainer: null, indicators: null, dock: null, deleteZone: null,
     folderModal: null, folderTitle: null, folderGrid: null, folderEmpty: null, folderCloseBtn: null,
@@ -3517,13 +3637,6 @@
       if (e.target.closest('.app-icon, .folder-preview-cell, .form-preview-icon')) e.preventDefault(); 
     });
     
-    document.addEventListener('error', function documentErrorHandler(e) {
-      var target = e.target;
-      if (target && target.tagName === 'IMG' && target.classList.contains('custom-icon')) {
-        handleImageError(target);
-      }
-    }, { capture: true, passive: true });
-    
     document.addEventListener('pointerdown', function documentPointerdownHandler(e) { dragStore.handlePointerDown(e); }, { passive: true });
     window.addEventListener('pointermove', function windowPointermoveHandler(e) { dragStore.handlePointerMove(e); }, { passive: false, capture: false });
     window.addEventListener('pointerup', function windowPointerupHandler(e) { dragStore.handlePointerUp(e); }, { passive: false });
@@ -3544,9 +3657,9 @@
           appStore.dock.items = deepClone(dragStore.originSnapshot.dock); 
           appStore.currentPage = dragStore.originSnapshot.currentPage; 
           appStore.folderModalId = dragStore.originSnapshot.folderModalId; 
+          renderEngine.renderAll(); 
         } 
         dragStore.reset(); 
-        renderEngine.renderAll(); 
       } 
     });
     
@@ -3679,7 +3792,7 @@
       if (!state.contextTarget || state.contextTarget.kind !== 'item') return; 
       var item = appStore.getItemById(state.contextTarget.itemId); 
       if (!item) return; 
-      if (!confirm('确定删除"' + (item.title || '该项目') + '"吗？')) return; 
+      if (!confirm('确定删除「' + (item.title || '该项目').substring(0, 50) + '」吗？')) return; 
       appStore.deleteItemById(state.contextTarget.itemId); 
       closeFolder(); 
       hideContextMenu(); 
@@ -3705,6 +3818,10 @@
     
     safeBind(refs.githubToken, 'blur', function githubTokenBlurHandler(e) { 
       var token = e.target.value.trim(); 
+      // 如果是掩码状态且未修改，跳过验证
+      var isMasked = e.target.dataset.masked === 'true';
+      if (isMasked && token.indexOf('****') > -1) return;
+      if (token) { e.target.dataset.masked = 'false'; }
       if (token && token !== syncStore.config.token) syncStore.validateToken(token); 
     });
     safeBind(refs.githubRepo, 'change', function githubRepoChangeHandler(e) { 
@@ -3717,17 +3834,18 @@
     safeBind(refs.syncPullBtn, 'click', manualPullFromGithub); 
     safeBind(refs.syncCloseBtn, 'click', closeSyncModal);
     
-     
-     
-    
-    
     safeBind(refs.wallpaperCloseBtn, 'click', closeWallpaperModal);
     safeBind(refs.wallpaperSelectBtn, 'click', function wallpaperSelectBtnHandler() { if (refs.wallpaperFile) refs.wallpaperFile.click(); });
     if (refs.wallpaperFile) refs.wallpaperFile.addEventListener('change', function wallpaperFileHandler(e) { 
       var file = e.target.files[0]; 
       if (!file) return; 
+      // 安全检查：限制文件大小（最大 10MB）
+      if (file.size > 10 * 1024 * 1024) { showToast('图片文件不能超过 10MB'); e.target.value = ''; return; }
+      // 安全检查：仅允许图片类型
+      if (!file.type.startsWith('image/')) { showToast('仅支持图片文件'); e.target.value = ''; return; }
       var reader = new FileReader(); 
-      reader.onload = function wallpaperReaderHandler(ev) { if (refs.wallpaperUrl) refs.wallpaperUrl.value = ev.target.result; }; 
+      reader.onload = function wallpaperReaderHandler(ev) { if (refs.wallpaperUrl) refs.wallpaperUrl.value = ev.target.result; reader.onload = null; }; 
+      reader.onerror = function() { showToast('图片读取失败'); reader.onload = null; reader.onerror = null; };
       reader.readAsDataURL(file); 
     });
     safeBind(refs.applyWallpaperBtn, 'click', function applyWallpaperBtnHandler() { 
@@ -3741,9 +3859,13 @@
     safeBind(refs.iconSelectBtn, 'click', function iconSelectBtnHandler() { if (refs.iconFileInput) refs.iconFileInput.click(); });
     if (refs.iconFileInput) refs.iconFileInput.addEventListener('change', function iconFileInputHandler(e) { 
       var file = e.target.files[0]; 
-      if (!file) return; 
+      if (!file) return;
+      // 安全检查：限制图标文件大小（最大 2MB）
+      if (file.size > 2 * 1024 * 1024) { showToast('图标文件不能超过 2MB'); e.target.value = ''; return; }
+      if (!file.type.startsWith('image/')) { showToast('仅支持图片文件'); e.target.value = ''; return; }
       var reader = new FileReader(); 
-      reader.onload = function iconReaderOnload(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); }; 
+      reader.onload = function iconReaderOnload(ev) { if (refs.formIcon) refs.formIcon.value = ev.target.result; updateFormPreview(); reader.onload = null; };
+      reader.onerror = function() { showToast('图标读取失败'); reader.onload = null; reader.onerror = null; };
       reader.readAsDataURL(file); 
     });
     document.addEventListener('click', function modalOverlayClickHandler(e) {
@@ -3799,12 +3921,17 @@
       refs.engineIconFileInput.addEventListener('change', function engineIconFileInputHandler(e) {
         var file = e.target.files && e.target.files[0];
         if (!file) return;
+        // 安全检查：限制搜索引擎图标大小（最大 2MB）
+        if (file.size > 2 * 1024 * 1024) { showToast('图标文件不能超过 2MB'); e.target.value = ''; return; }
+        if (!file.type.startsWith('image/')) { showToast('仅支持图片文件'); e.target.value = ''; return; }
         var reader = new FileReader();
         reader.onload = function engineIconReaderOnload(ev) {
           var dataUrl = ev.target.result;
           if (refs.engineFormIcon) refs.engineFormIcon.value = dataUrl;
           updateEngineIconPreview(dataUrl);
+          reader.onload = null;
         };
+        reader.onerror = function() { showToast('图标读取失败'); reader.onload = null; reader.onerror = null; };
         reader.readAsDataURL(file);
       });
     }
@@ -3931,23 +4058,23 @@
   }
 
   function checkQuoteScroll() {
-  if (!refs.quoteDisplay || !refs.quoteDisplay.parentElement) return;
-  var wrap = refs.quoteDisplay.parentElement;
-  refs.quoteDisplay.classList.remove('scroll');
-  if (refs.quoteDisplay.scrollWidth > wrap.clientWidth) {
-    refs.quoteDisplay.classList.add('scroll');
-    var distance = refs.quoteDisplay.scrollWidth;
-    var styleId = 'quote-scroll-style';
-    var styleEl = document.getElementById(styleId);
-    if (!styleEl) {
-      styleEl = document.createElement('style');
-      styleEl.id = styleId;
-      document.head.appendChild(styleEl);
+    if (!refs.quoteDisplay || !refs.quoteDisplay.parentElement) return;
+    var wrap = refs.quoteDisplay.parentElement;
+    refs.quoteDisplay.classList.remove('scroll');
+    if (refs.quoteDisplay.scrollWidth > wrap.clientWidth) {
+      refs.quoteDisplay.classList.add('scroll');
+      var distance = refs.quoteDisplay.scrollWidth;
+      var styleId = 'quote-scroll-style';
+      var styleEl = document.getElementById(styleId);
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        document.head.appendChild(styleEl);
+      }
+      // 单向向左滚动
+      styleEl.textContent = '@keyframes quoteScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-' + distance + 'px); } }';
     }
-    // 单向向左滚动
-    styleEl.textContent = '@keyframes quoteScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-' + distance + 'px); } }';
   }
-}
 
   function toggleQuoteVisibility() {
     if (refs.quoteDisplayWrap) {
@@ -4309,11 +4436,11 @@
     if (refs.formPreviewName) refs.formPreviewName.textContent = name; 
     if (refs.formPreviewLink) refs.formPreviewLink.textContent = url;
     if (refs.formPreviewIcon) { 
-  if (isImageIcon(icon)) refs.formPreviewIcon.innerHTML = '<img src="' + escapeHtml(icon) + '" alt="" loading="lazy" decoding="async">'; 
-  else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '" style="color: white;"></span>'; 
-  var bgStyle = getSelectedBgStyle();
-  refs.formPreviewIcon.style.background = bgStyle;
-}
+      if (isImageIcon(icon)) refs.formPreviewIcon.innerHTML = '<img src="' + escapeHtml(icon) + '" alt="" loading="lazy" decoding="async">'; 
+      else refs.formPreviewIcon.innerHTML = '<span class="iconify" data-icon="' + escapeHtml(icon) + '" style="color: white;"></span>'; 
+      var bgStyle = getSelectedBgStyle();
+      refs.formPreviewIcon.style.background = bgStyle;
+    }
     if (window.Iconify && refs.formPreviewIcon) { try { Iconify.scan(refs.formPreviewIcon); } catch (_) {} }
   }
 
@@ -4346,24 +4473,63 @@
       updateTime();
       updateDateWithLunar();
       fetchHitokoto();
-      setInterval(updateTime, 1000);
-      setInterval(updateDateWithLunar, 60000);
-      setInterval(fetchHitokoto, 60000);
+      // 存储定时器引用以便后续清理
+      if (globalTimers.timeInterval) clearInterval(globalTimers.timeInterval);
+      if (globalTimers.dateInterval) clearInterval(globalTimers.dateInterval);
+      if (globalTimers.hitokotoInterval) clearInterval(globalTimers.hitokotoInterval);
+      globalTimers.timeInterval = setInterval(updateTime, 1000);
+      globalTimers.dateInterval = setInterval(updateDateWithLunar, 60000);
+      globalTimers.hitokotoInterval = setInterval(fetchHitokoto, 60000);
       
       if (refs.bigTime) refs.bigTime.addEventListener('click', toggleQuoteVisibility);
       if (refs.headerDate) refs.headerDate.addEventListener('click', toggleQuoteVisibility);
-      window.addEventListener('resize', checkQuoteScroll);
+      // 先移除旧的再绑定（防止重复绑定）
+      if (globalTimers.quoteResizeHandler) window.removeEventListener('resize', globalTimers.quoteResizeHandler);
+      globalTimers.quoteResizeHandler = checkQuoteScroll;
+      window.addEventListener('resize', globalTimers.quoteResizeHandler);
       
       bindEvents();
       if (window.Iconify) { try { Iconify.scan(document.body); } catch (_) {} }
-      window.addEventListener('load', function windowLoadHandler() { 
+      // 使用具名函数以便移除
+      if (globalTimers.loadHandler) window.removeEventListener('load', globalTimers.loadHandler);
+      globalTimers.loadHandler = function windowLoadHandler() { 
         layoutStore.refresh(); 
         if (window.Iconify) Iconify.scan(document.body); 
-      });
-      window.addEventListener('orientationchange', function orientationchangeHandler() { 
+      };
+      window.addEventListener('load', globalTimers.loadHandler);
+      if (globalTimers.orientationHandler) window.removeEventListener('orientationchange', globalTimers.orientationHandler);
+      globalTimers.orientationHandler = function orientationchangeHandler() { 
         setTimeout(function orientationTimeout() { layoutStore.refresh(); }, 100); 
-      });
+      };
+      window.addEventListener('orientationchange', globalTimers.orientationHandler);
+      // 页面卸载时清理所有定时器和事件，防止内存泄漏
+      window.addEventListener('beforeunload', cleanupOnUnload);
     } catch (error) { showToast('初始化失败: ' + error.message); }
+  }
+
+  // 页面卸载时的清理函数，防止内存泄漏
+  function cleanupOnUnload() {
+    // 清理全局定时器
+    if (globalTimers.timeInterval) { clearInterval(globalTimers.timeInterval); globalTimers.timeInterval = null; }
+    if (globalTimers.dateInterval) { clearInterval(globalTimers.dateInterval); globalTimers.dateInterval = null; }
+    if (globalTimers.hitokotoInterval) { clearInterval(globalTimers.hitokotoInterval); globalTimers.hitokotoInterval = null; }
+    // 清理同步定时器
+    syncStore.stopAutoSync();
+    // 清理拖拽状态
+    dragStore.reset();
+    // 清理边缘悬停定时器
+    edgeHoverManager.clear();
+    // 清理 FLIP 动画
+    renderEngine.cleanupFLIP();
+    // 清理事件监听器
+    if (globalTimers.quoteResizeHandler) window.removeEventListener('resize', globalTimers.quoteResizeHandler);
+    if (globalTimers.loadHandler) window.removeEventListener('load', globalTimers.loadHandler);
+    if (globalTimers.orientationHandler) window.removeEventListener('orientationchange', globalTimers.orientationHandler);
+    window.removeEventListener('popstate', handleSearchPopState);
+    // 清理 ResizeObserver
+    if (layoutStore.resizeObserver) { layoutStore.resizeObserver.disconnect(); layoutStore.resizeObserver = null; }
+    // 清理全局引用
+    try { delete window.handleImageError; } catch(e) {}
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); 
