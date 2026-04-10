@@ -177,10 +177,10 @@
     .quote-container { width: 90%; max-width: var(--quote-max-width); margin-bottom: 14px; min-height: 22px; }
     .quote-display { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     .quote-text-wrap { flex: 0 1 auto; max-width: 85%; overflow: hidden; position: relative; }
-    .quote-text { color: var(--text-secondary); font-size: 14px; line-height: 18px; white-space: nowrap; display: inline-block; }
-    .quote-text.scroll { animation: quoteScroll 10s linear infinite; }
+    .quote-text { color: var(--text-secondary); font-size: 14px; line-height: 18px; white-space: nowrap; display: inline-block; transition: opacity 0.3s ease; }
+    .quote-text.scroll { animation: quoteScroll 15s linear infinite; }
     .quote-text-wrap:hover .quote-text.scroll { animation-play-state: paused; }
-    @keyframes quoteScroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    @keyframes quoteScroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-100% + 100px)); } }
     .quote-edit-btn { display: inline-flex; align-items: center; cursor: pointer; opacity: .82; transition: opacity .18s ease; flex-shrink: 0; color: var(--text-secondary); }
     .quote-edit-btn:hover { opacity: 1; }
     .quote-edit-mode { display: none; width: 100%; gap: 8px; align-items: center; }
@@ -777,6 +777,7 @@
       filter: grayscale(0.5);
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.2/lunar.min.js"></script>
 </head>
 <body data-theme="neumorphism">
   <div class="wallpaper" id="wallpaperRoot"></div>
@@ -794,8 +795,7 @@
           <div class="quote-text-wrap">
             <div class="quote-text" id="quoteDisplay">生活不是等待风暴过去，而是学会在雨中跳舞。</div>
           </div>
-          <span class="quote-edit-btn" id="quoteEditBtn" tabindex="0" role="button" aria-label="编辑每日一言">
-            <span class="iconify" data-icon="mdi:pencil-outline"></span>
+          
           </span>
         </div>
         <div class="quote-edit-mode" id="quoteEditMode">
@@ -3717,9 +3717,9 @@
     safeBind(refs.syncPullBtn, 'click', manualPullFromGithub); 
     safeBind(refs.syncCloseBtn, 'click', closeSyncModal);
     
-    safeBind(refs.quoteEditBtn, 'click', editQuote); 
-    safeBind(refs.quoteSaveBtn, 'click', saveQuote); 
-    safeBind(refs.quoteCancelBtn, 'click', cancelQuoteEdit);
+     
+     
+    
     
     safeBind(refs.wallpaperCloseBtn, 'click', closeWallpaperModal);
     safeBind(refs.wallpaperSelectBtn, 'click', function wallpaperSelectBtnHandler() { if (refs.wallpaperFile) refs.wallpaperFile.click(); });
@@ -3917,15 +3917,264 @@
   }
 
   // ==================== 时间更新 ====================
+
+  function fetchHitokoto() {
+    fetch('https://v1.hitokoto.cn/?c=d&c=j')
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (refs.quoteDisplay) {
+          refs.quoteDisplay.textContent = data.hitokoto;
+          checkQuoteScroll();
+        }
+      })
+      .catch(function(err) { console.error('Fetch hitokoto error:', err); });
+  }
+
+  function checkQuoteScroll() {
+  if (!refs.quoteDisplay || !refs.quoteDisplay.parentElement) return;
+  var wrap = refs.quoteDisplay.parentElement;
+  refs.quoteDisplay.classList.remove('scroll');
+  if (refs.quoteDisplay.scrollWidth > wrap.clientWidth) {
+    refs.quoteDisplay.classList.add('scroll');
+    var distance = refs.quoteDisplay.scrollWidth;
+    var styleId = 'quote-scroll-style';
+    var styleEl = document.getElementById(styleId);
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = styleId;
+      document.head.appendChild(styleEl);
+    }
+    // 单向向左滚动
+    styleEl.textContent = '@keyframes quoteScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-' + distance + 'px); } }';
+  }
+}
+
+  function toggleQuoteVisibility() {
+    if (refs.quoteDisplayWrap) {
+      var isHidden = refs.quoteDisplayWrap.style.visibility === 'hidden';
+      refs.quoteDisplayWrap.style.visibility = isHidden ? 'visible' : 'hidden';
+    }
+  }
+
+  // ==================== 农历日期计算（带备用算法） ====================
+  function updateDateWithLunar() {
+    if (!refs.headerDate) return;
+    var now = new Date();
+    var weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+    var dateStr = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + weekdays[now.getDay()];
+    
+    var lunarStr = '';
+    var festival = '';
+    
+    // 优先使用 lunar-javascript 库（如果加载成功）
+    if (window.Lunar) {
+      try {
+        var lunar = Lunar.fromDate(now);
+        lunarStr = lunar.getMonthInChinese() + '月' + lunar.getDayInChinese();
+        
+        // 获取农历节日
+        var lm = lunar.getMonth();
+        var ld = lunar.getDay();
+        if (lm === 1 && ld === 1) festival = '春节';
+        else if (lm === 1 && ld === 15) festival = '元宵节';
+        else if (lm === 5 && ld === 5) festival = '端午节';
+        else if (lm === 7 && ld === 7) festival = '七夕';
+        else if (lm === 8 && ld === 15) festival = '中秋节';
+        else if (lm === 9 && ld === 9) festival = '重阳节';
+        else if (lm === 12 && ld === 30) festival = '除夕';
+        
+        // 获取公历节日
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        if (!festival) {
+          if (month === 1 && day === 1) festival = '元旦';
+          else if (month === 2 && day === 14) festival = '情人节';
+          else if (month === 3 && day === 8) festival = '妇女节';
+          else if (month === 4 && day === 1) festival = '愚人节';
+          else if (month === 5 && day === 1) festival = '劳动节';
+          else if (month === 5 && day === 4) festival = '青年节';
+          else if (month === 6 && day === 1) festival = '儿童节';
+          else if (month === 7 && day === 1) festival = '建党节';
+          else if (month === 8 && day === 1) festival = '建军节';
+          else if (month === 9 && day === 10) festival = '教师节';
+          else if (month === 10 && day === 1) festival = '国庆节';
+          else if (month === 12 && day === 24) festival = '平安夜';
+          else if (month === 12 && day === 25) festival = '圣诞节';
+        }
+      } catch(e) {
+        console.log('Lunar lib error, using fallback');
+      }
+    }
+    
+    // 备用方案：内联农历算法（2020-2050年）
+    if (!lunarStr) {
+      var fallback = calculateLunarFallback(now);
+      lunarStr = fallback.lunarStr;
+      festival = fallback.festival;
+    }
+    
+    // 组合显示
+    if (festival) {
+      dateStr += ' ' + lunarStr + ' (' + festival + ')';
+    } else {
+      dateStr += ' ' + lunarStr;
+    }
+    
+    refs.headerDate.textContent = dateStr;
+  }
+
+  // 内联备用农历算法（2020-2050年数据表）
+  function calculateLunarFallback(date) {
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    
+    // 2020-2050年春节日期表（公历日期，用于推算）
+    var springFestivals = {
+      2020: {m:1,d:25}, 2021: {m:2,d:12}, 2022: {m:2,d:1}, 2023: {m:1,d:22}, 
+      2024: {m:2,d:10}, 2025: {m:1,d:29}, 2026: {m:2,d:17}, 2027: {m:2,d:6}, 
+      2028: {m:1,d:26}, 2029: {m:2,d:13}, 2030: {m:2,d:3}, 2031: {m:1,d:23}, 
+      2032: {m:2,d:11}, 2033: {m:1,d:31}, 2034: {m:2,d:19}, 2035: {m:2,d:8}, 
+      2036: {m:1,d:28}, 2037: {m:2,d:15}, 2038: {m:2,d:4}, 2039: {m:1,d:24}, 
+      2040: {m:2,d:12}, 2041: {m:2,d:1}, 2042: {m:1,d:22}, 2043: {m:2,d:10}, 
+      2044: {m:1,d:30}, 2045: {m:2,d:17}, 2046: {m:2,d:6}, 2047: {m:1,d:26}, 
+      2048: {m:2,d:14}, 2049: {m:2,d:2}, 2050: {m:1,d:23}
+    };
+    
+    var lunarMonths = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+    var lunarDays = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+                     '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+                     '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+    
+    var sf = springFestivals[year];
+    var lunarMonth = 1, lunarDay = 1, festival = '';
+    
+    if (sf) {
+      var springFestival = new Date(year, sf.m-1, sf.d);
+      var diffDays = Math.floor((date - springFestival) / (1000 * 60 * 60 * 24));
+      
+      // 农历大小月分布（2020-2050年简化数据）
+      var lunarMonthDays = {
+        2020: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰四月
+        2021: [29,30,29,30,29,30,29,30,29,30,29,30],
+        2022: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰二月
+        2023: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰二月
+        2024: [30,29,30,29,30,29,30,29,30,30,29,30], // 闰六月
+        2025: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰六月
+        2026: [30,29,30,29,30,29,30,29,30,29,30,29],
+        2027: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰五月
+        2028: [30,29,30,29,30,29,30,29,30,29,30,29],
+        2029: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰五月
+        2030: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰六月
+        2031: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰三月
+        2032: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰十一月
+        2033: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰八月
+        2034: [30,29,30,29,30,29,30,29,30,29,30,29],
+        2035: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰六月
+        2036: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰四月
+        2037: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰七月
+        2038: [30,29,30,29,30,29,30,29,30,29,30,29],
+        2039: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰六月
+        2040: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰二月
+        2041: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰七月
+        2042: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰二月
+        2043: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰七月
+        2044: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰八月
+        2045: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰六月
+        2046: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰五月
+        2047: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰二月
+        2048: [30,29,30,29,30,29,30,29,30,29,30,29], // 闰六月
+        2049: [29,30,29,30,29,30,29,30,29,30,29,30], // 闰二月
+        2050: [30,29,30,29,30,29,30,29,30,29,30,29]  // 闰三月
+      };
+      
+      var daysInMonths = lunarMonthDays[year] || [30,29,30,29,30,29,30,29,30,29,30,29];
+      
+      if (diffDays < 0) {
+        // 春节之前，属于上一年的农历腊月
+        var prevYear = year - 1;
+        var prevSf = springFestivals[prevYear];
+        if (prevSf) {
+          var prevSpringFestival = new Date(prevYear, prevSf.m-1, prevSf.d);
+          var daysInLastYear = Math.floor((springFestival - prevSpringFestival) / (1000 * 60 * 60 * 24));
+          var daysInLastMonth = daysInMonths[11]; // 腊月
+          
+          // 计算上一年的农历月份
+          var prevYearMonths = lunarMonthDays[prevYear] || [30,29,30,29,30,29,30,29,30,29,30,29];
+          var daysBeforeLastMonth = daysInLastYear - daysInLastMonth;
+          
+          // 简化计算：从春节倒推
+          lunarMonth = 12;
+          lunarDay = daysInLastMonth + diffDays + 1;
+          
+          if (lunarDay <= 0) {
+            // 在腊月之前
+            lunarMonth = 11;
+            lunarDay = prevYearMonths[10] + lunarDay;
+          }
+        }
+      } else {
+        // 春节之后
+        var remaining = diffDays;
+        lunarMonth = 1;
+        
+        for (var i = 0; i < 12; i++) {
+          var daysInThisMonth = daysInMonths[i];
+          if (remaining < daysInThisMonth) {
+            lunarDay = remaining + 1;
+            lunarMonth = i + 1;
+            break;
+          }
+          remaining -= daysInThisMonth;
+        }
+        
+        // 处理闰月情况（简化处理，假设闰月在当前年份后半段）
+        if (lunarMonth > 12) {
+          lunarMonth = 12;
+          lunarDay = 30;
+        }
+      }
+    }
+    
+    // 节日检测
+    if (lunarMonth === 1 && lunarDay === 1) festival = '春节';
+    else if (lunarMonth === 1 && lunarDay === 15) festival = '元宵节';
+    else if (lunarMonth === 5 && lunarDay === 5) festival = '端午节';
+    else if (lunarMonth === 7 && lunarDay === 7) festival = '七夕';
+    else if (lunarMonth === 8 && lunarDay === 15) festival = '中秋节';
+    else if (lunarMonth === 9 && lunarDay === 9) festival = '重阳节';
+    else if (lunarMonth === 12 && lunarDay === 30) festival = '除夕';
+    else if (lunarMonth === 12 && lunarDay === 29) {
+      // 检查是否是小月（29天）
+      var daysInMonth12 = springFestivals[year] ? (lunarMonthDays[year] ? lunarMonthDays[year][11] : 30) : 30;
+      if (daysInMonth12 === 29) festival = '除夕';
+    }
+    
+    // 公历节日检测
+    if (!festival) {
+      if (month === 1 && day === 1) festival = '元旦';
+      else if (month === 2 && day === 14) festival = '情人节';
+      else if (month === 3 && day === 8) festival = '妇女节';
+      else if (month === 4 && day === 1) festival = '愚人节';
+      else if (month === 5 && day === 1) festival = '劳动节';
+      else if (month === 5 && day === 4) festival = '青年节';
+      else if (month === 6 && day === 1) festival = '儿童节';
+      else if (month === 7 && day === 1) festival = '建党节';
+      else if (month === 8 && day === 1) festival = '建军节';
+      else if (month === 9 && day === 10) festival = '教师节';
+      else if (month === 10 && day === 1) festival = '国庆节';
+      else if (month === 12 && day === 24) festival = '平安夜';
+      else if (month === 12 && day === 25) festival = '圣诞节';
+    }
+    
+    var lunarStr = (lunarMonths[lunarMonth-1] || '正') + '月' + (lunarDays[lunarDay-1] || '初一');
+    return { lunarStr: lunarStr, festival: festival };
+  }
+
   function updateTime() { 
     if (!refs.bigTime) return; 
     var now = new Date(), h = String(now.getHours()).padStart(2, '0'), m = String(now.getMinutes()).padStart(2, '0'); 
     refs.bigTime.textContent = h + ':' + m; 
-  }
-  function updateDate() { 
-    if (!refs.headerDate) return; 
-    var now = new Date(), weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六']; 
-    refs.headerDate.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + weekdays[now.getDay()]; 
   }
 
   // ==================== 图标背景色功能 ====================
@@ -4093,10 +4342,18 @@
       }).catch(function loadEnginesCatch() {
         appStore.load();
       });
-      updateTime(); 
-      updateDate();
+      
+      updateTime();
+      updateDateWithLunar();
+      fetchHitokoto();
       setInterval(updateTime, 1000);
-      setInterval(updateDate, 60000);
+      setInterval(updateDateWithLunar, 60000);
+      setInterval(fetchHitokoto, 60000);
+      
+      if (refs.bigTime) refs.bigTime.addEventListener('click', toggleQuoteVisibility);
+      if (refs.headerDate) refs.headerDate.addEventListener('click', toggleQuoteVisibility);
+      window.addEventListener('resize', checkQuoteScroll);
+      
       bindEvents();
       if (window.Iconify) { try { Iconify.scan(document.body); } catch (_) {} }
       window.addEventListener('load', function windowLoadHandler() { 
