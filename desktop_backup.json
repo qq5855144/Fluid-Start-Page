@@ -18,12 +18,28 @@
         "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
+        "id": "app_book",
+        "type": "app",
+        "title": "阅读",
+        "url": "https://weread.qq.com",
+        "icon": "mdi:book-open-page-variant-outline",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
+      },
+      {
         "id": "app_weather",
         "type": "app",
         "title": "天气",
         "url": "https://tianqi.qq.com",
         "icon": "mdi:weather-partly-cloudy",
         "bgStyle": "background:linear-gradient(135deg,#4facfe,#00f2fe);"
+      },
+      {
+        "id": "app_docs",
+        "type": "app",
+        "title": "脚本",
+        "url": "https://qq5855144.github.io/ScriptSearch/",
+        "icon": "hugeicons:java-script",
+        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
       },
       {
         "id": "app_baidu",
@@ -34,20 +50,12 @@
         "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
       },
       {
-        "id": "app_book",
+        "id": "app_music",
         "type": "app",
-        "title": "阅读",
-        "url": "https://weread.qq.com",
-        "icon": "mdi:book-open-page-variant-outline",
-        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
-      },
-      {
-        "id": "app_design",
-        "type": "app",
-        "title": "Canva",
-        "url": "https://www.canva.com",
-        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
-        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
+        "title": "网易云",
+        "url": "https://music.163.com",
+        "icon": "mdi:music-note",
+        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
       },
       {
         "id": "app_bilibili",
@@ -66,20 +74,12 @@
         "bgStyle": "background:linear-gradient(135deg,#ff5f6d,#ffc371);"
       },
       {
-        "id": "app_docs",
+        "id": "app_design",
         "type": "app",
-        "title": "脚本",
-        "url": "https://qq5855144.github.io/ScriptSearch/",
-        "icon": "hugeicons:java-script",
-        "bgStyle": "background:linear-gradient(135deg,#11998e,#38ef7d);"
-      },
-      {
-        "id": "app_music",
-        "type": "app",
-        "title": "网易云",
-        "url": "https://music.163.com",
-        "icon": "mdi:music-note",
-        "bgStyle": "background:linear-gradient(135deg,#ff4b2b,#ff416c);"
+        "title": "Canva",
+        "url": "https://www.canva.com",
+        "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
+        "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
       {
         "id": "app_forum",
@@ -87,7 +87,15 @@
         "title": "知乎",
         "url": "https://www.zhihu.com",
         "icon": "ri:zhihu-line",
-        "bgStyle": "background:linear-gradient(135deg,#2193b0,#6dd5ed);"
+        "bgStyle": "background:linear-gradient(135deg,#00c6ff,#0072ff);"
+      },
+      {
+        "id": "app_video",
+        "type": "app",
+        "title": "视频",
+        "url": "https://v.qq.com",
+        "icon": "streamline-logos:wetv-logo-solid",
+        "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
         "id": "app_taobao",
@@ -104,14 +112,6 @@
         "url": "https://ditu.amap.com",
         "icon": "mdi:map-marker-radius",
         "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
-      },
-      {
-        "id": "app_video",
-        "type": "app",
-        "title": "视频",
-        "url": "https://v.qq.com",
-        "icon": "streamline-logos:wetv-logo-solid",
-        "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
         "id": "folder_1775287938453_dm26ubv5s",
@@ -190,22 +190,6 @@
         "bgStyle": "background:linear-gradient(135deg,#ff512f,#dd2476);"
       },
       {
-        "id": "app_notes",
-        "type": "app",
-        "title": "笔记",
-        "url": "https://qq5855144.github.io/zddss/",
-        "icon": "mdi:notebook-outline",
-        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
-      },
-      {
-        "id": "app_github",
-        "type": "app",
-        "title": "GitHub",
-        "url": "https://qq5855144.github.io/GitHub/",
-        "icon": "mdi:github",
-        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
-      },
-      {
         "id": "app_clock",
         "type": "app",
         "title": "MT论坛",
@@ -220,6 +204,22 @@
         "url": "https://www.crxsoso.com/",
         "icon": "proicons:google-chrome",
         "bgStyle": "background:linear-gradient(135deg,#00c853,#43a047);"
+      },
+      {
+        "id": "app_github",
+        "type": "app",
+        "title": "GitHub",
+        "url": "https://qq5855144.github.io/GitHub/",
+        "icon": "mdi:github",
+        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);"
+      },
+      {
+        "id": "app_notes",
+        "type": "app",
+        "title": "笔记",
+        "url": "https://qq5855144.github.io/zddss/",
+        "icon": "mdi:notebook-outline",
+        "bgStyle": "background:linear-gradient(135deg,#56ab2f,#a8e063);"
       },
       {
         "id": "app_sync",
@@ -237,7 +237,7 @@
     {
       "id": "engine_1775101370461_1i3z0n",
       "name": "AV",
-      "icon": "lets-icons:video",
+      "icon": "mingcute:avalanche-avax-fill",
       "url": "https://www.missav365.icu/cn/search/%s"
     },
     {
@@ -259,6 +259,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-04-10T08:48:59.944Z",
+  "timestamp": "2026-04-11T03:18:17.515Z",
   "version": "2.0"
 }
