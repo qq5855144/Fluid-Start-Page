@@ -222,15 +222,27 @@
     .search-actions .iconify { font-size: 17px; color: var(--text-secondary); }
     
     .engine-panel {
-      position: absolute; top: calc(100% + 8px); left: 0; width: 100%; border-radius: 16px;
+      position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-8px);
+      width: calc(100% + 40px); min-width: 280px; max-width: 95vw; border-radius: 16px;
       background: var(--panel-bg); 
       backdrop-filter: var(--backdrop-filter); 
       -webkit-backdrop-filter: var(--backdrop-filter);
       box-shadow: var(--shadow-float); z-index: 100; opacity: 0; pointer-events: none;
-      transform: translateY(-8px); transition: all 0.25s ease; overflow: hidden; border: 1px solid var(--panel-border);
+      transition: all 0.25s ease; overflow: hidden; border: 1px solid var(--panel-border);
     }
-    .engine-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
-    .engine-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; }
+    .engine-panel.active { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .engine-list { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 10px; 
+      padding: 15px; 
+      width: 100%;
+      box-sizing: border-box;
+      max-height: 60vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .engine-list::-webkit-scrollbar { display: none; }
     .engine-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
       padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: all .18s ease;
@@ -536,7 +548,17 @@
       background: transparent;
       box-shadow: none;
     }
-    .search-engine-panel { top: calc(100% + 8px); left: 0; width: 100%; }
+    .search-engine-panel { 
+      top: calc(100% + 8px); 
+      left: 20px; 
+      right: 20px; 
+      width: auto; 
+      transform: translateY(-8px); 
+      max-width: none;
+    }
+    .search-screen.active .search-engine-panel.active { 
+      transform: translateY(0); 
+    }
     .search-screen-body { flex: 1; width: 100%; padding: 20px; overflow-y: auto; position: relative; }
     
     .suggest-list-container { width: 100%; max-width: 600px; margin: 0 auto; }
@@ -615,7 +637,15 @@
         border: 1px solid var(--panel-border);
       }
       .folder-grid { grid-template-columns: repeat(4, 1fr); }
-      .engine-list { grid-template-columns: repeat(5, 1fr); }
+      .engine-list { 
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 12px;
+        padding: 18px;
+      }
+      .engine-panel {
+        width: calc(100% + 60px);
+        max-width: 500px;
+      }
     }
     
     *:focus-visible { outline: 2px solid rgba(102, 126, 234, 0.3); outline-offset: 2px; }
@@ -1128,7 +1158,7 @@
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script>
 /* ==========================================
-   灵动起始页 - 双风格版本 (修复版)
+   灵动起始页 - 双风格版本 
    ========================================== */
 (function mainIIFE() {
   'use strict';
@@ -1504,8 +1534,11 @@
     { id: 'preset-1', name: 'Bing', icon: 'fontisto:bing', url: 'https://www.bing.com/search?q=%s' },
     { id: 'preset-2', name: '百度', icon: 'simple-icons:baidu', url: 'https://www.baidu.com/s?wd=%s' },
     { id: 'preset-3', name: 'DuckDuckGo', icon: 'cib:duckduckgo', url: 'https://duckduckgo.com/?q=%s' },
-    { id: 'preset-4', name: 'Yandex', icon: 'brandico:yandex', url: 'https://yandex.com/search/?text=%s' }
-  ];
+    { id: 'preset-4', name: 'Yandex', icon: 'brandico:yandex', url: 'https://yandex.com/search/?text=%s' },
+    { id: 'preset-5', name: '搜狗', icon: 'simple-icons:sogou', url: 'https://www.sogou.com/web?query=%s' },
+    { id: 'preset-6', name: '360', icon: 'tabler:view-360-number', url: 'https://www.so.com/s?q=%s' },
+    { id: 'preset-7', name: '夸克', icon: 'fa6-solid:o', url: 'https://quark.sm.cn/s?q=%s' },
+    { id: 'preset-8', name: '神马', icon: 'ph:horse-bold', url: 'https://m.sm.cn/s?q=%s' } ];
   var PRESET_BG_COLORS = [
     { name: '经典蓝', style: 'linear-gradient(135deg,#4f86ff,#2f5fff)' },
     { name: '天空蓝', style: 'linear-gradient(135deg,#00c6ff,#0072ff)' },
