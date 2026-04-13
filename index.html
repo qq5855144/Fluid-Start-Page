@@ -262,7 +262,7 @@
       gap: var(--grid-gap);
       padding-top: 10px !important; align-content: start; justify-items: center; position: relative;
       transform-origin: center center; transition: opacity .34s ease, transform .42s cubic-bezier(.22,.88,.24,1), filter .34s ease;
-      opacity: .72; filter: saturate(.88); transform: scale(.94) rotateY(9deg); contain: layout style paint;
+      opacity: .72; filter: saturate(.88); transform: scale(.94) rotateY(9deg);
     }
     .page.page-current { opacity: 1; filter: saturate(1); transform: scale(1) rotateY(0); }
     .page.page-prev { transform: scale(.965) rotateY(8deg); }
@@ -390,6 +390,20 @@
     .drag-ghost .app-icon { transform: scale(1.06); }
     .drag-ghost .icon-bg img.custom-icon { width: 100%; height: 100%; object-fit: cover; }
     
+    .pages-container.drag-layout-stable .page {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .pages-container.drag-layout-stable .page.page-current,
+    .pages-container.drag-layout-stable .page.page-prev,
+    .pages-container.drag-layout-stable .page.page-next {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+
     .app-icon.drag-source { opacity: .18 !important; }
     .app-icon.exchange-target .icon-bg {
       box-shadow: var(--exchange-shadow), var(--shadow-convex);
@@ -419,6 +433,69 @@
     .insert-placeholder { width: var(--icon-size); height: var(--icon-size); border-radius: var(--icon-radius); background: var(--insert-placeholder-bg); border: 2px dashed var(--accent-color); backdrop-filter: blur(4px); animation: placeholderPulse 1.2s ease-in-out infinite; pointer-events: none; }
     @keyframes placeholderPulse { 0%, 100% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } }
     .insert-placeholder-gap { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+    .visual-insert-indicator {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: var(--icon-size);
+      height: calc(var(--icon-size) + 22px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 3600;
+      opacity: 0;
+      --insert-x: 0px;
+      --insert-y: 0px;
+      transform: translate3d(var(--insert-x), var(--insert-y), 0) scale(.96);
+      transition: opacity .14s ease, transform .22s cubic-bezier(.22,.88,.24,1);
+      will-change: transform, opacity;
+    }
+    .visual-insert-indicator.active { opacity: 1; transform: translate3d(var(--insert-x), var(--insert-y), 0) scale(1); }
+    .visual-insert-indicator .insert-placeholder {
+      width: calc(var(--icon-size) - 4px);
+      height: calc(var(--icon-size) - 4px);
+      box-shadow: var(--shadow-float);
+    }
+    .visual-insert-indicator::before,
+    .visual-insert-indicator::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 12px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--accent-color);
+      transform: translateY(-50%);
+      opacity: .9;
+    }
+    .visual-insert-indicator::before { left: -8px; }
+    .visual-insert-indicator::after { right: -8px; }
+    [data-theme="glass"] .visual-insert-indicator .insert-placeholder {
+      background: rgba(255,255,255,.14);
+      border-color: rgba(255,255,255,.9);
+    }
+    [data-theme="glass"] .visual-insert-indicator::before,
+    [data-theme="glass"] .visual-insert-indicator::after {
+      background: rgba(255,255,255,.95);
+    }
+    .app-icon.visual-insert-anchor .icon-bg {
+      box-shadow: 0 0 0 2px rgba(102,126,234,.22), var(--shadow-convex);
+    }
+    [data-theme="glass"] .app-icon.visual-insert-anchor .icon-bg {
+      outline: 2px solid rgba(255,255,255,.24);
+      outline-offset: 2px;
+    }
+    body.drag-visual-placeholder-active .page,
+    body.drag-visual-placeholder-active .folder-grid {
+      contain: layout style paint;
+    }
+    body.drag-visual-placeholder-active .app-icon {
+      transition: transform .16s ease, opacity .2s ease, box-shadow .18s ease;
+    }
+    body.drag-visual-placeholder-active .app-icon.drag-source {
+      opacity: .14 !important;
+    }
     
     .dock.drag-over { background: rgba(102, 126, 234, 0.1) !important; border-color: rgba(102, 126, 234, 0.4) !important; box-shadow: var(--shadow-float), inset 0 0 0 2px rgba(102, 126, 234, 0.3) !important; }
     [data-theme="glass"] .dock.drag-over {
@@ -1486,6 +1563,11 @@
     return (/^(https?:\/\/|data:image\/|\.|\/)/i.test(value) || /\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(value));
   }
   
+  function getRectCenter(rect) {
+    if (!rect) return { x: 0, y: 0 };
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  }
+  
   function handleImageError(img) {
     img.style.display = 'none';
     var parent = img.parentElement;
@@ -1852,68 +1934,162 @@
 
   // ==================== 拖拽存储 ====================
   var dragStore = {
+    suppressPageEffects: function dragStoreSuppressPageEffects(disabled) {
+      if (!refs || !refs.pagesContainer) return;
+      refs.pagesContainer.classList.toggle('drag-layout-stable', !!disabled);
+    },
     active: false, pointerId: null, sourceType: null, sourceEl: null, itemId: null, folderId: null,
     startX: 0, startY: 0, currentX: 0, currentY: 0, ghostEl: null, lastMoveEvent: null,
     longPressTimer: null, mergeTimer: null, mergeTargetId: null, overDelete: false, contextTriggered: false,
     originSnapshot: null, swapTargetId: null, insertTarget: null, insertTimer: null, isInGap: false,
-    dragOffsetX: 0, dragOffsetY: 0, placeholderEl: null, throttledMove: null, targetCache: null, targetCacheVersion: -1, deleteZoneRect: null,
+    dragOffsetX: 0, dragOffsetY: 0, placeholderEl: null, visualIndicatorEl: null, visualAnchorEl: null, visualIndicatorState: null, throttledMove: null, targetCache: null, targetCacheVersion: -1, deleteZoneRect: null,
     init: function dragStoreInit() { this.throttledMove = throttle(function throttledMoveWrapper(e) { this.processDragMove(e); }.bind(this), 16); },
     reset: function dragStoreReset() {
       if (this.longPressTimer) { clearTimeout(this.longPressTimer); this.longPressTimer = null; }
       if (this.mergeTimer) { clearTimeout(this.mergeTimer); this.mergeTimer = null; }
       if (this.insertTimer) { clearTimeout(this.insertTimer); this.insertTimer = null; }
       this.clearPlaceholder();
+      this.clearVisualPlaceholder();
+      document.body.classList.remove('drag-visual-placeholder-active');
       this.active = false; this.pointerId = null; this.sourceType = null; this.sourceEl = null; this.itemId = null; this.folderId = null;
       this.lastMoveEvent = null; this.contextTriggered = false; this.originSnapshot = null; this.overDelete = false;
-      this.swapTargetId = null; this.insertTarget = null; this.isInGap = false; this.dragOffsetX = 0; this.dragOffsetY = 0; this.mergeTargetId = null;
+      this.swapTargetId = null; this.insertTarget = null; this.isInGap = false; this.dragOffsetX = 0; this.dragOffsetY = 0; this.mergeTargetId = null; this.visualIndicatorState = null;
       // 释放 targetCache 引用，防止内存泄漏
       if (this.targetCache) { this.targetCache.clear(); this.targetCache = null; }
       this.targetCacheVersion = -1; dragInteraction.clearMergeHover(); dragInteraction.setDeleteZoneHover(false); dragInteraction.forceCleanup(); edgeHoverManager.clear();
       // 清理 FLIP 动画残留
       renderEngine.cleanupFLIP();
+      this.suppressPageEffects(false);
       this.deleteZoneRect = null;
     },
-    showPlaceholder: function dragStoreShowPlaceholder(target) {
-      this.clearPlaceholder(); if (!target || target.container === 'dock') return;
-      var placeholder = document.createElement('div'); placeholder.className = 'insert-placeholder-gap';
-      placeholder.innerHTML = '<div class="insert-placeholder"></div>';
+    ensureVisualIndicator: function dragStoreEnsureVisualIndicator() {
+      if (this.visualIndicatorEl && document.body.contains(this.visualIndicatorEl)) return this.visualIndicatorEl;
+      var indicator = document.createElement('div');
+      indicator.className = 'visual-insert-indicator';
+      indicator.innerHTML = '<div class="insert-placeholder"></div>';
+      document.body.appendChild(indicator);
+      this.visualIndicatorEl = indicator;
+      return indicator;
+    },
+    resolveVisualAnchor: function dragStoreResolveVisualAnchor(target) {
+      if (!target) return null;
       if (target.container === 'desktop') {
         var pageEl = querySelector('.page[data-page-index="' + target.pageIndex + '"]');
         if (!pageEl || pageEl.hasAttribute('data-virtual')) {
-          if (appStore.desktop.items.length > VIRTUAL_SCROLL_THRESHOLD) { renderEngine.loadVirtualPage(target.pageIndex); pageEl = querySelector('.page[data-page-index="' + target.pageIndex + '"]'); }
+          if (appStore.desktop.items.length > VIRTUAL_SCROLL_THRESHOLD) {
+            renderEngine.loadVirtualPage(target.pageIndex);
+            pageEl = querySelector('.page[data-page-index="' + target.pageIndex + '"]');
+          }
         }
-        if (pageEl) {
-          var items = querySelectorAll('.app-icon[data-scope="desktop"]', pageEl);
-          var pages = renderEngine.getDesktopPagesData(), pageData = pages[target.pageIndex] || [];
-          var maxInsertIdx = pageData.length, insertIdx = Math.min(target.index !== undefined ? target.index : target.insertIndex !== undefined ? target.insertIndex : maxInsertIdx, maxInsertIdx);
-          if (items[insertIdx]) items[insertIdx].before(placeholder); else pageEl.appendChild(placeholder);
-        }
-      } else if (target.container === 'folder') {
-        var grid = querySelector('#folderGrid');
-        if (grid) { var folderItems = querySelectorAll('.app-icon[data-scope="folder"]', grid), folderInsertIdx = Math.min(target.index !== undefined ? target.index : folderItems.length, folderItems.length); if (folderItems[folderInsertIdx]) folderItems[folderInsertIdx].before(placeholder); else grid.appendChild(placeholder); }
+        if (!pageEl) return null;
+        var items = querySelectorAll('.app-icon[data-scope="desktop"]', pageEl);
+        var pages = renderEngine.getDesktopPagesData(), pageData = pages[target.pageIndex] || [];
+        var maxInsertIdx = pageData.length;
+        var insertIdx = Math.min(target.index !== undefined ? target.index : target.insertIndex !== undefined ? target.insertIndex : maxInsertIdx, maxInsertIdx);
+        return { containerEl: pageEl, items: items, insertIdx: insertIdx };
       }
-      this.placeholderEl = placeholder;
+      if (target.container === 'folder') {
+        var grid = querySelector('#folderGrid');
+        if (!grid) return null;
+        var folderItems = querySelectorAll('.app-icon[data-scope="folder"]', grid);
+        var folderInsertIdx = Math.min(target.index !== undefined ? target.index : folderItems.length, folderItems.length);
+        return { containerEl: grid, items: folderItems, insertIdx: folderInsertIdx };
+      }
+      return null;
+    },
+    updateVisualIndicatorPosition: function dragStoreUpdateVisualIndicatorPosition(anchorInfo) {
+      if (!anchorInfo || !anchorInfo.containerEl) return;
+      var indicator = this.ensureVisualIndicator();
+      var containerRect = anchorInfo.containerEl.getBoundingClientRect();
+      var items = anchorInfo.items || [];
+      var insertIdx = anchorInfo.insertIdx || 0;
+      var indicatorWidth = indicator.offsetWidth || parseFloat(getComputedStyle(indicator).width) || 0;
+      var indicatorHeight = indicator.offsetHeight || parseFloat(getComputedStyle(indicator).height) || 0;
+      var left = containerRect.left + Math.max(0, (containerRect.width - indicatorWidth) / 2);
+      var top = containerRect.top + Math.max(0, (containerRect.height - indicatorHeight) / 2);
+      var anchorEl = null;
+      var predictedEl = null;
+      if (items.length) {
+        var safeIndex = Math.min(insertIdx, items.length - 1);
+        anchorEl = items[safeIndex] || null;
+        predictedEl = items[Math.min(Math.max(insertIdx - 1, 0), items.length - 1)] || anchorEl;
+        if (insertIdx >= items.length) {
+          anchorEl = items[items.length - 1] || null;
+          predictedEl = anchorEl;
+        }
+      }
+      if (this.visualAnchorEl && this.visualAnchorEl !== anchorEl) this.visualAnchorEl.classList.remove('visual-insert-anchor');
+      this.visualAnchorEl = anchorEl;
+      if (anchorEl) {
+        this.visualAnchorEl.classList.add('visual-insert-anchor');
+        var anchorRect = anchorEl.getBoundingClientRect();
+        var predictedRect = predictedEl ? predictedEl.getBoundingClientRect() : anchorRect;
+        var anchorCenter = getRectCenter(anchorRect);
+        var predictedCenter = getRectCenter(predictedRect);
+        var biasX = predictedCenter.x - anchorCenter.x;
+        var biasY = predictedCenter.y - anchorCenter.y;
+        left = anchorCenter.x - indicatorWidth / 2;
+        top = anchorCenter.y - indicatorHeight / 2;
+        if (insertIdx <= 0) {
+          left = anchorRect.left - indicatorWidth * 0.38;
+        } else if (insertIdx >= items.length) {
+          left = anchorRect.right - indicatorWidth * 0.62;
+        } else {
+          left += clamp(biasX * 0.18, -indicatorWidth * 0.22, indicatorWidth * 0.22);
+          top += clamp(biasY * 0.12, -12, 12);
+        }
+      }
+      var nextX = Math.round(left);
+      var nextY = Math.round(top);
+      var prevState = this.visualIndicatorState;
+      if (prevState) {
+        var dx = Math.abs(nextX - prevState.x);
+        var dy = Math.abs(nextY - prevState.y);
+        if (dx < 10) nextX = Math.round(prevState.x + (nextX - prevState.x) * 0.55);
+        if (dy < 10) nextY = Math.round(prevState.y + (nextY - prevState.y) * 0.5);
+      }
+      this.visualIndicatorState = { x: nextX, y: nextY, anchorId: anchorEl ? anchorEl.dataset.id : '', insertIdx: insertIdx };
+      indicator.style.setProperty('--insert-x', nextX + 'px');
+      indicator.style.setProperty('--insert-y', nextY + 'px');
+      indicator.classList.add('active');
+      document.body.classList.add('drag-visual-placeholder-active');
+    },
+    showPlaceholder: function dragStoreShowPlaceholder(target) {
+      return; 
+      if (!target || target.container === 'dock') return;
+      var anchorInfo = this.resolveVisualAnchor(target);
+      this.updateVisualIndicatorPosition(anchorInfo);
+    },
+    clearVisualPlaceholder: function dragStoreClearVisualPlaceholder() {
+      if (this.visualAnchorEl) this.visualAnchorEl.classList.remove('visual-insert-anchor');
+      this.visualAnchorEl = null;
+      this.visualIndicatorState = null;
+      if (this.visualIndicatorEl) {
+        this.visualIndicatorEl.classList.remove('active');
+        this.visualIndicatorEl.style.setProperty('--insert-x', '0px');
+        this.visualIndicatorEl.style.setProperty('--insert-y', '0px');
+      }
     },
     clearPlaceholder: function dragStoreClearPlaceholder() { if (this.placeholderEl) { this.placeholderEl.remove(); } this.placeholderEl = null; },
     beginDrag: function dragStoreBeginDrag(sourceEl, sourceType, e) {
       hideContextMenu(); this.active = true; this.pointerId = e.pointerId; this.sourceType = sourceType; this.sourceEl = sourceEl; this.itemId = sourceEl.dataset.id; this.folderId = sourceEl.dataset.folderId || null;
       this.originSnapshot = { desktop: deepClone(appStore.desktop.items), dock: deepClone(appStore.dock.items), currentPage: appStore.currentPage, folderModalId: appStore.folderModalId };
       var rect = sourceEl.getBoundingClientRect(); this.dragOffsetX = e.clientX - rect.left; this.dragOffsetY = e.clientY - rect.top; this.startX = e.clientX; this.startY = e.clientY;
-      sourceEl.classList.add('drag-source'); this.ghostEl = dragInteraction.createGhost(sourceEl); dragInteraction.updateGhostPosition(e.clientX, e.clientY); dragInteraction.setDeleteZoneVisible(true);
+      sourceEl.classList.add('drag-source'); this.suppressPageEffects(true); document.body.classList.add('drag-visual-placeholder-active'); this.ghostEl = dragInteraction.createGhost(sourceEl); dragInteraction.updateGhostPosition(e.clientX, e.clientY); dragInteraction.setDeleteZoneVisible(true);
       if (sourceType === 'folder') closeFolder();
     },
     processDragMove: function dragStoreProcessDragMove(e) {
       if (!this.active) return; this.lastMoveEvent = e; this.currentX = e.clientX; this.currentY = e.clientY;
       dragInteraction.updateGhostPosition(e.clientX, e.clientY);
       var target = this.detectDropTargetOptimized(e.clientX, e.clientY, this.itemId);
-      if (target.type === 'delete') { dragInteraction.setDeleteZoneHover(true); this.clearMergeCandidate(); this.clearSwapHover(); dragInteraction.clearMergeHover(); this.isInGap = false; this.clearPlaceholder(); return; }
+      if (target.type === 'delete') { dragInteraction.setDeleteZoneHover(true); this.clearMergeCandidate(); this.clearSwapHover(); dragInteraction.clearMergeHover(); this.isInGap = false; this.clearPlaceholder(); this.clearVisualPlaceholder(); return; }
       else dragInteraction.setDeleteZoneHover(false);
       if (target.type === 'icon' && target.container === 'desktop' && target.targetId) {
         var dragItem = appStore.getItemById(this.itemId);
         if (dragItem && dragItem.type !== 'folder' && this.canMerge(this.itemId, target.targetId)) this.queueMergeTarget(target.targetId);
       } else if (!this.mergeTargetId) this.clearMergeCandidate();
       if (target.type === 'icon' && target.targetId && target.targetId !== this.itemId) {
-        this.clearPlaceholder(); this.clearSwapHover();
+        this.clearPlaceholder(); this.clearVisualPlaceholder(); this.clearSwapHover();
         if (!this.mergeTargetId) { var targetEl = target.target; if (targetEl) { targetEl.classList.add('exchange-target'); this.swapTargetId = target.targetId; } }
         this.isInGap = false;
       } else if (target.type === 'gap') {
@@ -1943,7 +2119,7 @@
             }
           }, 200);
         }
-      } else { this.clearSwapHover(); this.clearPlaceholder(); this.isInGap = false; if (this.insertTimer) { clearTimeout(this.insertTimer); this.insertTimer = null; } }
+      } else { this.clearSwapHover(); this.clearPlaceholder(); this.clearVisualPlaceholder(); this.isInGap = false; if (this.insertTimer) { clearTimeout(this.insertTimer); this.insertTimer = null; } }
       edgeHoverManager.check(e.clientX, e.clientY, this.startX, this.startY);
     },
     detectDropTargetOptimized: function dragStoreDetectDropTargetOptimized(x, y, excludeId) {
@@ -2036,7 +2212,16 @@
       if (!this.active) { this.reset(); return; }
       e.preventDefault();
       if (this.overDelete) { var self = this; renderEngine.updateWithAnimation(function deleteAnimationCallback() { appStore.deleteItemById(self.itemId); appStore.cleanupFolders(); }); if (this.sourceType === 'folder') renderEngine.renderFolderModal(); showToast('已删除'); this.reset(); return; }
-      if (this.mergeTargetId) { var self = this; renderEngine.updateWithAnimation(function mergeAnimationCallback() { appStore.mergeItems(self.itemId, self.mergeTargetId); appStore.cleanupFolders(); }); this.reset(); return; }
+      if (this.mergeTargetId) {
+        var self = this;
+        var mergeTargetEl = document.querySelector('.page .app-icon[data-id="' + CSS.escape(this.mergeTargetId) + '"]');
+        var dragGhostRect = this.ghostEl ? this.ghostEl.getBoundingClientRect() : null;
+        var mergeTargetRect = mergeTargetEl ? mergeTargetEl.getBoundingClientRect() : null;
+        renderEngine.setMergeAnimationHint({ dragId: this.itemId, targetId: this.mergeTargetId, fromRect: dragGhostRect, toRect: mergeTargetRect });
+        renderEngine.updateWithAnimation(function mergeAnimationCallback() { appStore.mergeItems(self.itemId, self.mergeTargetId); appStore.cleanupFolders(); });
+        this.reset();
+        return;
+      }
       if (this.swapTargetId && this.swapTargetId !== this.itemId) { var self = this; renderEngine.updateWithAnimation(function swapAnimationCallback() { appStore.swapItems(self.itemId, self.swapTargetId); }); this.reset(); return; }
       if (this.isInGap && this.insertTarget) { this.reset(); return; }
       if (this.originSnapshot) { appStore.desktop.items = deepClone(this.originSnapshot.desktop); appStore.dock.items = deepClone(this.originSnapshot.dock); appStore.currentPage = this.originSnapshot.currentPage; appStore.folderModalId = this.originSnapshot.folderModalId; renderEngine.renderAll(); }
@@ -2441,7 +2626,7 @@
 
   // ==================== 渲染引擎 ====================
   var renderEngine = {
-    prevRects: null, flipAnimations: new WeakMap(),
+    prevRects: null, flipAnimations: new WeakMap(), mergeAnimationHint: null,
     captureRects: function renderEngineCaptureRects() {
       var map = new Map();
       querySelectorAll('.app-icon[data-id]').forEach(function captureRectsEach(el) { var rect = el.getBoundingClientRect(); map.set(el.dataset.id, { left: rect.left, top: rect.top, width: rect.width, height: rect.height }); });
@@ -2473,7 +2658,42 @@
       }); 
       this.flipAnimations = new WeakMap(); 
     },
-    updateWithAnimation: function renderEngineUpdateWithAnimation(mutator) { this.prevRects = this.captureRects(); mutator(); this.renderAll(); var self = this; requestAnimationFrame(function updateWithAnimationRAF() { self.playFLIP(); }); },
+    setMergeAnimationHint: function renderEngineSetMergeAnimationHint(hint) {
+      this.mergeAnimationHint = hint || null;
+    },
+    playMergeAnimationHint: function renderEnginePlayMergeAnimationHint() {
+      var hint = this.mergeAnimationHint;
+      this.mergeAnimationHint = null;
+      if (!hint || !hint.toRect) return;
+      var fromRect = hint.fromRect || hint.toRect;
+      var layer = document.createElement('div');
+      layer.className = 'drag-ghost';
+      layer.style.width = Math.round(fromRect.width || hint.toRect.width) + 'px';
+      layer.style.height = Math.round(fromRect.height || hint.toRect.height) + 'px';
+      layer.style.opacity = '0.86';
+      layer.style.transform = 'translate3d(' + Math.round(fromRect.left) + 'px, ' + Math.round(fromRect.top) + 'px, 0) scale(1)';
+      var sourceEl = document.querySelector('.app-icon[data-id="' + CSS.escape(hint.dragId) + '"]');
+      var targetEl = document.querySelector('.app-icon[data-id="' + CSS.escape(hint.targetId) + '"]');
+      var cloneSource = sourceEl ? sourceEl.cloneNode(true) : null;
+      var cloneTarget = targetEl ? targetEl.cloneNode(true) : null;
+      if (cloneSource) {
+        cloneSource.classList.remove('drag-source', 'exchange-target', 'merge-hover');
+        cloneSource.removeAttribute('tabindex');
+        layer.appendChild(cloneSource);
+      }
+      if (cloneTarget) targetEl.classList.add('merge-hover');
+      document.body.appendChild(layer);
+      requestAnimationFrame(function playMergeAnimationHintRAF() {
+        layer.style.transition = 'transform 220ms cubic-bezier(.22,.88,.24,1), opacity 220ms ease';
+        layer.style.transform = 'translate3d(' + Math.round(hint.toRect.left) + 'px, ' + Math.round(hint.toRect.top) + 'px, 0) scale(.72)';
+        layer.style.opacity = '0.08';
+      });
+      setTimeout(function cleanupMergeAnimationHint() {
+        if (targetEl) targetEl.classList.remove('merge-hover');
+        try { layer.remove(); } catch (_) {}
+      }, 240);
+    },
+    updateWithAnimation: function renderEngineUpdateWithAnimation(mutator) { this.prevRects = this.captureRects(); mutator(); this.renderAll(); var self = this; requestAnimationFrame(function updateWithAnimationRAF() { self.playFLIP(); self.playMergeAnimationHint(); }); },
     renderAll: function renderEngineRenderAll() { 
       appStore.cleanupFolders(); appStore.clampCurrentPage(); this.renderPages(); this.renderDock(); this.renderFolderModal(); 
       dragInteraction.clearMergeHover(); dragStore.clearSwapHover(); 
@@ -2622,6 +2842,8 @@
       querySelectorAll('.drag-source').forEach(function forceCleanupSourceEach(el) { el.classList.remove('drag-source'); }); 
       querySelectorAll('.exchange-target').forEach(function forceCleanupExchangeEach(el) { el.classList.remove('exchange-target'); }); 
       querySelectorAll('.merge-hover').forEach(function forceCleanupMergeEach(el) { el.classList.remove('merge-hover'); }); 
+      querySelectorAll('.visual-insert-anchor').forEach(function forceCleanupVisualAnchorEach(el) { el.classList.remove('visual-insert-anchor'); });
+      document.body.classList.remove('drag-visual-placeholder-active');
       refs.deleteZone.classList.remove('active', 'hover'); 
     }
   };
