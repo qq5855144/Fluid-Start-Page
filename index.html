@@ -311,7 +311,7 @@
     .folder-preview { position: absolute; inset: 8%; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4px; }
     .folder-preview-cell { border-radius: 6px; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     [data-theme="neumorphism"] .folder-preview-cell { background: rgba(255,255,255,.08); }
-    .folder-preview-cell .iconify { font-size: calc(var(--icon-size) * .22); color: var(--accent-color); }
+    .folder-preview-cell .iconify { font-size: calc(var(--icon-size) * .22); color: #ffffff; }
     .folder-preview-cell img.custom-icon { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
     
     .page-indicators { 
@@ -2194,6 +2194,9 @@
       if (dragItem.type === 'folder') return false;
       var dockIndex = appStore.dock.items.findIndex(function findDockMergeIndex(i) { return i.id === targetId; });
       if (dockIndex >= 0) return false;
+      // 修复bug：如果拖拽的应用来自目标文件夹，不允许合并（避免覆盖文件夹）
+      var dragLoc = appStore.locateItem(dragId);
+      if (dragLoc && dragLoc.scope === 'folder' && dragLoc.folderId === targetId) return false;
       return targetItem.type === 'app' || targetItem.type === 'folder';
     },
     queueMergeTarget: function dragStoreQueueMergeTarget(targetId) {
