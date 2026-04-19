@@ -172,6 +172,16 @@
             "url": "https://pan.huang1111.cn/login",
             "icon": "https://icdn.binmt.cc/2603/69a3e9eeaca50.png",
             "bgStyle": "background:#fff;"
+          },
+          {
+            "id": "app_1776557023109_fb24o115n",
+            "type": "app",
+            "title": "雀云网盘",
+            "url": "https://qyun.org/login",
+            "icon": "mingcute:bird-fill",
+            "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);",
+            "description": "",
+            "clippedAt": 1776557023109
           }
         ]
       }
@@ -259,6 +269,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-04-11T03:18:17.515Z",
+  "timestamp": "2026-04-19T00:07:16.330Z",
   "version": "2.0"
 }
