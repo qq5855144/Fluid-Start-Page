@@ -182,6 +182,14 @@
             "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);",
             "description": "",
             "clippedAt": 1776557023109
+          },
+          {
+            "id": "app_1776588120457_6rhvcsh65",
+            "type": "app",
+            "title": "123云盘",
+            "url": "https://login.123pan.com/",
+            "icon": "tabler:number-123",
+            "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           }
         ]
       }
@@ -269,6 +277,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-04-19T00:07:16.330Z",
+  "timestamp": "2026-04-19T08:44:02.639Z",
   "version": "2.0"
 }
