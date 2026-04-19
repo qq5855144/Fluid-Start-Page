@@ -192,6 +192,16 @@
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           }
         ]
+      },
+      {
+        "id": "app_1776589148888_omoxffmc0",
+        "type": "app",
+        "title": "APKMirror",
+        "url": "https://www.apkmirror.com/",
+        "icon": "arcticons:apkmirror",
+        "bgStyle": "background:linear-gradient(135deg,#ff512f,#f09819);",
+        "description": "Free and safe Android APK downloads",
+        "clippedAt": 1776589148888
       }
     ]
   },
@@ -277,6 +287,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-04-19T08:44:02.639Z",
+  "timestamp": "2026-04-19T09:04:09.620Z",
   "version": "2.0"
 }
