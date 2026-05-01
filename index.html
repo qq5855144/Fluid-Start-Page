@@ -33,7 +33,7 @@
     /* 新拟态风格变量 (默认) */
     [data-theme="neumorphism"] {
       --bg-color: #e0e5ec;
-      --text-primary: #2d3748;
+      --text-primary: #666666;
       --text-secondary: #718096;
       --accent-color: #667eea;
       --accent-light: #764ba2;
@@ -4409,10 +4409,10 @@
     
     // 组合显示
     if (festival) {
-      dateStr += ' ' + lunarStr + ' (' + festival + ')';
-    } else {
-      dateStr += ' ' + lunarStr;
-    }
+  dateStr += ' ' + lunarStr + ' ' + festival;
+} else {
+  dateStr += ' ' + lunarStr;
+}
     
     refs.headerDate.textContent = dateStr;
   }
