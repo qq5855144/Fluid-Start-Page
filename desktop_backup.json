@@ -76,8 +76,8 @@
       {
         "id": "app_design",
         "type": "app",
-        "title": "Canva",
-        "url": "https://www.canva.com",
+        "title": "PixForge",
+        "url": "https://qq5855144.github.io/PixForge/",
         "icon": "https://static.canva.cn/web/images/1dc2a50c35a849253c52556e7f77cc0c.png",
         "bgStyle": "background:linear-gradient(135deg,#7f00ff,#e100ff);"
       },
@@ -259,7 +259,7 @@
       }
     ]
   },
-  "currentQuote": "阑干倚遍重来凭。泪粉偷将红袖印。 —— 欧阳修《玉楼春·去时梅萼初凝粉》",
+  "currentQuote": "山重水复疑无路，柳暗花明又一村。 —— 陆游《游山西村》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -287,6 +287,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-05-04T00:51:37.031Z",
+  "timestamp": "2026-05-04T10:26:20.752Z",
   "version": "2.0"
 }
