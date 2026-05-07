@@ -202,6 +202,16 @@
         "bgStyle": "background:linear-gradient(135deg,#ff512f,#f09819);",
         "description": "Free and safe Android APK downloads",
         "clippedAt": 1776589148888
+      },
+      {
+        "id": "app_1778154405732_w8uxzch4f",
+        "type": "app",
+        "title": "秒哒·生成式",
+        "url": "https://www.miaoda.cn/?track_id=promolink-aj17k3wb8ge8&msclkid=91194da550381c3104e124592ba38d3b",
+        "icon": "https://resource-static.cdn.bcebos.com/img/favicon.png",
+        "bgStyle": "background:#e5ecec;",
+        "description": "百度秒哒，由百度倾力打造的无代码工具，不用写代码，就能实现任意想法，让每个人具备程序员能力。",
+        "clippedAt": 1778154405732
       }
     ]
   },
@@ -259,7 +269,7 @@
       }
     ]
   },
-  "currentQuote": "山重水复疑无路，柳暗花明又一村。 —— 陆游《游山西村》",
+  "currentQuote": "涕零雨面毁形颜，谁能怀忧独不叹。 —— 曹丕《燕歌行二首·其二》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -287,6 +297,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-05-04T10:26:20.752Z",
+  "timestamp": "2026-05-07T11:47:48.854Z",
   "version": "2.0"
 }
