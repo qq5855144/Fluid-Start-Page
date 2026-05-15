@@ -212,6 +212,16 @@
         "bgStyle": "background:#e5ecec;",
         "description": "百度秒哒，由百度倾力打造的无代码工具，不用写代码，就能实现任意想法，让每个人具备程序员能力。",
         "clippedAt": 1778154405732
+      },
+      {
+        "id": "app_1778822605781_ckeo759ai",
+        "type": "app",
+        "title": "PNG转SV",
+        "url": "https://www.freeconvert.com/zh/png-to-svg",
+        "icon": "vscode-icons:file-type-svg",
+        "bgStyle": "background:linear-gradient(135deg,#232526,#414345);",
+        "description": "PNG 转 SVG 转换器。以最高品质在线将 PNG 转换为 SVG 的最佳方式。此工具 100% 免费、安全，且适用于任何网络浏览器。",
+        "clippedAt": 1778822605781
       }
     ]
   },
@@ -269,7 +279,7 @@
       }
     ]
   },
-  "currentQuote": "一夜娇啼缘底事，为嫌衣少缕金华。 —— 韦庄《与小女》",
+  "currentQuote": "细数十年事，十处过中秋。 —— 范成大《水调歌头·细数十年事》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -297,6 +307,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-05-07T11:55:21.036Z",
+  "timestamp": "2026-05-15T05:25:38.618Z",
   "version": "2.0"
 }
