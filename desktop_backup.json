@@ -222,6 +222,16 @@
         "bgStyle": "background:linear-gradient(135deg,#232526,#414345);",
         "description": "PNG 转 SVG 转换器。以最高品质在线将 PNG 转换为 SVG 的最佳方式。此工具 100% 免费、安全，且适用于任何网络浏览器。",
         "clippedAt": 1778822605781
+      },
+      {
+        "id": "app_1780526475273_40q657r87",
+        "type": "app",
+        "title": "老木游戏网",
+        "url": "https://laomuxs.cn/",
+        "icon": "https://laomuxs.cn/wp-content/uploads/2026/01/20260127225918658-laomuxs.cn_20251207211042671-image-2.png",
+        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);",
+        "description": "",
+        "clippedAt": 1780526475273
       }
     ]
   },
@@ -279,7 +289,7 @@
       }
     ]
   },
-  "currentQuote": "细数十年事，十处过中秋。 —— 范成大《水调歌头·细数十年事》",
+  "currentQuote": "浊酒不销忧国泪，救时应仗出群才。 —— 秋瑾《黄海舟中日人索句并见日俄战争地图》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -307,6 +317,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-05-15T05:25:38.618Z",
+  "timestamp": "2026-06-03T22:41:40.816Z",
   "version": "2.0"
 }
