@@ -287,7 +287,7 @@
       }
     ]
   },
-  "currentQuote": "欲把西湖比西子，淡妆浓抹总相宜。 —— 苏轼《饮湖上初晴后雨二首·其二》",
+  "currentQuote": "起望衣冠神州路，白日销残战骨。 —— 辛弃疾《贺新郎·用前韵送杜叔高》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -315,6 +315,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-06-22T15:04:12.455Z",
+  "timestamp": "2026-06-28T06:09:48.341Z",
   "version": "2.0"
 }
