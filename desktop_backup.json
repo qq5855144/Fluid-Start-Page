@@ -121,12 +121,12 @@
         ]
       },
       {
-        "id": "app_taobao",
+        "id": "app_video",
         "type": "app",
-        "title": "淘宝",
-        "url": "https://www.taobao.com",
-        "icon": "ri:shopping-bag-3-fill",
-        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
+        "title": "视频",
+        "url": "https://v.qq.com",
+        "icon": "streamline-logos:wetv-logo-solid",
+        "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
         "id": "app_map",
@@ -135,14 +135,6 @@
         "url": "https://ditu.amap.com",
         "icon": "mdi:map-marker-radius",
         "bgStyle": "background:linear-gradient(135deg,#00b09b,#96c93d);"
-      },
-      {
-        "id": "app_video",
-        "type": "app",
-        "title": "视频",
-        "url": "https://v.qq.com",
-        "icon": "streamline-logos:wetv-logo-solid",
-        "bgStyle": "background:linear-gradient(135deg,#fc4a1a,#f7b733);"
       },
       {
         "id": "folder_1775287958278_z78pev7p5",
@@ -192,6 +184,14 @@
             "bgStyle": "background:linear-gradient(135deg,#4f86ff,#2f5fff);"
           }
         ]
+      },
+      {
+        "id": "app_taobao",
+        "type": "app",
+        "title": "淘宝",
+        "url": "https://www.taobao.com",
+        "icon": "ri:shopping-bag-3-fill",
+        "bgStyle": "background:linear-gradient(135deg,#ff7a18,#ffb347);"
       },
       {
         "id": "app_1776589148888_omoxffmc0",
@@ -297,7 +297,7 @@
       }
     ]
   },
-  "currentQuote": "人间万事，毫发常重泰山轻。 —— 辛弃疾《水调歌头·壬子三山被召陈端仁给事饮饯席上作》",
+  "currentQuote": "秦时明月汉时关，万里长征人未还。 —— 王昌龄《出塞二首·其一》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -325,6 +325,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-06-29T13:35:58.843Z",
+  "timestamp": "2026-07-10T08:20:36.274Z",
   "version": "2.0"
 }
