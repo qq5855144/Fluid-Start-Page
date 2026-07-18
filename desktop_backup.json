@@ -297,7 +297,7 @@
       }
     ]
   },
-  "currentQuote": "秦时明月汉时关，万里长征人未还。 —— 王昌龄《出塞二首·其一》",
+  "currentQuote": "幼敏悟过人，读书辄成诵。 —— 欧阳修《画地学书》",
   "currentEngineId": "preset-1",
   "customEngines": [
     {
@@ -325,6 +325,6 @@
       "url": "https://apkpure.com/search?q=%s"
     }
   ],
-  "timestamp": "2026-07-10T08:20:36.274Z",
+  "timestamp": "2026-07-18T14:49:24.629Z",
   "version": "2.0"
 }
